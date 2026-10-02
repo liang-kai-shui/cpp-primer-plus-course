@@ -258,7 +258,9 @@ python tools/build_html.py
 > 📌 **教材本身也有印刷错误**（例如第 3 章编程练习 7 里的换算因子就印错了）。
 > 遇到和教材对不上的地方，先按"用例子验证公式"的方法排查一下。
 
-在 GitHub 上可以直接开 [Issue](../../issues) 或 [Discussion](../../discussions)，
+在 GitHub 上可以直接开
+[Issue](https://github.com/liang-kai-shui/cpp-primer-plus-course/issues) 或
+[Discussion](https://github.com/liang-kai-shui/cpp-primer-plus-course/discussions)，
 说明你在哪一课、哪一段卡住了。
 
 ---
