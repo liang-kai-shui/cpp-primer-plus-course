@@ -441,10 +441,13 @@ def main():
         converted[target_rel] = (fn[:-3], body)
         print("  " + target_rel)
 
+    # 把非 md 文件也镜像一份（讲义里引用的 .cpp 要能在 HTML 版里打开）
+    # 但 tools/ 和 .开头 的文件（.gitignore 等）不该进 docs/
     for dirpath, dirnames, filenames in os.walk(ROOT):
-        dirnames[:] = [d for d in dirnames if d not in ("docs", "html", "__pycache__", ".git")]
+        dirnames[:] = [d for d in dirnames
+                       if d not in ("docs", "html", "__pycache__", ".git", "tools")]
         for fn in filenames:
-            if fn.lower().endswith(".md"):
+            if fn.lower().endswith(".md") or fn.startswith("."):
                 continue
             src = os.path.join(dirpath, fn)
             rel = os.path.relpath(dirpath, ROOT)
