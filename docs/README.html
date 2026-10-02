@@ -381,7 +381,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </ul>
 </li>
 <li><a href="#二你需要准备什么">二、你需要准备什么</a><ul>
-<li><a href="#1-教材必须自备">1. 教材（必须自备）</a></li>
+<li><a href="#1-教材">1. 教材</a></li>
 <li><a href="#2-编译器">2. 编译器</a></li>
 <li><a href="#3-编辑器">3. 编辑器</a></li>
 </ul>
@@ -398,7 +398,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#八重新生成-html">八、重新生成 HTML</a></li>
 <li><a href="#九反馈">九、反馈</a></li>
 <li><a href="#十版权与免责声明">十、版权与免责声明</a><ul>
-<li><a href="#本仓库不包含教材">本仓库不包含教材</a></li>
 <li><a href="#关于教材题目">关于教材题目</a></li>
 <li><a href="#关于代码">关于代码</a></li>
 </ul>
@@ -414,10 +413,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <p><strong>不想下载？直接看在线版：<a href="https://liang-kai-shui.github.io/cpp-primer-plus-course/">https://liang-kai-shui.github.io/cpp-primer-plus-course/</a></strong>
 （默认深色模式，右上角可切换浅色）</p>
 <p>一套<strong>从零讲起</strong>的 C++ 自学材料，配合《C++ Primer Plus（第 6 版）》使用。</p>
-<p><strong>面向谁</strong>：
-- 完全没写过程序的人
-- <strong>甚至对电脑本身也不太熟的人</strong>（不知道任务管理器怎么打开也没关系）
-- 写过一点、但基础不牢、想重新打地基的人</p>
+<p><strong>面向谁</strong>：</p>
+<ul>
+<li>完全没写过程序的人</li>
+<li><strong>甚至对电脑本身也不太熟的人</strong>（不知道任务管理器怎么打开也没关系）</li>
+<li>写过一点、但基础不牢、想重新打地基的人</li>
+</ul>
 <p><strong>不需要</strong>任何编程基础，也<strong>不需要</strong>数学基础。</p>
 <h3 id="这套材料想解决的一个具体问题">💡 这套材料想解决的一个具体问题</h3>
 <p>很多课（包括学校里的）是这样讲的：上来就是一堆专有名词——<strong>"变量""函数""编译""指针"</strong>——
@@ -489,12 +490,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <p>如果你读某一段发现"这里突然冒出一个没解释的词"，<strong>那是我们的问题，请记下来</strong>。</p>
 <hr />
 <h2 id="二你需要准备什么">二、你需要准备什么</h2>
-<h3 id="1-教材必须自备">1. 教材（必须自备）</h3>
+<h3 id="1-教材">1. 教材</h3>
 <blockquote>
 <p>《C++ Primer Plus（第 6 版）中文版》</p>
 </blockquote>
-<p><strong>本包不包含教材</strong>（版权原因，请自行购买或借阅）。
-讲义里所有"教材 pXX"都是指 <strong>PDF 版的页号</strong>（封面算第 1 页），不是书页脚印的页码。</p>
+<p>讲义里所有"教材 pXX"都是指 <strong>PDF 版的页号</strong>（封面算第 1 页），不是书页脚印的页码。</p>
 <blockquote>
 <p>💡 如果你手上的 PDF 书签完整，直接用书签跳转最快。</p>
 </blockquote>
@@ -518,15 +518,15 @@ xcode-select<span class="w"> </span>--install
 <blockquote>
 <p>⚠️ <strong>Windows 中文用户注意</strong>：程序输出中文可能乱码。
 原因和控制台"代码页"有关（《零基础起飞》里讲了原理）。
-最简单的一次性解法是在程序开头加：
-```cpp</p>
+最简单的一次性解法是在程序开头加：</p>
+<p>```cpp</p>
 <h1 id="include">include <windows.h></h1>
 <p>int main() {
     SetConsoleOutputCP(65001);   // 把控制台输出改成 UTF-8
     ...
 }
-<code>``
-或者在运行前先执行</code>chcp 65001`。</p>
+```</p>
+<p>或者在运行前先执行 <code>chcp 65001</code>。</p>
 </blockquote>
 <hr />
 <h2 id="三怎么用重要">三、怎么用（重要）</h2>
@@ -733,13 +733,11 @@ python<span class="w"> </span>tools/build_html.py
 说明你在哪一课、哪一段卡住了。</p>
 <hr />
 <h2 id="十版权与免责声明">十、版权与免责声明</h2>
-<h3 id="本仓库不包含教材">本仓库<strong>不包含</strong>教材</h3>
-<p>本材料是《C++ Primer Plus（第 6 版）中文版》的<strong>配套学习笔记</strong>，
-<strong>不包含教材原文，也不包含教材 PDF</strong>。请自行购买或借阅正版教材。</p>
+<p>本材料是《C++ Primer Plus（第 6 版）中文版》的<strong>配套学习笔记</strong>，</p>
 <h3 id="关于教材题目">关于教材题目</h3>
 <p><code>练习/</code> 目录里的复习题与编程练习，<strong>题目文字转抄自上述教材</strong>（为方便读者按书做题），
 著作权归原作者及出版方所有。这些内容仅用于<strong>教学与学习目的</strong>，非商业用途。
-本仓库<strong>不含</strong>任何教材的解答手册（附录 J）原文——参考答案是本仓库独立编写/整理的。</p>
+—参考答案是本仓库独立编写/整理的。</p>
 <blockquote>
 <p>如果你是著作权权利人，认为本仓库的内容不妥，请开 Issue 联系，我会立即调整或删除。</p>
 </blockquote>
