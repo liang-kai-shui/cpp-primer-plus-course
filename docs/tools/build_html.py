@@ -436,7 +436,7 @@ def main():
                            footer='<a href="%sindex.html">← 返回总目录</a>' % back)
         outpath = os.path.join(OUT, target_rel.replace("/", os.sep))
         os.makedirs(os.path.dirname(outpath), exist_ok=True)
-        with open(outpath, "w", encoding="utf-8") as f:
+        with open(outpath, "w", encoding="utf-8", newline="\n") as f:
             f.write(page)
         converted[target_rel] = (fn[:-3], body)
         print("  " + target_rel)
@@ -492,7 +492,7 @@ def main():
 """ % (primer_html, "".join(cards))
 
     nav = build_nav(items, "index.html")
-    with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:
+    with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8", newline="\n") as f:
         f.write(PAGE.format(title="C++ 入门课程", css=css_all, nav=nav, body=idx,
                             pager="", footer="由 Markdown 自动生成"))
 
@@ -507,11 +507,11 @@ def main():
     single = PAGE.format(title="C++ 入门课程 · 全一册", css=css_all, nav="",
                          body="\n<hr>\n".join(parts), pager="",
                          footer="由 Markdown 自动生成 · 全一册")
-    with open(os.path.join(OUT, "全一册.html"), "w", encoding="utf-8") as f:
+    with open(os.path.join(OUT, "全一册.html"), "w", encoding="utf-8", newline="\n") as f:
         f.write(single)
 
     # GitHub Pages 用：告诉它别用 Jekyll 处理 docs/（顺便让构建快一点）
-    with open(os.path.join(OUT, ".nojekyll"), "w", encoding="utf-8") as f:
+    with open(os.path.join(OUT, ".nojekyll"), "w", encoding="utf-8", newline="\n") as f:
         f.write("")
 
     print("\n完成 → %s" % OUT)
