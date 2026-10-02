@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第01章-预备知识</title>
+<script>
+/* 在页面渲染前先定好主题，避免"白屏闪一下" */
+(function(){
+  try{
+    var t = localStorage.getItem('cppcourse-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<style>
+/* ============ 颜色变量：默认深色 ============ */
+:root, [data-theme="dark"]{
+  --bg:#14171a; --bg2:#1b1f24; --bg3:#232a31;
+  --fg:#dfe3e8; --fg2:#b6bec8; --muted:#8b95a1;
+  --line:#2b3138; --accent:#58a6ff;
+  --code-bg:#0f1216; --quote-bg:#1b2027;
+}
+[data-theme="light"]{
+  --bg:#fbfbfa; --bg2:#ffffff; --bg3:#f1f5f9;
+  --fg:#22272e; --fg2:#3b434d; --muted:#6b7280;
+  --line:#e5e7eb; --accent:#1f6feb;
+  --code-bg:#f3f4f6; --quote-bg:#f8fafc;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",Roboto,sans-serif;
+  font-size:16.5px; line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ============ 主题切换按钮 ============ */
+#themeBtn{
+  position:fixed; top:14px; right:18px; z-index:50;
+  width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--line); background:var(--bg2); color:var(--fg);
+  font-size:19px; line-height:1; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, background .15s ease;
+}
+#themeBtn:hover{transform:scale(1.08); background:var(--bg3);}
+
+.layout{display:flex; min-height:100vh;}
+
+/* ============ 侧边导航 ============ */
+nav{
+  width:288px; flex:0 0 288px; background:var(--bg2);
+  border-right:1px solid var(--line); padding:22px 0 80px;
+  overflow-y:auto; position:sticky; top:0; height:100vh;
+}
+nav .brand{
+  padding:0 20px 15px; font-weight:700; font-size:15px;
+  border-bottom:1px solid var(--line); margin-bottom:12px; color:var(--fg);
+}
+nav .group{
+  padding:16px 20px 6px; font-size:11.5px; color:var(--muted);
+  letter-spacing:.1em; font-weight:600;
+}
+nav a{display:block; padding:6px 20px; font-size:14px; color:var(--fg2);
+  border-left:3px solid transparent;}
+nav a:hover{background:var(--bg3); text-decoration:none; color:var(--fg);}
+nav a.active{color:var(--accent); font-weight:600;
+  border-left-color:var(--accent); background:var(--bg3);}
+
+main{flex:1; min-width:0; padding:46px 60px 120px; max-width:1120px;}
+article{
+  background:var(--bg2); border:1px solid var(--line);
+  border-radius:12px; padding:40px 48px;
+  box-shadow:0 1px 3px rgba(0,0,0,.10);
+}
+
+/* ============ 正文排版 ============ */
+h1,h2,h3,h4{line-height:1.4; margin:1.7em 0 .7em; font-weight:700; scroll-margin-top:20px;}
+h1{font-size:1.9em; margin-top:0; padding-bottom:.4em; border-bottom:2px solid var(--line);}
+h2{font-size:1.42em; padding-bottom:.28em; border-bottom:1px solid var(--line);}
+h3{font-size:1.16em;}
+h4{font-size:1.03em; color:var(--fg2);}
+p{margin:.8em 0;}
+ul,ol{padding-left:1.65em;}
+li{margin:.35em 0;}
+strong{font-weight:700;}
+hr{border:0; border-top:1px solid var(--line); margin:2.2em 0;}
+img{max-width:100%;}
+
+blockquote{
+  margin:1.1em 0; padding:.85em 1.15em; background:var(--quote-bg);
+  border-left:4px solid var(--accent); color:var(--fg2);
+  border-radius:0 8px 8px 0;
+}
+blockquote p{margin:.4em 0;}
+blockquote strong{color:var(--fg);}
+
+/* ============ 表格 ============ */
+table{
+  border-collapse:collapse; width:100%; margin:1.2em 0;
+  font-size:14.8px; display:block; overflow-x:auto;
+}
+th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top;}
+th{background:var(--bg3); font-weight:600; white-space:nowrap;}
+tbody tr:nth-child(even) td{background:rgba(127,127,127,.05);}
+
+/* ============ 代码 ============ */
+code{
+  font-family:"Cascadia Code",Consolas,"SF Mono",Monaco,"Courier New","Microsoft YaHei",monospace;
+  font-size:.885em; background:var(--code-bg); padding:.16em .42em;
+  border-radius:4px; border:1px solid var(--line);
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--line); border-radius:9px;
+  padding:15px 17px; overflow-x:auto; margin:1.1em 0; line-height:1.6;
+}
+pre code{background:none; padding:0; border:0; font-size:13.8px;}
+.codehilite{background:var(--code-bg); border:1px solid var(--line);
+  border-radius:9px; margin:1.1em 0;}
+.codehilite pre{border:0; margin:0; background:none;}
+
+/* ============ 本页目录 / 卡片 / 翻页 ============ */
+.toc-box{
+  background:var(--quote-bg); border:1px solid var(--line);
+  border-radius:9px; padding:13px 22px; margin:1.3em 0;
+}
+.toc-box strong{display:block; margin-bottom:5px; color:var(--muted);
+  font-size:13px; letter-spacing:.05em;}
+.toc-box ul{margin:.35em 0; padding-left:1.3em;}
+.toc-box a{color:var(--fg2);}
+.toc-box a:hover{color:var(--accent);}
+
+/* ============ 讲义页顶部的"卡住了去哪查"横幅 ============ */
+.hintbar{
+  background:var(--bg3); border:1px solid var(--line); border-radius:8px;
+  padding:9px 15px; margin:0 0 1.5em; font-size:13.5px; color:var(--muted);
+}
+.hintbar a{font-weight:600;}
+
+/* 超长的"本页目录"（比如术语表有 100+ 词条）折叠起来，别把正文挤下去 */
+details.toc-box summary{
+  cursor:pointer; color:var(--muted); font-size:13.5px;
+  font-weight:600; letter-spacing:.03em; user-select:none;
+}
+details.toc-box summary:hover{color:var(--accent);}
+details.toc-box[open] summary{margin-bottom:.5em;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px; margin:24px 0;}
+.card{background:var(--bg2); border:1px solid var(--line); border-radius:11px;
+  padding:19px 21px; transition:transform .15s ease, border-color .15s ease;}
+.card:hover{transform:translateY(-2px); border-color:var(--accent);}
+.card h3{margin:0 0 8px; font-size:1.06em;}
+.card p{margin:0; color:var(--muted); font-size:14px; line-height:1.65;}
+
+.pager{display:flex; justify-content:space-between; gap:14px; margin-top:34px;
+  padding-top:20px; border-top:1px solid var(--line);}
+.pager a{flex:1; padding:11px 16px; background:var(--bg3); border:1px solid var(--line);
+  border-radius:9px; font-size:14px; color:var(--fg2);}
+.pager a:hover{border-color:var(--accent); color:var(--accent); text-decoration:none;}
+.pager a.next{text-align:right;}
+.pager a.disabled{opacity:.35; pointer-events:none;}
+
+.footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:13.5px;}
+
+/* ============ 移动端 ============ */
+@media (max-width:900px){
+  nav{display:none;}
+  main{padding:18px 12px 60px;}
+  article{padding:22px 17px; border-radius:8px;}
+  #themeBtn{top:10px; right:10px; width:38px; height:38px;}
+}
+
+/* ===== 代码高亮（按主题隔离） ===== */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="dark"] .codehilite .hll { background-color: #49483e }
+[data-theme="dark"] .codehilite { background: #272822; color: #F8F8F2 }
+[data-theme="dark"] .codehilite .c { color: #959077 } /* Comment */
+[data-theme="dark"] .codehilite .err { color: #ED007E; background-color: #1E0010 } /* Error */
+[data-theme="dark"] .codehilite .esc { color: #F8F8F2 } /* Escape */
+[data-theme="dark"] .codehilite .g { color: #F8F8F2 } /* Generic */
+[data-theme="dark"] .codehilite .k { color: #66D9EF } /* Keyword */
+[data-theme="dark"] .codehilite .l { color: #AE81FF } /* Literal */
+[data-theme="dark"] .codehilite .n { color: #F8F8F2 } /* Name */
+[data-theme="dark"] .codehilite .o { color: #FF4689 } /* Operator */
+[data-theme="dark"] .codehilite .x { color: #F8F8F2 } /* Other */
+[data-theme="dark"] .codehilite .p { color: #F8F8F2 } /* Punctuation */
+[data-theme="dark"] .codehilite .ch { color: #959077 } /* Comment.Hashbang */
+[data-theme="dark"] .codehilite .cm { color: #959077 } /* Comment.Multiline */
+[data-theme="dark"] .codehilite .cp { color: #959077 } /* Comment.Preproc */
+[data-theme="dark"] .codehilite .cpf { color: #959077 } /* Comment.PreprocFile */
+[data-theme="dark"] .codehilite .c1 { color: #959077 } /* Comment.Single */
+[data-theme="dark"] .codehilite .cs { color: #959077 } /* Comment.Special */
+[data-theme="dark"] .codehilite .gd { color: #FF4689 } /* Generic.Deleted */
+[data-theme="dark"] .codehilite .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+[data-theme="dark"] .codehilite .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="dark"] .codehilite .gr { color: #FF4689 } /* Generic.Error */
+[data-theme="dark"] .codehilite .gh { color: #F8F8F2 } /* Generic.Heading */
+[data-theme="dark"] .codehilite .gi { color: #A6E22E } /* Generic.Inserted */
+[data-theme="dark"] .codehilite .go { color: #66D9EF } /* Generic.Output */
+[data-theme="dark"] .codehilite .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+[data-theme="dark"] .codehilite .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+[data-theme="dark"] .codehilite .gu { color: #959077 } /* Generic.Subheading */
+[data-theme="dark"] .codehilite .gt { color: #66D9EF } /* Generic.Traceback */
+[data-theme="dark"] .codehilite .kc { color: #66D9EF } /* Keyword.Constant */
+[data-theme="dark"] .codehilite .kd { color: #66D9EF } /* Keyword.Declaration */
+[data-theme="dark"] .codehilite .kn { color: #FF4689 } /* Keyword.Namespace */
+[data-theme="dark"] .codehilite .kp { color: #66D9EF } /* Keyword.Pseudo */
+[data-theme="dark"] .codehilite .kr { color: #66D9EF } /* Keyword.Reserved */
+[data-theme="dark"] .codehilite .kt { color: #66D9EF } /* Keyword.Type */
+[data-theme="dark"] .codehilite .ld { color: #E6DB74 } /* Literal.Date */
+[data-theme="dark"] .codehilite .m { color: #AE81FF } /* Literal.Number */
+[data-theme="dark"] .codehilite .s { color: #E6DB74 } /* Literal.String */
+[data-theme="dark"] .codehilite .na { color: #A6E22E } /* Name.Attribute */
+[data-theme="dark"] .codehilite .nb { color: #A6E22E } /* Name.Builtin */
+[data-theme="dark"] .codehilite .nc { color: #A6E22E } /* Name.Class */
+[data-theme="dark"] .codehilite .no { color: #66D9EF } /* Name.Constant */
+[data-theme="dark"] .codehilite .nd { color: #A6E22E } /* Name.Decorator */
+[data-theme="dark"] .codehilite .ni { color: #F8F8F2 } /* Name.Entity */
+[data-theme="dark"] .codehilite .ne { color: #A6E22E } /* Name.Exception */
+[data-theme="dark"] .codehilite .nf { color: #A6E22E } /* Name.Function */
+[data-theme="dark"] .codehilite .nl { color: #F8F8F2 } /* Name.Label */
+[data-theme="dark"] .codehilite .nn { color: #F8F8F2 } /* Name.Namespace */
+[data-theme="dark"] .codehilite .nx { color: #A6E22E } /* Name.Other */
+[data-theme="dark"] .codehilite .py { color: #F8F8F2 } /* Name.Property */
+[data-theme="dark"] .codehilite .nt { color: #FF4689 } /* Name.Tag */
+[data-theme="dark"] .codehilite .nv { color: #F8F8F2 } /* Name.Variable */
+[data-theme="dark"] .codehilite .ow { color: #FF4689 } /* Operator.Word */
+[data-theme="dark"] .codehilite .pm { color: #F8F8F2 } /* Punctuation.Marker */
+[data-theme="dark"] .codehilite .w { color: #F8F8F2 } /* Text.Whitespace */
+[data-theme="dark"] .codehilite .mb { color: #AE81FF } /* Literal.Number.Bin */
+[data-theme="dark"] .codehilite .mf { color: #AE81FF } /* Literal.Number.Float */
+[data-theme="dark"] .codehilite .mh { color: #AE81FF } /* Literal.Number.Hex */
+[data-theme="dark"] .codehilite .mi { color: #AE81FF } /* Literal.Number.Integer */
+[data-theme="dark"] .codehilite .mo { color: #AE81FF } /* Literal.Number.Oct */
+[data-theme="dark"] .codehilite .sa { color: #E6DB74 } /* Literal.String.Affix */
+[data-theme="dark"] .codehilite .sb { color: #E6DB74 } /* Literal.String.Backtick */
+[data-theme="dark"] .codehilite .sc { color: #E6DB74 } /* Literal.String.Char */
+[data-theme="dark"] .codehilite .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+[data-theme="dark"] .codehilite .sd { color: #E6DB74 } /* Literal.String.Doc */
+[data-theme="dark"] .codehilite .s2 { color: #E6DB74 } /* Literal.String.Double */
+[data-theme="dark"] .codehilite .se { color: #AE81FF } /* Literal.String.Escape */
+[data-theme="dark"] .codehilite .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+[data-theme="dark"] .codehilite .si { color: #E6DB74 } /* Literal.String.Interpol */
+[data-theme="dark"] .codehilite .sx { color: #E6DB74 } /* Literal.String.Other */
+[data-theme="dark"] .codehilite .sr { color: #E6DB74 } /* Literal.String.Regex */
+[data-theme="dark"] .codehilite .s1 { color: #E6DB74 } /* Literal.String.Single */
+[data-theme="dark"] .codehilite .ss { color: #E6DB74 } /* Literal.String.Symbol */
+[data-theme="dark"] .codehilite .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+[data-theme="dark"] .codehilite .fm { color: #A6E22E } /* Name.Function.Magic */
+[data-theme="dark"] .codehilite .vc { color: #F8F8F2 } /* Name.Variable.Class */
+[data-theme="dark"] .codehilite .vg { color: #F8F8F2 } /* Name.Variable.Global */
+[data-theme="dark"] .codehilite .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+[data-theme="dark"] .codehilite .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+[data-theme="dark"] .codehilite .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="light"] .codehilite .hll { background-color: #ffffcc }
+[data-theme="light"] .codehilite { background: #f0f0f0; }
+[data-theme="light"] .codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+[data-theme="light"] .codehilite .err { border: 1px solid #F00 } /* Error */
+[data-theme="light"] .codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+[data-theme="light"] .codehilite .o { color: #666 } /* Operator */
+[data-theme="light"] .codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+[data-theme="light"] .codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+[data-theme="light"] .codehilite .cp { color: #007020 } /* Comment.Preproc */
+[data-theme="light"] .codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+[data-theme="light"] .codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+[data-theme="light"] .codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+[data-theme="light"] .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+[data-theme="light"] .codehilite .ge { font-style: italic } /* Generic.Emph */
+[data-theme="light"] .codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="light"] .codehilite .gr { color: #F00 } /* Generic.Error */
+[data-theme="light"] .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+[data-theme="light"] .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+[data-theme="light"] .codehilite .go { color: #888 } /* Generic.Output */
+[data-theme="light"] .codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+[data-theme="light"] .codehilite .gs { font-weight: bold } /* Generic.Strong */
+[data-theme="light"] .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+[data-theme="light"] .codehilite .gt { color: #04D } /* Generic.Traceback */
+[data-theme="light"] .codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+[data-theme="light"] .codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+[data-theme="light"] .codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+[data-theme="light"] .codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+[data-theme="light"] .codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+[data-theme="light"] .codehilite .kt { color: #902000 } /* Keyword.Type */
+[data-theme="light"] .codehilite .m { color: #40A070 } /* Literal.Number */
+[data-theme="light"] .codehilite .s { color: #4070A0 } /* Literal.String */
+[data-theme="light"] .codehilite .na { color: #4070A0 } /* Name.Attribute */
+[data-theme="light"] .codehilite .nb { color: #007020 } /* Name.Builtin */
+[data-theme="light"] .codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+[data-theme="light"] .codehilite .no { color: #60ADD5 } /* Name.Constant */
+[data-theme="light"] .codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+[data-theme="light"] .codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+[data-theme="light"] .codehilite .ne { color: #007020 } /* Name.Exception */
+[data-theme="light"] .codehilite .nf { color: #06287E } /* Name.Function */
+[data-theme="light"] .codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+[data-theme="light"] .codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+[data-theme="light"] .codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+[data-theme="light"] .codehilite .nv { color: #BB60D5 } /* Name.Variable */
+[data-theme="light"] .codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+[data-theme="light"] .codehilite .w { color: #BBB } /* Text.Whitespace */
+[data-theme="light"] .codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+[data-theme="light"] .codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+[data-theme="light"] .codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+[data-theme="light"] .codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+[data-theme="light"] .codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+[data-theme="light"] .codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+[data-theme="light"] .codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+[data-theme="light"] .codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+[data-theme="light"] .codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+[data-theme="light"] .codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+[data-theme="light"] .codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+[data-theme="light"] .codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+[data-theme="light"] .codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+[data-theme="light"] .codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+[data-theme="light"] .codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+[data-theme="light"] .codehilite .sr { color: #235388 } /* Literal.String.Regex */
+[data-theme="light"] .codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+[data-theme="light"] .codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+[data-theme="light"] .codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+[data-theme="light"] .codehilite .fm { color: #06287E } /* Name.Function.Magic */
+[data-theme="light"] .codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+[data-theme="light"] .codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+[data-theme="light"] .codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+[data-theme="light"] .codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+[data-theme="light"] .codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+[data-theme="dark"] .codehilite, [data-theme="dark"] .codehilite pre{background:transparent;}
+</style>
+</head>
+<body>
+<button id="themeBtn" title="切换深色 / 浅色">🌙</button>
+<div class="layout">
+<nav><div class="brand">C++ 入门课程</div>
+<a href="../README.html">课程说明</a>
+<div class="group">附录</div>
+<a href="../附录/术语表.html">术语表</a>
+<a href="../附录/零基础起飞.html">零基础起飞</a>
+<div class="group">讲义</div>
+<a href="../讲义/第01章-预备知识.html" class="active">第01章-预备知识</a>
+<a href="../讲义/第02章-开始学习C++.html">第02章-开始学习C++</a>
+<a href="../讲义/第03章-处理数据.html">第03章-处理数据</a>
+<a href="../讲义/第04章A-数组与字符串.html">第04章A-数组与字符串</a>
+<a href="../讲义/第04章B-结构共用体枚举.html">第04章B-结构共用体枚举</a>
+<div class="group">练习</div>
+<a href="../练习/第01章-练习.html">第01章-练习</a>
+<a href="../练习/第02章-练习.html">第02章-练习</a>
+<a href="../练习/第03章-练习.html">第03章-练习</a>
+<a href="../练习/第04章A-练习.html">第04章A-练习</a>
+<a href="../练习/第04章B-练习.html">第04章B-练习</a>
+<div class="group">参考答案</div>
+<a href="../参考答案/第01章/复习题答案.html">第01章 · 复习题答案</a>
+<a href="../参考答案/第01章/错误分类实验-答案.html">第01章 · 错误分类实验-答案</a>
+<a href="../参考答案/第01章/摸底测试/说明.html">第01章/摸底测试 · 说明</a>
+<a href="../参考答案/第02章/复习题答案.html">第02章 · 复习题答案</a>
+<a href="../参考答案/第03章/复习题答案.html">第03章 · 复习题答案</a>
+<a href="../参考答案/第04章A/复习题答案.html">第04章A · 复习题答案</a>
+<a href="../参考答案/第04章B/复习题答案.html">第04章B · 复习题答案</a>
+</nav>
+<main><article>
+<details class="toc-box"><summary>本页目录（66 项，点击展开）</summary><div class="toc">
+<ul>
+<li><a href="#本课目标">本课目标</a></li>
+<li><a href="#阅读指南教材页码-精读略读">阅读指南（教材页码 + 精读/略读）</a></li>
+<li><a href="#1-零基础补白一编程语言是什么为什么需要它">1. 零基础补白（一）：编程语言是什么，为什么需要它</a><ul>
+<li><a href="#11-人和计算机没法直接说话">1.1 人和计算机没法直接说话</a></li>
+<li><a href="#12-一句话总结">1.2 一句话总结</a></li>
+<li><a href="#13-c-在这张地图上的位置">1.3 C++ 在这张地图上的位置</a></li>
+</ul>
+</li>
+<li><a href="#2-c-是什么三个词和一张对比表">2. C++ 是什么：三个词和一张对比表</a></li>
+<li><a href="#3-零基础补白二源代码编译器可执行文件">3. 零基础补白（二）：源代码、编译器、可执行文件</a><ul>
+<li><a href="#31-一个比方中文菜谱-英文菜谱-厨师做菜">3.1 一个比方：中文菜谱 → 英文菜谱 → 厨师做菜</a></li>
+<li><a href="#32-源代码source-code">3.2 源代码（source code）</a></li>
+<li><a href="#33-编译器compiler">3.3 编译器（compiler）</a></li>
+<li><a href="#34-可执行文件executable">3.4 可执行文件（executable）</a></li>
+<li><a href="#35-一条必须记住的因果链">3.5 一条必须记住的因果链</a></li>
+</ul>
+</li>
+<li><a href="#4-零基础补白三c-为什么要编译python-不用">4. 零基础补白（三）：C++ 为什么要「编译」，Python 不用</a><ul>
+<li><a href="#41-两条路线">4.1 两条路线</a></li>
+<li><a href="#42-一句直觉化的解释">4.2 一句直觉化的解释</a></li>
+<li><a href="#43-各自的代价">4.3 各自的代价</a></li>
+<li><a href="#44-为什么本书选-c-而不是直接学-python-java">4.4 为什么本书选 C++ 而不是直接学 Python / Java</a></li>
+</ul>
+</li>
+<li><a href="#5-c-的三个思想来源教材-12p1921">5. C++ 的三个思想来源（教材 1.2，p19–21）</a><ul>
+<li><a href="#51-结构化编程122-这条最重要">5.1 结构化编程（1.2.2）—— 这条最重要</a></li>
+<li><a href="#52-面向对象与泛型123124p2021">5.2 面向对象与泛型（1.2.3–1.2.4，p20–21）</a></li>
+<li><a href="#53-c-的起源125p21">5.3 C++ 的起源（1.2.5，p21）</a></li>
+</ul>
+</li>
+<li><a href="#6-可移植性和标准教材-13p2223">6. 可移植性和标准（教材 1.3，p22–23）</a></li>
+<li><a href="#7-零基础补白四命令行终端是什么">7. 零基础补白（四）：命令行（终端）是什么</a><ul>
+<li><a href="#71-命令行是什么">7.1 命令行是什么</a></li>
+<li><a href="#72-怎么打开">7.2 怎么打开</a></li>
+<li><a href="#73-两个最基础的命令看目录换目录">7.3 两个最基础的命令：看目录、换目录</a></li>
+<li><a href="#74-cd-的三个必知细节">7.4 cd 的三个必知细节</a></li>
+<li><a href="#75-相对路径-vs-绝对路径">7.5 相对路径 vs 绝对路径</a></li>
+<li><a href="#76-三个救命技巧">7.6 三个救命技巧</a></li>
+</ul>
+</li>
+<li><a href="#8-零基础补白五写程序需要哪些工具">8. 零基础补白（五）：写程序需要哪些工具</a><ul>
+<li><a href="#81-关键澄清vs-code-不是编译器">8.1 关键澄清：VS Code 不是编译器</a></li>
+<li><a href="#82-一条完整链路上都有谁">8.2 一条完整链路上都有谁</a></li>
+<li><a href="#83-确认自己的工具装好了">8.3 确认自己的工具装好了</a></li>
+</ul>
+</li>
+<li><a href="#9-本课核心程序创建的技巧教材-14p2326">9. 【本课核心】程序创建的技巧（教材 1.4，p23–26）</a><ul>
+<li><a href="#91-源代码文件141p24">9.1 源代码文件（1.4.1，p24）</a><ul>
+<li><a href="#一条实用规矩cpp-文件名请用英文">⚠️ 一条实用规矩：.cpp 文件名请用英文</a></li>
+</ul>
+</li>
+<li><a href="#92-编译和链接142p2526-重中之重">9.2 编译和链接（1.4.2，p25–26）⭐ 重中之重</a><ul>
+<li><a href="#第-①-步预处理preprocessing">第 ① 步：预处理（preprocessing）</a></li>
+<li><a href="#第-②-步编译compilation">第 ② 步：编译（compilation）</a></li>
+<li><a href="#第-③-步汇编assembly">第 ③ 步：汇编（assembly）</a></li>
+<li><a href="#第-④-步链接linking">第 ④ 步：链接（linking）</a></li>
+<li><a href="#四步一图">四步一图</a></li>
+<li><a href="#补充一个-6-行版本的真实数字供对照">补充：一个 6 行版本的真实数字，供对照</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#10-本课第二个核心三类错误-拿到报错先分类">10. 【本课第二个核心】三类错误 —— 拿到报错先分类</a><ul>
+<li><a href="#类型-a编译错误compile-time-error-语法类型问题">类型 A：编译错误（compile-time error）—— 语法/类型问题</a></li>
+<li><a href="#类型-b链接错误link-time-error-声明了但找不到实现">类型 B：链接错误（link-time error）—— 声明了，但找不到实现</a></li>
+<li><a href="#类型-c编译错误类型不匹配">类型 C：编译错误（类型不匹配）</a></li>
+<li><a href="#类型-d运行时错误runtime-error-最难查的一类">类型 D：运行时错误（runtime error）—— 最难查的一类</a></li>
+<li><a href="#类型-d2运行时错误里最危险的一种-不崩溃但结果是错的">类型 D2：运行时错误里最危险的一种 —— 不崩溃但结果是错的</a></li>
+<li><a href="#类型-d3运行时崩溃-整数除以-0">类型 D3：运行时崩溃 —— 整数除以 0</a></li>
+<li><a href="#类型-e警告warning-不阻止你但必须处理">类型 E：警告（warning）—— 不阻止你，但必须处理</a></li>
+<li><a href="#错误分类汇总表">错误分类汇总表</a></li>
+<li><a href="#三类错误排查口诀">三类错误排查口诀</a></li>
+</ul>
+</li>
+<li><a href="#11-关于中文乱码一个正确且漂亮的方案">11. 关于中文乱码：一个正确且漂亮的方案</a></li>
+<li><a href="#12-本课动手实验必须亲手做">12. 本课动手实验（必须亲手做）</a></li>
+<li><a href="#13-本课小结">13. 本课小结</a></li>
+<li><a href="#14-常见坑汇总">14. 常见坑汇总</a><ul>
+<li><a href="#141-概念类坑">14.1 概念类坑</a></li>
+<li><a href="#142-操作类坑">14.2 操作类坑</a></li>
+<li><a href="#143-排错类坑">14.3 排错类坑</a></li>
+</ul>
+</li>
+<li><a href="#15-过关标准">15. 过关标准</a><ul>
+<li><a href="#151-概念关能讲给别人听">15.1 概念关（能讲给别人听）</a></li>
+<li><a href="#152-操作关亲手做过">15.2 操作关（亲手做过）</a></li>
+<li><a href="#153-排错关形成条件反射">15.3 排错关（形成条件反射）</a></li>
+<li><a href="#154-自测题合上讲义回答">15.4 自测题（合上讲义回答）</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><div class="hintbar">遇到看不懂的专有名词？→ <a href="../附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="../附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-1-章-预备知识-零基础扩展讲义">第 1 章 预备知识 · 零基础扩展讲义</h1>
+<blockquote>
+<p><strong>教材页码</strong>：p18 – p28（书签「第1章 预备知识」）
+<strong>本课目标</strong>：搞懂「一个 C++ 程序是怎么从一段文字变成能跑的程序的」，并建立一个之后 19 课天天要用的<strong>错误分类框架</strong>。
+<strong>本课不写代码</strong>——第 1 章是地基，也是全书最容易被跳过、又最影响后面效率的一章。
+<strong>前提</strong>：本讲义假设你从没写过任何程序。所有术语第一次出现时都会先用白话解释，读到不认识的词不要慌，往下看就有。</p>
+</blockquote>
+<hr />
+<h2 id="本课目标">本课目标</h2>
+<p>学完这一章，你应该能用自己的话回答下面 6 个问题。回答不上来，说明这一章没读透：</p>
+<ol>
+<li>编程语言是干什么用的？为什么人和计算机之间需要它？</li>
+<li>源代码、编译器、可执行文件是什么关系？</li>
+<li>C++ 为什么要先编译，而 Python 不用？</li>
+<li>从 <code>demo.cpp</code> 到 <code>demo.exe</code>，中间到底经过了哪四步？每一步产出什么文件？</li>
+<li>编译错误、链接错误、运行时错误怎么区分？各自往哪个方向排查？</li>
+<li>为什么「能编译通过」完全不代表「程序是对的」？</li>
+</ol>
+<p>第 6 条是本章的隐藏重点：<strong>一个能跑的程序和一个正确的程序，是两回事。</strong></p>
+<hr />
+<h2 id="阅读指南教材页码-精读略读">阅读指南（教材页码 + 精读/略读）</h2>
+<p>打开教材 PDF，跳到书签 <strong>「第1章 预备知识」</strong>，读 p18–p28。读法建议：</p>
+<table>
+<thead>
+<tr>
+<th>小节</th>
+<th>页码</th>
+<th>怎么读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.1 C++简介</td>
+<td>p18</td>
+<td>略读，1 分钟</td>
+</tr>
+<tr>
+<td>1.2 C++简史</td>
+<td>p19–21</td>
+<td><strong>认真读 1.2.2 和 1.2.3</strong>，这两节解释了「为什么要那样写代码」</td>
+</tr>
+<tr>
+<td>1.3 可移植性和标准</td>
+<td>p22–23</td>
+<td>略读，只需要记住「标准版本」这个概念</td>
+</tr>
+<tr>
+<td><strong>1.4 程序创建的技巧</strong></td>
+<td><strong>p23–26</strong></td>
+<td><strong>精读 3 遍</strong>，这是本课唯一的核心</td>
+</tr>
+<tr>
+<td>1.5 总结</td>
+<td>p27</td>
+<td>读完后用 30 秒自测：能复述这章讲了什么吗</td>
+</tr>
+</tbody>
+</table>
+<p>读完教材再回来往下看。本讲义会在教材内容之外补充大量零基础解释，<strong>两者不冲突，是互补的</strong>：教材给结论，本讲义给「为什么」和「动手验证」。</p>
+<hr />
+<h2 id="1-零基础补白一编程语言是什么为什么需要它">1. 零基础补白（一）：编程语言是什么，为什么需要它</h2>
+<h3 id="11-人和计算机没法直接说话">1.1 人和计算机没法直接说话</h3>
+<p>计算机的 CPU 只会做一件事：执行<strong>机器指令</strong>。这些指令长这样（十六进制字节）：</p>
+<div class="codehilite"><pre><span></span><code>48 8B 05 B1 1A 00 00
+</code></pre></div>
+
+<p>它是纯粹的数字，表示「把内存某个地址的数据读到寄存器里」。<strong>人类没法用这个写程序</strong>——写 100 行就崩溃了，而且没人能看懂。</p>
+<p>所以中间必须有翻译层。<strong>编程语言就是这层翻译</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>层次</th>
+<th>谁看得懂</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>机器语言</td>
+<td>只有 CPU</td>
+<td><code>48 8B 05 ...</code></td>
+</tr>
+<tr>
+<td>汇编语言</td>
+<td>少数人，和机器一一对应</td>
+<td><code>movq .LC0(%rip), %rsi</code></td>
+</tr>
+<tr>
+<td>高级语言</td>
+<td>人</td>
+<td><code>std::cout &lt;&lt; "hi";</code></td>
+</tr>
+</tbody>
+</table>
+<p>「高级」的意思不是「厉害」，而是<strong>离人类近、离机器远</strong>。</p>
+<h3 id="12-一句话总结">1.2 一句话总结</h3>
+<blockquote>
+<p><strong>编程语言 = 一套让人类能精确描述「要计算机做什么」的规则，同时有工具能把它翻译成机器指令。</strong></p>
+</blockquote>
+<p>「精确」这个词很重要。自然语言说「把数组里最大的数找出来」，计算机听不懂；编程语言要求你把这件事拆成一步步明确的操作。<strong>学编程，主要就是学怎么把想法拆到这么细。</strong></p>
+<h3 id="13-c-在这张地图上的位置">1.3 C++ 在这张地图上的位置</h3>
+<p>C++ 是一门<strong>编译型</strong>的、<strong>静态类型</strong>的、<strong>多范式</strong>的编程语言。</p>
+<p>这三个词都是对比出来的，下面逐个拆开讲。</p>
+<hr />
+<h2 id="2-c-是什么三个词和一张对比表">2. C++ 是什么：三个词和一张对比表</h2>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>白话解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>编译型</strong></td>
+<td>写完之后要先用一个叫「编译器」的程序<strong>整体翻译</strong>成机器码，才能运行</td>
+</tr>
+<tr>
+<td><strong>静态类型</strong></td>
+<td>变量是什么类型（整数？文字？小数？）<strong>必须在写代码时就写明</strong>，编译器会检查</td>
+</tr>
+<tr>
+<td><strong>多范式</strong></td>
+<td>支持多种写程序的风格（面向过程、面向对象、泛型），你可以混着用</td>
+</tr>
+</tbody>
+</table>
+<p>对比着看最清楚。即使你没学过 Python，看这张表也能理解差异在哪：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Python（解释型语言）</th>
+<th>C++（编译型语言）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>怎么变成能跑的程序</td>
+<td>解释器逐行读、逐行执行</td>
+<td><strong>先由编译器翻译成机器码</strong>，再运行</td>
+</tr>
+<tr>
+<td>类型什么时候确定</td>
+<td>运行时才知道（<code>a = 1</code> 之后再 <code>a = "x"</code> 也行）</td>
+<td><strong>编译期就确定</strong>，<code>int a</code> 之后不能装字符串</td>
+</tr>
+<tr>
+<td>变量要不要声明</td>
+<td>不用</td>
+<td><strong>必须声明</strong>，还要写类型</td>
+</tr>
+<tr>
+<td>出错时机</td>
+<td>跑到那行才崩</td>
+<td><strong>编译时就报错</strong>，大部分错误根本生不出 exe</td>
+</tr>
+<tr>
+<td>速度</td>
+<td>慢（有解释开销）</td>
+<td>快（接近直接操作硬件）</td>
+</tr>
+<tr>
+<td>内存管理</td>
+<td>自动（垃圾回收）</td>
+<td><strong>基本靠手动</strong>（第 4、12 章重点，也是 C++ 最难的部分）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>为什么值得学 C++</strong>：它让你能看见其他语言帮你藏起来的一切——内存、类型、编译。学完 C++ 再回头看别的语言，你会知道它在替你做什么。</p>
+<blockquote>
+<p>📌 表里「exe」这个词后面会反复出现。它就是 Windows 上的<strong>可执行文件</strong>（executable），双击就能运行的东西。现在只需要记住这个名字。</p>
+</blockquote>
+<hr />
+<h2 id="3-零基础补白二源代码编译器可执行文件">3. 零基础补白（二）：源代码、编译器、可执行文件</h2>
+<p>这三个东西是本章的主角，先用生活化的比方讲清楚它们的关系。</p>
+<h3 id="31-一个比方中文菜谱-英文菜谱-厨师做菜">3.1 一个比方：中文菜谱 → 英文菜谱 → 厨师做菜</h3>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>比方里是谁</th>
+<th>在 C++ 里是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>你写的文字</td>
+<td>中文菜谱</td>
+<td><strong>源代码</strong>（<code>.cpp</code> 文件）</td>
+</tr>
+<tr>
+<td>翻译</td>
+<td>把中文菜谱翻成英文的人</td>
+<td><strong>编译器</strong>（compiler，比如 <code>g++</code>）</td>
+</tr>
+<tr>
+<td>翻译结果</td>
+<td>英文菜谱</td>
+<td><strong>机器码 / 目标文件 / 可执行文件</strong></td>
+</tr>
+<tr>
+<td>执行</td>
+<td>只会英文的厨师</td>
+<td><strong>CPU</strong></td>
+</tr>
+</tbody>
+</table>
+<p>关键点：</p>
+<ul>
+<li><strong>厨师只看得懂英文菜谱</strong>，也就是 CPU 只认机器码。你写的中文（C++ 源码）写得再好，厨师看不懂。</li>
+<li><strong>翻译是一整本一起翻的</strong>，不是做一步翻一句。这就是「编译型」。</li>
+<li>翻译过程中如果发现菜谱里写了「先放盐再打鸡蛋」但你没买鸡蛋，<strong>翻译的人当场就会指出问题</strong>，根本轮不到厨师下厨。这就是「编译期就能报错」。</li>
+</ul>
+<h3 id="32-源代码source-code">3.2 源代码（source code）</h3>
+<ul>
+<li>就是你用键盘敲进文件里的那些文字，是<strong>纯文本</strong>，可以用记事本打开</li>
+<li>C++ 源文件的扩展名用 <strong><code>.cpp</code></strong>（也有人用 <code>.cxx</code>、<code>.cc</code>、<code>.C</code>）</li>
+<li>源文件是给<strong>人</strong>看的，也是给<strong>编译器</strong>看的。它本身<strong>不能运行</strong>——双击 <code>.cpp</code> 什么也不会发生</li>
+</ul>
+<h3 id="33-编译器compiler">3.3 编译器（compiler）</h3>
+<ul>
+<li>一个<strong>程序</strong>，不是 VS Code 的一部分，也不是操作系统自带的</li>
+<li>输入：<code>.cpp</code> 源文件。输出：机器码文件</li>
+<li>它不关心你的文件名、不关心你怎么排版（缩进几个空格随你），<strong>只看内容</strong></li>
+<li>它的工作分成几步（第 6 节详细讲），其中一步会把 <code>#include</code> 的内容整段复制进来</li>
+<li><strong>它会在翻译过程中检查语法和类型</strong>，发现问题就打印「报错」并停止，不产出可执行文件</li>
+</ul>
+<h3 id="34-可执行文件executable">3.4 可执行文件（executable）</h3>
+<ul>
+<li>Windows 上是 <code>.exe</code>，Linux/macOS 上没有扩展名或叫别的名字</li>
+<li>里面是<strong>机器码</strong>，可以直接交给 CPU 跑</li>
+<li><strong>它和你写的源码已经没有直接关系了</strong>：改源码必须重新编译才会体现在 exe 里</li>
+<li>它通常比源码大很多（因为里面塞进了别人写好的现成代码，第 6 节会用真实数字证明）</li>
+</ul>
+<h3 id="35-一条必须记住的因果链">3.5 一条必须记住的因果链</h3>
+<div class="codehilite"><pre><span></span><code>源代码(.cpp)  ──编译器──▶  可执行文件(.exe)  ──双击/命令行──▶  程序运行
+     │                              │
+  改这里                       改这里没用
+  ↓
+  必须重新编译
+</code></pre></div>
+
+<blockquote>
+<p>💡 <strong>初学者最常问的问题</strong>：「我改了代码，为什么运行结果没变？」
+九成是因为<strong>没重新编译</strong>——你运行的是旧的 exe，或者是在调试器里跑着旧版本。</p>
+</blockquote>
+<hr />
+<h2 id="4-零基础补白三c-为什么要编译python-不用">4. 零基础补白（三）：C++ 为什么要「编译」，Python 不用</h2>
+<p>前面说 C++ 是编译型、Python 是解释型，这里把两条路线并排摆出来看。</p>
+<h3 id="41-两条路线">4.1 两条路线</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>编译型（C++、C、Rust、Go）</th>
+<th>解释型（Python、JavaScript、Ruby）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>谁在执行</td>
+<td>CPU 直接执行机器码</td>
+<td>一个叫「解释器」的程序读一行、执行一行</td>
+</tr>
+<tr>
+<td>什么时候翻译</td>
+<td><strong>运行之前</strong>，一次性全翻完</td>
+<td><strong>运行时</strong>，边读边翻边执行</td>
+</tr>
+<tr>
+<td>中间产物</td>
+<td><code>.exe</code> 文件，可以单独拿走</td>
+<td>没有，必须带着解释器一起</td>
+</tr>
+<tr>
+<td>发程序给别人</td>
+<td>发 <code>.exe</code>，对方不用装编译器</td>
+<td>对方必须装好 Python 和所有依赖库</td>
+</tr>
+<tr>
+<td>发现错误</td>
+<td>编译时就能发现语法/类型错误</td>
+<td>只有跑到那一行才发现</td>
+</tr>
+<tr>
+<td>速度</td>
+<td>快</td>
+<td>慢（每次执行都要现场翻译）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-一句直觉化的解释">4.2 一句直觉化的解释</h3>
+<ul>
+<li><strong>编译型 = 提前把整本书翻译好，出版纸质书</strong>。读者拿起来就能读，读得快。缺点是出版一次要等（编译要时间），而且改一个字就要重印（重新编译）。</li>
+<li><strong>解释型 = 现场同声传译</strong>。改一个字立刻能讲，很灵活。缺点是每次讲都要现场翻，慢，而且翻译翻错了要等讲到那句才知道。</li>
+</ul>
+<h3 id="43-各自的代价">4.3 各自的代价</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>好处</th>
+<th>代价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>编译</td>
+<td>跑得快、错误早发现、能脱离编译器分发</td>
+<td>每次改代码都要重新编译（大项目编译几分钟很正常）</td>
+</tr>
+<tr>
+<td>解释</td>
+<td>改完立刻能跑、写得快</td>
+<td>慢、错误发现得晚、运行环境依赖多</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>C++ 也不是完全没有「解释」的成分</strong>：报错信息里的行号、<code>#include</code> 的展开时机等，都牵涉到「预处理」这个更早的阶段。第 6 节会把这些拆开。</p>
+</blockquote>
+<h3 id="44-为什么本书选-c-而不是直接学-python-java">4.4 为什么本书选 C++ 而不是直接学 Python / Java</h3>
+<p>这不是「C++ 更高级」的问题，而是<strong>你想看见什么</strong>的问题：</p>
+<table>
+<thead>
+<tr>
+<th>你的诉求</th>
+<th>更合适的起点</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>想快速做出个小工具，不想管内存</td>
+<td>Python</td>
+<td>库多、语法短，几十行见效</td>
+</tr>
+<tr>
+<td>想理解「程序到底怎么跑的」</td>
+<td>C++</td>
+<td>内存、类型、编译、链接全都摆在明面上，藏不住</td>
+</tr>
+<tr>
+<td>想写好大型长期维护的系统</td>
+<td>Java / C# / Go</td>
+<td>生态和工程工具更省心</td>
+</tr>
+<tr>
+<td>想写游戏引擎、操作系统、高性能计算</td>
+<td>C++</td>
+<td>性能可控、没有运行时负担</td>
+</tr>
+</tbody>
+</table>
+<p><strong>学 C++ 的核心收益是「透明」</strong>：在其他语言里你要靠猜的东西（这个变量占几个字节？这个对象什么时候销毁？这个函数调用要走多远？），在 C++ 里都有明确答案。这份透明感会让你之后学任何语言都更快。</p>
+<hr />
+<h2 id="5-c-的三个思想来源教材-12p1921">5. C++ 的三个思想来源（教材 1.2，p19–21）</h2>
+<p>C++ 不是一个天才一拍脑袋设计出来的语言，它是<strong>三种编程思想层层叠加</strong>的结果。理解这一点，就能理解为什么 C++ 有的地方像 C、有的地方像 Java。</p>
+<table>
+<thead>
+<tr>
+<th>来源</th>
+<th>诞生</th>
+<th>核心思想</th>
+<th>在 C++ 里长什么样</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C 语言</strong></td>
+<td>1972，Dennis Ritchie，贝尔实验室（为了写 UNIX）</td>
+<td><strong>结构化编程</strong>：把大程序拆成小任务（函数），自顶向下设计</td>
+<td><code>int main()</code>、函数、<code>for</code>/<code>while</code>、数组、指针</td>
+</tr>
+<tr>
+<td><strong>面向对象编程</strong></td>
+<td>1960s–70s（Simula 67、Smalltalk）</td>
+<td><strong>类与对象</strong>：把数据和操作数据的函数捆在一起；封装、继承、多态</td>
+<td><code>class</code>、<code>public</code>/<code>private</code>、构造函数、虚函数</td>
+</tr>
+<tr>
+<td><strong>泛型编程</strong></td>
+<td>1990s（Alexander Stepanov 的 STL）</td>
+<td><strong>模板</strong>：写不依赖具体类型的代码，算法与数据结构分离</td>
+<td><code>template</code>、<code>std::vector&lt;int&gt;</code>、标准模板库 STL</td>
+</tr>
+</tbody>
+</table>
+<h3 id="51-结构化编程122-这条最重要">5.1 结构化编程（1.2.2）—— 这条最重要</h3>
+<p>教材 p20 讲的核心是：<strong>把大程序拆成若干小任务，每个任务用一个函数完成</strong>。</p>
+<p>「函数」在这里的白话意思是：<strong>一段有名字、可以被反复调用的代码</strong>。比如「打印矩阵」这件事写成一个叫 <code>print_matrix</code> 的函数，之后想打印矩阵，写一行 <code>print_matrix(m);</code> 就行了，不用把那十几行抄一遍。</p>
+<p>这正是初学者最容易忽略、也最影响后续进步的一条。看一个真实的反面样本：一个螺旋矩阵程序，算法完全正确，但 <strong>60 行逻辑全部写在 <code>main</code> 里</strong>。同类写法在字符串加密、字符串类的小练习里也很常见。它<strong>能跑</strong>，但：</p>
+<ul>
+<li>读代码的人（包括三个月后的你自己）得从头读到尾才知道程序在干什么</li>
+<li>想单独测试「生成矩阵」这部分？做不到，它和输入输出缠在一起</li>
+<li>出错时不知道是算法错了还是打印错了</li>
+<li>想复用这段螺旋矩阵逻辑到别的程序？只能复制粘贴</li>
+</ul>
+<blockquote>
+<p>📌 <strong>为什么拿别人的代码当反面例子？</strong>
+因为<strong>这不是「谁写的」的问题，而是「这样写会有什么后果」的问题</strong>。
+这种写法非常普遍，几乎每个人初学阶段都会写出来，所以提前认识它。
+顺便说：<strong>读懂别人的代码并指出问题，本身就是一项独立的能力</strong>——
+工作中你花在读代码上的时间，往往比写代码多。</p>
+</blockquote>
+<p><strong>这就是后面会花大力气练的东西</strong>：把程序拆成「每个函数只做一件事」。教材第 7 章整章都在讲这个。参考代码 <code>示例代码/01_参考_代码重构示例/spiral_functions.cpp</code> 里有一个把上面那种写法拆成三个函数的版本，可以先看一眼「未来的代码长什么样」——<strong>现在不用看懂，只是为了知道我们要去哪</strong>。</p>
+<blockquote>
+<p>💡 <strong>一条经验法则</strong>（先记着，第 7 章会展开）：
+一个函数<strong>只做一件事</strong>，长度控制在 <strong>10–30 行</strong>。超过 50 行就该拆了。</p>
+</blockquote>
+<h3 id="52-面向对象与泛型123124p2021">5.2 面向对象与泛型（1.2.3–1.2.4，p20–21）</h3>
+<ul>
+<li><strong>面向对象</strong>：类是「数据 + 操作这些数据的函数」的打包。比如一个 <code>Matrix</code> 类，自己知道自己多大、自己能打印自己，而不是让 <code>main</code> 去操心。</li>
+<li><strong>泛型</strong>：<code>std::vector&lt;int&gt;</code> 和 <code>std::vector&lt;double&gt;</code> 是同一份模板代码生成的两个类型——不用为每种类型重写一遍。<code>std::vector</code> 是 C++ 标准库里的「可变长数组」，后面会大量使用；这里只需要知道它背后是模板。</li>
+</ul>
+<h3 id="53-c-的起源125p21">5.3 C++ 的起源（1.2.5，p21）</h3>
+<ul>
+<li>1979 年，<strong>Bjarne Stroustrup</strong>（本贾尼·斯特劳斯特鲁普，丹麦人）在贝尔实验室开始搞，最初叫 <strong>"C with Classes"</strong></li>
+<li>1983 年改名 <strong>C++</strong>（<code>++</code> 是 C 里的自增运算符 → "C 的升级版"）</li>
+<li>1998 年第一个 ISO 标准 <strong>C++98</strong>，之后 C++03、<strong>C++11</strong>、C++14、C++17、C++20</li>
+</ul>
+<blockquote>
+<p><strong>补充</strong>：语言的演进不是「哪个国家的人垄断」的事。C 语言由美国人设计，但 C++ 标准委员会里有来自丹麦、瑞士、芬兰、俄罗斯、中国等各国的成员，标准库的大量组件也由不同国家的工程师贡献。<strong>这是一项多人几十年的协作工程</strong>，不是一个人的作品。</p>
+</blockquote>
+<hr />
+<h2 id="6-可移植性和标准教材-13p2223">6. 可移植性和标准（教材 1.3，p22–23）</h2>
+<p><strong>可移植性</strong>：源代码不改动，就能在 Windows / Linux / macOS 上<strong>重新编译</strong>后运行。</p>
+<p>注意这句话里的关键词是「<strong>重新编译</strong>」。C++ 的可移植 ≠ 同一个 exe 到处跑，而是<strong>同一份源码到处能编译</strong>。这就是为什么：</p>
+<ul>
+<li>写跨平台代码时，常常要用条件编译把某段代码「只在 Windows 上保留」——因为在 Linux 上 <code>&lt;windows.h&gt;</code> 根本不存在，得让<strong>预处理器</strong>（一个在编译最前面跑的文本处理工具）把这段代码<strong>整体删掉</strong>：
+  <code>cpp
+  #if defined(_WIN32)
+  // 只有 Windows 才会编译这一段
+  #endif</code></li>
+<li>写代码时尽量只用<strong>标准库</strong>（C++ 标准规定每个编译器都必须提供的那些功能），不用某个平台特有的东西</li>
+</ul>
+<p><strong>关于标准版本</strong>：教材（第 6 版）基于 <strong>C++11</strong>。一门课的实测编译器是 GCC 8.1.0，支持到 <strong>C++17</strong>。所以本课给的编译命令是 <code>-std=c++17</code>——比教材上的标准更新，教材上的所有例子都能跑，额外还能用一些新特性。</p>
+<blockquote>
+<p><code>-std=c++17</code> 里的 <code>-std</code> 是「standard（标准）」的缩写，它是在告诉编译器：「请按 C++17 这套规则来检查我的代码」。</p>
+</blockquote>
+<p>想确认自己的编译器支持哪些标准，可以自己查（这是个好习惯）：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="p">-</span><span class="n">-help</span><span class="p">=</span><span class="n">common</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="s2">"std="</span>
+</code></pre></div>
+
+<blockquote>
+<p>📌 <code>Select-String</code> 是 PowerShell 里「在输出里找包含某段文字的行」的命令，相当于在结果里搜索。</p>
+</blockquote>
+<hr />
+<h2 id="7-零基础补白四命令行终端是什么">7. 零基础补白（四）：命令行（终端）是什么</h2>
+<p>后面要敲很多命令，如果你从没碰过命令行，先花 3 分钟看完这一节。</p>
+<h3 id="71-命令行是什么">7.1 命令行是什么</h3>
+<p>平时你用鼠标双击图标、点菜单来指挥电脑，这叫<strong>图形界面（GUI）</strong>。
+<strong>命令行</strong>则是「打字指挥电脑」的方式：你输入一行文字，按回车，电脑执行，然后把结果打在屏幕上。</p>
+<p>它比图形界面难用一点，但有几个不可替代的好处：</p>
+<ul>
+<li><strong>能被记录、被复制</strong>：一行命令可以原样贴进文档、笔记、给别人</li>
+<li><strong>能自动化</strong>：几十个文件的重复操作，一条命令搞定</li>
+<li><strong>很多开发工具只有命令行接口</strong>：编译器 <code>g++</code> 就是典型</li>
+</ul>
+<h3 id="72-怎么打开">7.2 怎么打开</h3>
+<table>
+<thead>
+<tr>
+<th>系统</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>开始菜单搜「PowerShell」或「终端」，点开；或者在 VS Code 里按 <code>Ctrl+`</code> 打开内置终端</td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>打开「终端」（Terminal）</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>打开「终端」</td>
+</tr>
+</tbody>
+</table>
+<p>打开后你会看到一个<strong>提示符</strong>，比如 <code>PS C:\Users\name&gt;</code>。它后面的文字就是<strong>光标位置</strong>——你打的命令出现在这里，按回车执行。</p>
+<p><strong>关键认知：终端打开时，你「站在」某个文件夹里。</strong> 这个文件夹叫<strong>当前工作目录</strong>。你敲的 <code>g++ demo.cpp</code> 里的 <code>demo.cpp</code>，指的就是这个文件夹下的文件。</p>
+<h3 id="73-两个最基础的命令看目录换目录">7.3 两个最基础的命令：看目录、换目录</h3>
+<table>
+<thead>
+<tr>
+<th>想做什么</th>
+<th>Windows PowerShell</th>
+<th>macOS / Linux</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>看当前在哪个目录</td>
+<td><code>pwd</code></td>
+<td><code>pwd</code></td>
+<td>print working directory</td>
+</tr>
+<tr>
+<td>列出当前目录的文件</td>
+<td><code>ls</code> 或 <code>dir</code></td>
+<td><code>ls</code></td>
+<td>PowerShell 两个都认</td>
+</tr>
+<tr>
+<td>切换目录</td>
+<td><code>cd 目标</code></td>
+<td><code>cd 目标</code></td>
+<td>change directory</td>
+</tr>
+<tr>
+<td>回到上一级</td>
+<td><code>cd ..</code></td>
+<td><code>cd ..</code></td>
+<td><code>..</code> 表示「上一层文件夹」</td>
+</tr>
+<tr>
+<td>回到 C 盘根目录</td>
+<td><code>cd C:\</code></td>
+<td><code>cd /</code></td>
+<td></td>
+</tr>
+<tr>
+<td>新建文件夹</td>
+<td><code>mkdir 名字</code></td>
+<td><code>mkdir 名字</code></td>
+<td>make directory</td>
+</tr>
+<tr>
+<td>清屏</td>
+<td><code>cls</code></td>
+<td><code>clear</code></td>
+<td>屏幕太乱时用</td>
+</tr>
+</tbody>
+</table>
+<h3 id="74-cd-的三个必知细节">7.4 <code>cd</code> 的三个必知细节</h3>
+<ol>
+<li><strong>路径有空格时要加引号</strong>：
+   <code>powershell
+   cd "C:\My Projects\cpp"</code>
+   不加引号，终端会把 <code>My</code> 和 <code>Projects\cpp</code> 当成两个东西。</li>
+<li><strong>跨盘符要分两步（Windows）</strong>：如果当前在 <code>C:</code>，想直接去 <code>D:\Projects</code>，<code>cd D:\Projects</code> 在 PowerShell 里通常是可以的；但如果你用的是老的 <code>cmd.exe</code>，要先打 <code>D:</code> 再打 <code>cd \Code</code>。</li>
+<li><strong><code>cd</code> 完心里要清楚自己在哪</strong>：不确定就敲一次 <code>pwd</code>（或 <code>Get-Location</code>）。<strong>八成的「文件找不到」错误，都是因为在错误的目录里敲命令。</strong></li>
+</ol>
+<h3 id="75-相对路径-vs-绝对路径">7.5 相对路径 vs 绝对路径</h3>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>名字</th>
+<th>例子</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>从盘符开头</td>
+<td>绝对路径</td>
+<td><code>D:\Cpp练习\L01</code></td>
+<td>不管你在哪，都指同一个地方</td>
+</tr>
+<tr>
+<td>从当前位置开头</td>
+<td>相对路径</td>
+<td><code>示例代码\01_错误分类实验\a_syntax.cpp</code></td>
+<td>相对于「当前工作目录」</td>
+</tr>
+</tbody>
+</table>
+<p><strong>本讲义统一用相对路径</strong>，例如：</p>
+<div class="codehilite"><pre><span></span><code>示例代码/01_错误分类实验/A_missing_semicolon.cpp
+</code></pre></div>
+
+<p>意思是「在你当前这个讲义所在的目录下，进入 <code>示例代码</code>，再进入 <code>01_错误分类实验</code>，里面有个 <code>a_syntax.cpp</code>」。你自己组织文件时按这个结构放即可。</p>
+<h3 id="76-三个救命技巧">7.6 三个救命技巧</h3>
+<ul>
+<li><strong>按 ↑ 键</strong>可以调出上一条命令，不用重打</li>
+<li><strong>按 Tab 键</strong>可以自动补全文件名，避免打错</li>
+<li><strong><code>Ctrl+C</code></strong> 可以中断一个卡住/死循环的程序</li>
+</ul>
+<hr />
+<h2 id="8-零基础补白五写程序需要哪些工具">8. 零基础补白（五）：写程序需要哪些工具</h2>
+<p>一个程序从「写出来」到「能运行」，需要两样东西，它们<strong>互相独立</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>干什么</th>
+<th>举例</th>
+<th>没有它会怎样</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>编辑器</strong></td>
+<td>打字、改代码，提供高亮和报错定位</td>
+<td>VS Code、记事本、Vim</td>
+<td>你没法写代码</td>
+</tr>
+<tr>
+<td><strong>编译器</strong></td>
+<td>把源码翻译成可执行文件</td>
+<td>GCC（<code>g++</code>）、Clang、MSVC</td>
+<td>源码只是文本，跑不起来</td>
+</tr>
+</tbody>
+</table>
+<h3 id="81-关键澄清vs-code-不是编译器">8.1 关键澄清：VS Code 不是编译器</h3>
+<p>这是初学者最大的误解之一。</p>
+<ul>
+<li>VS Code 只是<strong>编辑器</strong>（准确说是「代码编辑器」），它的本事是让打字舒服</li>
+<li>它<strong>自己不会编译</strong>。你在 VS Code 里点「运行」时，它其实是<strong>替你在终端敲了一条 <code>g++</code> 命令</strong></li>
+<li>把 VS Code 卸载掉，用记事本 + 命令行照样能写出完整的 C++ 程序</li>
+</ul>
+<h3 id="82-一条完整链路上都有谁">8.2 一条完整链路上都有谁</h3>
+<div class="codehilite"><pre><span></span><code>   你（打字）        编辑器            编译器            链接器           CPU
+   ──────────▶   VS Code 等   ──▶   g++ (前端)  ──▶  g++ (后端/ld)  ──▶  运行 exe
+                     │                  │                 │
+                  写 .cpp           产 .s / .o       产 .exe
+</code></pre></div>
+
+<p>其中「编译器」和「链接器」在 GCC 里是<strong>同一个命令 <code>g++</code></strong> 在内部调用的两个不同程序——这一点在第 9 节会用命令拆开看。</p>
+<h3 id="83-确认自己的工具装好了">8.3 确认自己的工具装好了</h3>
+<p>在终端里敲：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div>
+
+<p>如果打印出类似 <code>g++ (x86_64-win32-seh-rev0, Built by MinGW-W64 project) 8.1.0</code> 的信息，说明编译器就绪。如果提示「不是内部或外部命令」，说明 <code>g++</code> 没装好或者没加进系统 PATH 环境变量。</p>
+<p><code>--version</code> 这种以 <code>--</code> 开头的叫<strong>命令行选项</strong>（option/flag），作用是给命令加要求。后面会经常用到 <code>-std=c++17</code>、<code>-o</code>、<code>-Wall</code> 这些。</p>
+<hr />
+<h2 id="9-本课核心程序创建的技巧教材-14p2326">9. 【本课核心】程序创建的技巧（教材 1.4，p23–26）</h2>
+<h3 id="91-源代码文件141p24">9.1 源代码文件（1.4.1，p24）</h3>
+<ul>
+<li>C++ 源文件的扩展名用 <strong><code>.cpp</code></strong>（也有人用 <code>.cxx</code>、<code>.cc</code>、<code>.C</code>）</li>
+<li>源文件就是<strong>纯文本</strong>。编译器完全不关心你叫什么名字，只关心内容</li>
+<li><code>.c</code> 是给 C 编译器看的，<code>.cpp</code> 是给 C++ 编译器看的。一个用 C 写法（<code>printf</code>）写的 <code>helloworld.c</code>，如果改名成 <code>.cpp</code> 也<strong>照样能编译</strong>——因为 C++ 兼容大部分 C</li>
+</ul>
+<h4 id="一条实用规矩cpp-文件名请用英文">⚠️ 一条实用规矩：<strong><code>.cpp</code> 文件名请用英文</strong></h4>
+<p>这是实测出来的，以后会天天遇到：</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># 文件名是中文的情况</span>
+<span class="n">g</span><span class="p">++</span> <span class="n">A_缺少分号</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">A</span><span class="p">.</span><span class="n">exe</span>
+<span class="err">→</span> <span class="n">A_ȱ</span><span class="err">�</span><span class="n">ٷ</span><span class="err">ֺ�</span><span class="p">.</span><span class="n">cpp</span><span class="p">:</span><span class="n">7</span><span class="p">:</span><span class="n">38</span><span class="p">:</span> <span class="n">error</span><span class="p">:</span> <span class="n">expected</span> <span class="s1">';'</span> <span class="n">before</span> <span class="s1">'return'</span>
+  <span class="p">^^^^^^^^^^^^</span> <span class="n">文件名变乱码了</span>
+
+<span class="c"># 文件名是英文的情况</span>
+<span class="n">g</span><span class="p">++</span> <span class="n">A_missing_semicolon</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">A</span><span class="p">.</span><span class="n">exe</span>
+<span class="err">→</span> <span class="n">A_missing_semicolon</span><span class="p">.</span><span class="n">cpp</span><span class="p">:</span><span class="n">7</span><span class="p">:</span><span class="n">38</span><span class="p">:</span> <span class="n">error</span><span class="p">:</span> <span class="n">expected</span> <span class="s1">';'</span> <span class="n">before</span> <span class="s1">'return'</span>
+  <span class="p">^^^^^^^^^^^^^^^^^^^^^^</span> <span class="n">正常</span>
+</code></pre></div>
+
+<p><strong>为什么会这样</strong>：GCC 在报错里是用<strong>系统默认代码页（中文 Windows 上是 GBK/936）</strong>输出文件名的，
+而 VS Code 和一些工具是按 UTF-8 去读的，两边对不上 → 乱码。</p>
+<p><strong>危害</strong>：VS Code 靠 <code>文件名:行号:列号</code> 这个格式来自动定位错误。
+文件名一乱码，它就没法把报错和你的代码行关联起来，
+你就<strong>失去了「点一下报错直接跳到出错行」这个功能</strong>——这在以后几百行的程序里是致命的。</p>
+<p><strong>结论</strong>：</p>
+<ul>
+<li>✅ <code>.cpp</code> / <code>.h</code> <strong>文件名用英文</strong>：<code>caesar.cpp</code>、<code>spiral_matrix.cpp</code>、<code>exercise_3.cpp</code></li>
+<li>✅ <strong>文件夹名、注释、<code>std::cout</code> 输出里的中文都没问题</strong>（这些不经过编译器报错）</li>
+<li>✅ <code>.md</code> 讲义文件的中文名也没问题（VS Code 直接按 UTF-8 处理）</li>
+</ul>
+<h3 id="92-编译和链接142p2526-重中之重">9.2 编译和链接（1.4.2，p25–26）⭐ 重中之重</h3>
+<p>教材讲得比较抽象，下面这套流程是在真实机器上<strong>实测</strong>跑出来的。<strong>每一行数字都是真实结果。</strong></p>
+<p>先准备一个两行的源文件 <code>demo.cpp</code>：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"hi</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<blockquote>
+<p><strong>这两行现在看不懂很正常</strong>，逐字解释一下备查：
+- <code>#include &lt;iostream&gt;</code>：把标准库里的「输入输出」功能说明<strong>整段复制</strong>到这里
+- <code>int main()</code>：<code>main</code> 是程序的<strong>入口</strong>，运行一定从它开始；<code>int</code> 表示它结束时返回一个整数
+- <code>{ ... }</code>：函数体，里面是要执行的语句
+- <code>std::cout &lt;&lt; "hi\n";</code>：把 <code>hi</code> 打到屏幕上，<code>\n</code> 表示换行
+- 第 2 章会正式讲这些，这里只是让例子能跑</p>
+</blockquote>
+<p>然后逐步执行，看每一步产出了什么：</p>
+<h4 id="第-①-步预处理preprocessing">第 ① 步：预处理（preprocessing）</h4>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="n">-E</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">demo</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">demo</span><span class="p">.</span><span class="n">i</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>大小</th>
+<th>行数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>demo.cpp</code>（你写的）</td>
+<td>59 字节</td>
+<td><strong>2 行</strong></td>
+</tr>
+<tr>
+<td><code>demo.i</code>（预处理结果）</td>
+<td>872,668 字节</td>
+<td><strong>29,493 行</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>你写的 2 行，膨胀成了 29493 行。</strong></p>
+<p>为什么？因为 <code>#include &lt;iostream&gt;</code> 的意思是：<strong>把 <code>iostream</code> 这个文件的全部内容原样复制粘贴到这里</strong>。而 <code>iostream</code> 又包含了别的头文件，层层嵌套，最后就是这么一大坨。</p>
+<blockquote>
+<p>📌 <strong>术语对照</strong>：<strong>头文件</strong>（header file）就是那些被 <code>#include</code> 进来的文件，里面装着函数的「说明书」。<strong>预处理器</strong>（preprocessor）是编译最前面的一个纯文本处理程序，它只做复制、替换、删除这类文本操作，<strong>完全不懂 C++ 语法</strong>。</p>
+<p>🔑 <strong>这解释了新手第一困惑</strong>：为什么 <code>#include &lt;iostream&gt;</code> 后面<strong>不加分号</strong>？
+因为 <code>#include</code> <strong>不是 C++ 语句</strong>，它是给<strong>预处理器</strong>的命令。预处理器只是做文本替换，加不加分号它都照做，但加了分号就会在展开的内容后面留下一个孤零零的 <code>;</code>，可能引发离奇的错误。<strong>记住：所有 <code>#</code> 开头的都是预处理指令，不写分号。</strong></p>
+</blockquote>
+<h4 id="第-②-步编译compilation">第 ② 步：编译（compilation）</h4>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="n">-S</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">demo</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">demo</span><span class="p">.</span><span class="n">s</span>
+</code></pre></div>
+
+<p>得到 <strong>汇编代码</strong>（106 行），长这样（节选）：</p>
+<div class="codehilite"><pre><span></span><code><span class="nl">main:</span>
+<span class="w">    </span><span class="nf">pushq</span><span class="w">   </span><span class="nv">%rbp</span>
+<span class="w">    </span><span class="nf">movq</span><span class="w">    </span><span class="nv">%rsp</span><span class="p">,</span><span class="w"> </span><span class="nv">%rbp</span>
+<span class="w">    </span><span class="nf">leaq</span><span class="w">    </span><span class="no">.LC0</span><span class="p">(</span><span class="nv">%rip</span><span class="p">),</span><span class="w"> </span><span class="nv">%rsi</span>
+<span class="w">    </span><span class="nf">leaq</span><span class="w">    </span><span class="no">_ZSt4cout</span><span class="p">(</span><span class="nv">%rip</span><span class="p">),</span><span class="w"> </span><span class="nv">%rdi</span>
+<span class="w">    </span><span class="nf">call</span><span class="w">    </span><span class="no">_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@PLT</span>
+<span class="w">    </span><span class="na">...</span>
+</code></pre></div>
+
+<p>这就是「给 CPU 看的、但还是人勉强能读」的中间形态。上面这些 <code>pushq</code>、<code>movq</code>、<code>call</code> 是<strong>汇编指令</strong>——每一条大致对应一条 CPU 能执行的机器指令。</p>
+<p><code>_ZSt4cout</code> 就是 <code>std::cout</code> 被编译器改的名字（叫<strong>名字修饰</strong>，第 9 章会讲为什么需要它）。</p>
+<blockquote>
+<p>📌 直观感受一下：源码里一句 <code>std::cout &lt;&lt; "hi\n";</code>，到了汇编层变成了好几条 <code>leaq</code>、<code>call</code>。<strong>这就是「高级语言离人近、离机器远」的具体含义。</strong></p>
+</blockquote>
+<h4 id="第-③-步汇编assembly">第 ③ 步：汇编（assembly）</h4>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="n">-c</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">demo</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">demo</span><span class="p">.</span><span class="n">o</span>
+</code></pre></div>
+
+<p>得到<strong>目标文件</strong> <code>demo.o</code>，<strong>只有 1,855 字节</strong>。</p>
+<blockquote>
+<p>「汇编」这个词有两个意思，容易混：<strong>一是汇编语言</strong>（<code>.s</code> 里那种文本），<strong>二是把汇编翻译成机器码这个动作</strong>（这一步 <code>-c</code> 干的事）。这里说的是后者。</p>
+</blockquote>
+<p>⚠️ <strong>关键观察</strong>：<code>demo.exe</code> 最终是 56,226 字节，而目标文件只有 1,855 字节。那少的 54KB 去哪了？</p>
+<p>答案是：<strong><code>demo.o</code> 里根本没有 <code>cout</code> 的实现代码</strong>。它只有一个「占位标记」，意思是「这里要调用一个叫 <code>_ZStlsISt11char_traitsIcEE...</code> 的东西，但我不知道它在哪，让别人来填」。</p>
+<p>也就是说，到这一步为止，程序还是<strong>残缺的</strong>。</p>
+<h4 id="第-④-步链接linking">第 ④ 步：链接（linking）</h4>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="n">demo</span><span class="p">.</span><span class="n">o</span> <span class="n">-o</span> <span class="n">demo</span><span class="p">.</span><span class="n">exe</span>      <span class="c"># 注意：这里不用再写 -std 了，因为.o已经是编译好的机器码</span>
+<span class="p">.\</span><span class="n">demo</span><span class="p">.</span><span class="n">exe</span>                  <span class="c"># 输出 hi</span>
+</code></pre></div>
+
+<p><strong>链接器</strong>的工作：把 <code>demo.o</code> 和这台机器上的 <strong>C++ 标准库</strong>（<code>libstdc++</code>）拼在一起，把第③步那些「占位标记」填上真正的地址，最后产出 56,226 字节的完整 exe。</p>
+<blockquote>
+<p><strong>这就是「库」的意义</strong>：<code>cout</code> 是别人（标准库作者）写好的、已经编译好的机器码。你只需要 <code>#include</code> 它的<strong>说明书</strong>（头文件），链接器负责把<strong>实物</strong>接上。</p>
+<p>头文件 = 说明书（声明）。库 = 实物（定义）。这两件事是分开的——<strong>这个概念不懂，你会被链接错误折磨很久。</strong></p>
+<p>📌 「声明」和「定义」这两个词在第 12 节讲链接错误时会反复出现，先记住：
+- <strong>声明（declaration）</strong>：告诉编译器「有这么个东西，它叫什么、长什么样」，<strong>不提供实现</strong>
+- <strong>定义（definition）</strong>：把实现真正写出来</p>
+</blockquote>
+<h4 id="四步一图">四步一图</h4>
+<div class="codehilite"><pre><span></span><code>  demo.cpp          ← 你写的源码（2 行）
+      │
+      │  ① 预处理  g++ -E      展开 #include / #define
+      ▼
+  demo.i            ← 29493 行纯 C++ 代码
+      │
+      │  ② 编译    g++ -S      C++ → 汇编
+      ▼
+  demo.s            ← 106 行汇编
+      │
+      │  ③ 汇编    g++ -c      汇编 → 机器码
+      ▼
+  demo.o            ← 1855 字节目标文件（有洞，未填）
+      │
+      │  ④ 链接    g++        把标准库拼上、填洞
+      ▼
+  demo.exe          ← 56226 字节，能跑了
+</code></pre></div>
+
+<p>想一次性留下所有中间文件，加 <code>--save-temps</code>：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="p">-</span><span class="n">-save-temps</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">demo</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">demo2</span><span class="p">.</span><span class="n">exe</span>
+</code></pre></div>
+
+<p>然后你会看到 <code>demo.i</code>、<code>demo.s</code>、<code>demo.o</code> 全在目录里。</p>
+<blockquote>
+<p><strong>平时不用管这些</strong>，<code>g++ demo.cpp -o demo.exe</code> 一步就全做了。但你必须知道<strong>背后发生了这四件事</strong>——因为出错时，你得知道该怪哪一步。</p>
+</blockquote>
+<h4 id="补充一个-6-行版本的真实数字供对照">补充：一个 6 行版本的真实数字，供对照</h4>
+<p>上面那个 2 行的例子是为了说明「膨胀」有多夸张。实际动手时你通常会写一个更完整的版本：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"我在测试编译过程"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>这个版本在一台真实机器（GCC 8.1.0, MinGW-W64, Windows）上的实测值是：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>实测值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>demo.cpp</code> 行数 / 字节数</td>
+<td>6 行 / 111 字节</td>
+</tr>
+<tr>
+<td><code>demo.i</code> 行数 / 字节数</td>
+<td><strong>21,519 行</strong> / 872,724 字节</td>
+</tr>
+<tr>
+<td><code>demo.s</code> 行数（汇编）</td>
+<td><strong>115 行</strong></td>
+</tr>
+<tr>
+<td><code>demo.o</code> 字节数（目标文件）</td>
+<td>2,354 字节</td>
+</tr>
+<tr>
+<td><code>demo.exe</code> 字节数（可执行文件）</td>
+<td>56,837 字节</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意两个反直觉的点</strong>：</p>
+<ol>
+<li><strong><code>.s</code> 汇编文件的行数会随版本和优化选项大幅变化</strong>：上面的最小例子是 106 行，这个 6 行版本是 115 行。<strong>行数不是重点，重点是「C++ 被拆成了很多条机器指令」这个事实。</strong></li>
+<li><strong><code>.o</code> 到 <code>.exe</code> 增长了约 54KB</strong>，稳定复现——这就是链接标准库带进来的体积。</li>
+</ol>
+<hr />
+<h2 id="10-本课第二个核心三类错误-拿到报错先分类">10. 【本课第二个核心】三类错误 —— 拿到报错先分类</h2>
+<p>下面是实测出来的几种报错。<strong>以后每次看到红色报错，第一件事是判断它属于哪一类</strong>，因为不同类错误的排查方向完全不同。</p>
+<h3 id="类型-a编译错误compile-time-error-语法类型问题">类型 A：编译错误（compile-time error）—— 语法/类型问题</h3>
+<p>源码（漏了一个分号），放在 <code>示例代码/01_错误分类实验/A_missing_semicolon.cpp</code>：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"hello"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="w">      </span><span class="c1">// ← 这里少一个分号</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>真实报错：</p>
+<div class="codehilite"><pre><span></span><code>A_missing_semicolon.cpp: In function 'int main()':
+A_missing_semicolon.cpp:4:38: error: expected ';' before 'return'
+     std::cout &lt;&lt; "hello" &lt;&lt; std::endl
+                                      ^
+                                      ;
+     return 0;
+     ~~~~~~
+</code></pre></div>
+
+<p><strong>教你怎么读这条消息</strong>（这个技能值一整章）：</p>
+<table>
+<thead>
+<tr>
+<th>这一部分</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A_missing_semicolon.cpp: In function 'int main()'</code></td>
+<td>错误发生在 <code>main</code> 函数里</td>
+</tr>
+<tr>
+<td><code>A_missing_semicolon.cpp:4:38</code></td>
+<td><strong>文件名 : 第 4 行 : 第 38 列</strong> ← 先看这个定位</td>
+</tr>
+<tr>
+<td><code>error:</code></td>
+<td>这是<strong>错误</strong>（<code>warning:</code> 是警告，稍后讲）</td>
+</tr>
+<tr>
+<td><code>expected ';' before 'return'</code></td>
+<td>编译器说：在 <code>return</code> 前面我应该看到一个 <code>;</code>，但没有</td>
+</tr>
+<tr>
+<td><code>^</code> 和下面的 <code>;</code></td>
+<td>GCC 好心画的：指出位置，并<strong>把缺的分号补给你看</strong></td>
+</tr>
+<tr>
+<td><code>~~~~~~</code></td>
+<td>波浪线，标出它觉得相关的另一段代码</td>
+</tr>
+</tbody>
+</table>
+<p>⚠️ <strong>新手最常见的误读</strong>：报错说 <code>expected ';' before 'return'</code>，很多人在 <code>return</code> 那一行找问题。<strong>错。</strong> 编译器是在读到 <code>return</code> 的时候才发现前面缺东西，真正的错误在<strong>上一行的末尾</strong>。记住：<strong>报错行号常常指在错误的下一行。</strong></p>
+<p><strong>特征</strong>：编译错误<strong>不会生成 exe</strong>（实测验证过，<code>A_missing_semicolon.exe</code> 根本不存在）。所以「编译报错」和「程序崩了」是完全不同的两件事。</p>
+<h3 id="类型-b链接错误link-time-error-声明了但找不到实现">类型 B：链接错误（link-time error）—— 声明了，但找不到实现</h3>
+<p>源码，放在 <code>示例代码/01_错误分类实验/B_undefined_function.cpp</code>：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">);</span><span class="w">          </span><span class="c1">// 只有"声明"，没有"定义"（函数体）</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>真实报错：</p>
+<div class="codehilite"><pre><span></span><code>...ccdos0Ve.o:B_undefined_function.cpp:(.text+0x18): undefined reference to `add(int, int)'
+collect2.exe: error: ld returned 1 exit status
+</code></pre></div>
+
+<p><strong>关键词是 <code>undefined reference</code>（未定义的引用）</strong>。翻译成人话：</p>
+<blockquote>
+<p>"<code>add</code> 这个名字我见过（你在第 2 行声明过），但我翻遍了所有目标文件和库，<strong>找不到它的函数体</strong>。"</p>
+</blockquote>
+<p><strong>排查方向</strong>：</p>
+<ol>
+<li>函数是不是只写了声明（<code>int add(int,int);</code>）忘了写定义（带 <code>{}</code> 的那部分）？</li>
+<li>定义是不是写在别的 <code>.cpp</code> 文件里，但编译时<strong>没把那个文件也加进去</strong>？（第 9 章会讲多文件编译）</li>
+<li>函数名/参数类型是不是和声明不一致？（C++ 会区分 <code>add(int,int)</code> 和 <code>add(double,double)</code>）</li>
+</ol>
+<p><strong>注意</strong>：链接错误里出现的是 <code>collect2.exe</code> / <code>ld</code>，这是<strong>链接器</strong>，不是编译器。看到 <code>ld</code> 就知道是第④步出的问题。</p>
+<p><strong>正确写法</strong>（补上函数体）：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="类型-c编译错误类型不匹配">类型 C：编译错误（类型不匹配）</h3>
+<p>源码，放在 <code>示例代码/01_错误分类实验/C_type_mismatch.cpp</code>：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12345</span><span class="p">;</span><span class="w">      </span><span class="c1">// 想用整数初始化 string</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>真实报错：</p>
+<div class="codehilite"><pre><span></span><code>C_type_mismatch.cpp:4:21: error: conversion from 'int' to non-scalar type
+'std::__cxx11::string' {aka 'std::__cxx11::basic_string&lt;char&gt;'} requested
+</code></pre></div>
+
+<ul>
+<li><code>conversion from 'int' to ... requested</code>：不允许从 <code>int</code> 转换到 <code>string</code></li>
+<li><code>{aka 'std::__cxx11::basic_string&lt;char&gt;'}</code>：<code>aka</code> = "also known as"，真实类型叫 <code>basic_string&lt;char&gt;</code>，<code>string</code> 只是个别名。<strong>这个 <code>__cxx11</code> 前缀是 GCC 的旧 ABI 命名</strong>，看到它不要慌，它就是在说「字符串类型」</li>
+</ul>
+<blockquote>
+<p>💡 <strong>先说明一个容易混淆的点</strong>：下面的「<strong>类型 A / B / C / D / E</strong>」是<strong>错误的分类</strong>；
+而 <code>示例代码/01_错误分类实验/</code> 里那些文件名的首字母（A/B/C/D/E/F）只是<strong>标本编号</strong>，
+两套编号<strong>不是一一对应的</strong>。读的时候以「类型」为准。
+📌 类型 A 和类型 C 都属于<strong>编译错误</strong>（都在第 ①② 步被抓住），只是一个错在<strong>语法</strong>（少符号），一个错在<strong>类型</strong>（类型不兼容）。报告里都带 <code>error:</code> 和行号，处理方式一样：<strong>去看报错定位的那一行或它的上一行</strong>。</p>
+</blockquote>
+<h3 id="类型-d运行时错误runtime-error-最难查的一类">类型 D：运行时错误（runtime error）—— 最难查的一类</h3>
+<p>能编译、能链接、能生成 exe，<strong>跑起来结果不对或直接崩</strong>。</p>
+<p><strong>凯撒密码的经典 bug 就是这一类</strong>：把每个字母往后推 3 位，输入 <code>abc</code> 输出 <code>def</code>（看着没问题），输入 <code>XYZ</code> 却输出 <code>[\]</code>。编译器完全帮不了你，因为代码在语法和类型上都没错——<strong>错在逻辑</strong>。</p>
+<blockquote>
+<p>为什么会这样：字母在计算机里用编号表示，<code>'X' + 3</code> 得到的不再是字母，而是字母表之外的字符。<strong>这个 bug 的修复版在 <code>示例代码/01_参考_代码重构示例/caesar_fixed.cpp</code>。</strong> 建议先自己想修复方案，再看别人的——直接看会浪费掉一次很好的学习机会。</p>
+</blockquote>
+<p>这类错误只能靠：<strong>测试</strong>（尤其是边界测试）、<strong>调试器</strong>、<strong>打印中间变量</strong>。</p>
+<blockquote>
+<p>💡 <strong>什么叫「边界测试」</strong>：不要只测中间的、好想的情况。测第一个、最后一个、空的、最大的、最小的、重复的。上面这个 bug 就是「只测了小写中间段、没测末尾字母」导致的。</p>
+</blockquote>
+<h3 id="类型-d2运行时错误里最危险的一种-不崩溃但结果是错的">类型 D2：运行时错误里最危险的一种 —— 不崩溃但结果是错的</h3>
+<p><strong>这类错误值得单独拎出来讲</strong>，因为它的杀伤力最大。</p>
+<p>实测样本 <code>示例代码/01_错误分类实验/E_array_out_of_bounds.cpp</code>：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">};</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w">   </span><span class="c1">// 注意是 &lt;= 3</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" "</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>真实结果：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>编译器输出</td>
+<td><strong>什么都没有</strong>（<code>-Wall -Wextra</code> 也没警告！）</td>
+</tr>
+<tr>
+<td>生成 exe</td>
+<td><strong>成功</strong></td>
+</tr>
+<tr>
+<td>程序输出</td>
+<td><code>1 2 3 3</code></td>
+</tr>
+<tr>
+<td>退出码</td>
+<td><strong>0（正常结束！）</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>请仔细看这个结果：</strong></p>
+<ul>
+<li><code>a</code> 只有 3 个元素，但循环访问了 <code>a[0]</code> <code>a[1]</code> <code>a[2]</code> <strong><code>a[3]</code></strong></li>
+<li><code>a[3]</code> 是<strong>越界</strong>的，它属于别的变量（甚至是别的函数的内存）</li>
+<li>程序<strong>没有崩溃</strong>，<strong>退出码 0</strong>，输出 <code>1 2 3 3</code></li>
+<li>那个多出来的 <code>3</code> 是<strong>内存里的垃圾数据</strong>，这次恰好是 3，下次可能是一千万，也可能是负数</li>
+</ul>
+<p><strong>这就是 C++ 最坑的地方</strong>：</p>
+<blockquote>
+<p><strong>C++ 默认不检查数组越界。</strong> 它相信你写的下标是对的，直接把「<code>a</code> 的起始地址 + 3×4 字节」那个位置的内存给你。
+这个行为叫 <strong>未定义行为（undefined behavior, UB）</strong> —— 标准里说「这种情况下的行为不做任何保证」。
+它可能：正常跑出错误结果 / 崩溃 / 有时对有时错 / 在某些编译器上跑得「看起来正常」。<strong>全都是「合法」的。</strong></p>
+</blockquote>
+<p><strong>为什么这一类比「直接崩溃」危险</strong>：</p>
+<ul>
+<li>崩溃了 → 你<strong>知道</strong>出问题了，会去查</li>
+<li>不崩、退出码 0、看着像正常输出 → 你<strong>以为</strong>没问题，然后程序把错误的数据写进了文件或数据库</li>
+</ul>
+<p><strong>怎么防</strong>：</p>
+<ol>
+<li>老老实实写 <code>i &lt; size</code>，别写 <code>&lt;=</code></li>
+<li>用 <code>std::vector</code> 并用 <code>.at(i)</code> 访问（越界会抛异常；<code>[]</code> 不检查）</li>
+<li>打开编译器的检查开关（第 4 章讲指针时会教 <code>-fsanitize=address</code>）</li>
+<li><strong>写测试，把边界情况都试一遍</strong></li>
+</ol>
+<h3 id="类型-d3运行时崩溃-整数除以-0">类型 D3：运行时崩溃 —— 整数除以 0</h3>
+<p>实测样本 <code>示例代码/01_错误分类实验/D_divide_by_zero.cpp</code>：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"程序开始运行"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"10 / 0 = "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"这一行会被打印吗？"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>真实结果：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>编译器输出</td>
+<td><strong>什么都没有</strong>（<code>-Wall -Wextra</code> 也没警告）</td>
+</tr>
+<tr>
+<td>生成 exe</td>
+<td><strong>成功</strong></td>
+</tr>
+<tr>
+<td>程序输出</td>
+<td>只有 <code>程序开始运行</code> 一行</td>
+</tr>
+<tr>
+<td>退出码</td>
+<td><strong>-1073741676</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>两个关键点：</strong></p>
+<ol>
+<li><strong><code>这一行会被打印吗？</code> 没有被打印</strong> —— 说明程序在 <code>a / b</code> 那一行<strong>直接崩掉了</strong>，后面的代码一行都没执行。</li>
+<li><strong>退出码 <code>-1073741676</code> 是什么？</strong>
+   换成十六进制是 <code>0xC0000094</code>，这是 Windows 的错误码 <code>STATUS_INTEGER_DIVIDE_BY_ZERO</code> —— <strong>整数除零异常</strong>。
+   （顺便记住：退出码 0 = 正常结束；<strong>非 0 = 出问题了</strong>。以后程序「没输出」的时候，先看退出码。）</li>
+</ol>
+<blockquote>
+<p><strong>为什么编译器和 <code>-Wall -Wextra</code> 都没发现？</strong>
+因为 <code>a</code> 和 <code>b</code> 是变量，<strong>编译器在编译期不知道 <code>b</code> 的值是 0</strong>。它没法预知。
+这类「值在运行时才确定」的错误，编译器永远帮不了你——<strong>这就是为什么你需要自己写测试</strong>。</p>
+</blockquote>
+<h3 id="类型-e警告warning-不阻止你但必须处理">类型 E：警告（warning）—— 不阻止你，但必须处理</h3>
+<p>实测样本 <code>示例代码/01_错误分类实验/C_extra_semicolon.cpp</code>：<code>#include</code> 后面多加了一个分号。</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span><span class="c1">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"能跑吗"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>真实输出：</p>
+<div class="codehilite"><pre><span></span><code>C_extra_semicolon.cpp:6:20: warning: extra tokens at end of #include directive
+ #include &lt;iostream&gt;;
+                    ^
+</code></pre></div>
+
+<ul>
+<li>生成 exe 了吗？<strong>生成了！</strong> 而且程序正常运行，输出「能跑吗」，退出码 0</li>
+</ul>
+<p><strong>所以「<code>#include</code> 后面不能加分号」这句话的准确版本是</strong>：</p>
+<ul>
+<li>加了分号<strong>不会报错</strong>，程序照样跑</li>
+<li>但编译器会<strong>警告</strong> <code>extra tokens at end of #include directive</code>（「该指令末尾有多余的记号」）</li>
+<li>所以要<strong>养成不加分号的习惯</strong>——不是因为会崩，而是因为这是错的写法，在别的编译器上可能就真报错了</li>
+</ul>
+<blockquote>
+<p>📌 <strong>顺便注意行号</strong>：报错说第 <strong>6</strong> 行，可 <code>#include</code> 明明在第 1 行。
+因为 <code>#include</code> 是<strong>预处理指令</strong>，第①步展开后你的代码在预处理结果里跑到第 6 行了。GCC 很聪明，它同时知道两种位置，这里报的是展开后的位置。
+<strong>看到行号和你的文件对不上时，先想想是不是预处理（<code>#include</code>/<code>#define</code>）导致的。</strong></p>
+<p>💡 <strong><code>warning:</code> 和 <code>error:</code> 的区别</strong>：<code>error</code> 会让编译<strong>停止</strong>，不产出 exe；<code>warning</code> 会<strong>继续编译</strong>，产出 exe。但<strong>警告往往就是未来的 bug</strong>——尤其在有几百行代码的项目里，一个「小警告」通常正是问题的起点。养成「警告也当错误处理」的习惯。</p>
+</blockquote>
+<h3 id="错误分类汇总表">错误分类汇总表</h3>
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>属于哪一步</th>
+<th>生成 exe?</th>
+<th>关键词</th>
+<th>怎么排查</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 缺分号</td>
+<td><strong>编译期</strong></td>
+<td>❌</td>
+<td><code>error: expected ';' before ...</code></td>
+<td>看报错行的<strong>上一行</strong></td>
+</tr>
+<tr>
+<td>B 函数未定义</td>
+<td><strong>链接期</strong></td>
+<td>❌</td>
+<td><code>undefined reference to</code> / <code>ld returned</code></td>
+<td>查函数定义、查参与编译的文件</td>
+</tr>
+<tr>
+<td>C 类型不匹配</td>
+<td><strong>编译期</strong></td>
+<td>❌</td>
+<td><code>error: conversion from ... requested</code></td>
+<td>看类型是否写对</td>
+</tr>
+<tr>
+<td>D 除以 0</td>
+<td><strong>运行期</strong></td>
+<td>✅</td>
+<td>退出码 <code>-1073741676</code></td>
+<td>崩了 → 看退出码 + 定位到出错行</td>
+</tr>
+<tr>
+<td>E 数组越界</td>
+<td><strong>运行期</strong></td>
+<td>✅</td>
+<td><strong>无任何提示</strong></td>
+<td>最危险，只能靠测试和工具</td>
+</tr>
+<tr>
+<td>F <code>#include;</code></td>
+<td>预处理期（仅警告）</td>
+<td>✅</td>
+<td><code>warning: extra tokens</code></td>
+<td>只是不规范，但养成好习惯</td>
+</tr>
+</tbody>
+</table>
+<h3 id="三类错误排查口诀">三类错误排查口诀</h3>
+<blockquote>
+<p>有 exe 吗？
+- <strong>没有</strong> + 报错里有 <code>error:</code> 和行号 → <strong>编译错误</strong> → 去看那一行的<strong>上一行</strong>
+- <strong>没有</strong> + 报错里有 <code>undefined reference</code> / <code>ld returned</code> → <strong>链接错误</strong> → 去查函数定义和参与编译的文件
+- <strong>有</strong> exe 但结果不对 → <strong>运行时错误</strong> → 去写测试、打断点</p>
+</blockquote>
+<hr />
+<h2 id="11-关于中文乱码一个正确且漂亮的方案">11. 关于中文乱码：一个正确且漂亮的方案</h2>
+<p>在 Windows 上写中文输出的程序，很容易遇到乱码。下面这个头文件方案是<strong>正确且漂亮</strong>的，解释一下原理，之后你就能自己判断：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#if defined(_WIN32)              </span><span class="c1">// 只在 Windows 上编译这段</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;windows.h&gt;</span>
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">constructor</span><span class="p">))</span><span class="w">     </span><span class="c1">// GCC 扩展：让这个函数在 main() 之前自动执行</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">utf8_console_activate</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">SetConsoleOutputCP</span><span class="p">(</span><span class="mi">65001</span><span class="p">);</span><span class="w">   </span><span class="c1">// 把控制台输出代码页改成 UTF-8</span>
+<span class="w">    </span><span class="n">SetConsoleCP</span><span class="p">(</span><span class="mi">65001</span><span class="p">);</span><span class="w">         </span><span class="c1">// 输入代码页也改，这样 scanf/cin 读中文也正常</span>
+<span class="p">}</span>
+<span class="cp">#endif</span>
+</code></pre></div>
+
+<p>三个要点：</p>
+<ol>
+<li><strong><code>__attribute__((constructor))</code></strong> 是 GCC 的扩展，它让这个函数<strong>在 <code>main()</code> 之前自动运行</strong>。所以源码里不需要调用任何东西，<code>#include</code> 就生效了。</li>
+<li><strong><code>SetConsoleOutputCP(65001)</code></strong> 是把 Windows 控制台的「代码页」从默认的 936（GBK）改成 65001（UTF-8），这样程序输出的 UTF-8 字节就能被正确显示。</li>
+<li><strong>为什么需要它</strong>：VS Code 里那个 UTF-8 修复（<code>[Console]::OutputEncoding</code>）只对<strong>从 VS Code 终端启动的程序</strong>有效；一旦你双击 exe，就是在普通的 GBK 控制台里跑，又会乱码。这个头文件把两种情况都覆盖了。</li>
+</ol>
+<blockquote>
+<p>📌 <strong>「代码页」是什么</strong>：就是一张「字节 ↔ 字符」的对照表。同一个字节，按 GBK 表查是一个汉字，按 UTF-8 表查可能是别的东西。乱码的本质就是<strong>写的一方和读的一方用了不同的表</strong>。</p>
+</blockquote>
+<p><strong>要不要用</strong>：写学习练习时<strong>可以不加</strong>（在 VS Code 里跑本来就正常）。等你要双击运行 exe 给别人看的时候再加。</p>
+<hr />
+<h2 id="12-本课动手实验必须亲手做">12. 本课动手实验（必须亲手做）</h2>
+<p>打开 PowerShell，<code>cd</code> 到一个<strong>你自己的练习目录</strong>，把下面每一步都敲一遍，<strong>观察产出</strong>：</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">cd </span><span class="p">&lt;</span><span class="n">你的练习目录</span><span class="p">&gt;</span>
+<span class="n">mkdir</span> <span class="n">实验</span> <span class="n">-Force</span> <span class="p">;</span> <span class="nb">cd </span><span class="n">实验</span>
+</code></pre></div>
+
+<p>用记事本或 VS Code 新建 <code>demo.cpp</code>，内容：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"测试编译过程"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>然后：</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># ① 预处理</span>
+<span class="n">g</span><span class="p">++</span> <span class="n">-E</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">demo</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">demo</span><span class="p">.</span><span class="n">i</span>
+<span class="p">(</span><span class="nb">Get-Content</span> <span class="n">demo</span><span class="p">.</span><span class="n">i</span><span class="p">).</span><span class="n">Count</span>              <span class="c"># 看有多少行</span>
+
+<span class="c"># ② 编译成汇编</span>
+<span class="n">g</span><span class="p">++</span> <span class="n">-S</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">demo</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">demo</span><span class="p">.</span><span class="n">s</span>
+
+<span class="c"># ③ 只编译不链接</span>
+<span class="n">g</span><span class="p">++</span> <span class="n">-c</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">demo</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">demo</span><span class="p">.</span><span class="n">o</span>
+
+<span class="c"># ④ 链接</span>
+<span class="n">g</span><span class="p">++</span> <span class="n">demo</span><span class="p">.</span><span class="n">o</span> <span class="n">-o</span> <span class="n">demo</span><span class="p">.</span><span class="n">exe</span>
+<span class="p">.\</span><span class="n">demo</span><span class="p">.</span><span class="n">exe</span>
+
+<span class="c"># 一次性看全部中间文件</span>
+<span class="n">g</span><span class="p">++</span> <span class="p">-</span><span class="n">-save-temps</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">demo</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">demo2</span><span class="p">.</span><span class="n">exe</span>
+<span class="nb">Get-ChildItem</span>
+</code></pre></div>
+
+<blockquote>
+<p>📌 两个命令的小解释：
+- <code>(Get-Content demo.i).Count</code>：<code>Get-Content</code> 读出文件所有行，<code>.Count</code> 取行数。<strong>括号不能省</strong>。
+- <code>Get-ChildItem</code>：列出当前目录下的文件（等于 <code>ls</code>）。
+- <code>.\demo.exe</code> 前面的 <code>.\</code> 表示「当前目录下的」，<strong>不能只写 <code>demo.exe</code></strong>（PowerShell 出于安全默认不从当前目录找可执行文件）。</p>
+</blockquote>
+<p><strong>观察清单</strong>（做完后自己回答一遍）：</p>
+<ul>
+<li>[ ] <code>demo.i</code> 有多少行？和你写的行数差多少倍？</li>
+<li>[ ] <code>demo.s</code>（汇编）有多少行？</li>
+<li>[ ] <code>demo.o</code> 多少字节？<code>demo.exe</code> 多少字节？差多少？</li>
+<li>[ ] 用 VS Code 打开 <code>demo.s</code>，找到 <code>main:</code> 那一行，看看它长什么样（看不懂没关系，感受一下）</li>
+<li>[ ] <strong>故意</strong>删掉一个分号，重新编译，把完整报错抄下来，指出「真正的错误在哪一行」</li>
+<li>[ ] 打开 <code>示例代码/01_错误分类实验/</code> 里的 6 个标本文件，<strong>先预测</strong>每个属于哪类错误，再逐个编译验证，最后对照 <code>答案.md</code></li>
+</ul>
+<blockquote>
+<p>💡 <strong>为什么必须先预测？</strong>
+因为「看一眼就知道是啥错」这个能力，靠的是<strong>预测 → 打脸 → 修正</strong>这个循环。
+直接看答案的话，下次还是不会。</p>
+</blockquote>
+<hr />
+<h2 id="13-本课小结">13. 本课小结</h2>
+<p>学完这章，你应该能回答：</p>
+<ol>
+<li>C++ 的三个思想来源是什么？分别给 C++ 带来了什么语法特征？</li>
+<li>从 <code>demo.cpp</code> 到 <code>demo.exe</code> 有哪四步？每步的产物是什么？</li>
+<li>为什么 <code>#include</code> 后面不加分号？</li>
+<li>头文件和库分别是什么角色？</li>
+<li>编译错误和链接错误怎么区分？各自往哪个方向排查？</li>
+<li>为什么「能编译通过」完全不代表「程序是对的」？</li>
+</ol>
+<p><strong>下一课</strong>：第 2 章「开始学习C++」（p29–53），要真正开始写代码了。</p>
+<hr />
+<h2 id="14-常见坑汇总">14. 常见坑汇总</h2>
+<p>这一章的内容本身不难，但下面这些坑几乎人人踩过。<strong>建议把这一节单独抄下来贴在显示器边上。</strong></p>
+<h3 id="141-概念类坑">14.1 概念类坑</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>坑</th>
+<th>正确认识</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>以为 VS Code 是编译器</td>
+<td>VS Code 只是<strong>编辑器</strong>，真正翻译代码的是 <code>g++</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>以为 <code>#include</code> 是 C++ 语句</td>
+<td>它是<strong>预处理指令</strong>，不是语句，<strong>不加分号</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>以为头文件里装着实现代码</td>
+<td>头文件是<strong>说明书（声明）</strong>，实现（定义）在库或别的 <code>.cpp</code> 里</td>
+</tr>
+<tr>
+<td>4</td>
+<td>以为「编译通过」= 程序对</td>
+<td>编译只检查语法和类型，<strong>逻辑错误它一概不管</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td>以为「改了源码 = 程序变了」</td>
+<td>必须<strong>重新编译</strong>，否则跑的还是旧 exe</td>
+</tr>
+<tr>
+<td>6</td>
+<td>以为 <code>.o</code> 文件是「小一点的 exe」</td>
+<td>它<strong>有洞</strong>，缺函数实现，单独不能跑</td>
+</tr>
+<tr>
+<td>7</td>
+<td>以为中文文件名编译器也能正确报错</td>
+<td>GCC 报错按系统代码页输出文件名，<strong><code>.cpp</code>/<code>.h</code> 一律用英文名</strong></td>
+</tr>
+<tr>
+<td>8</td>
+<td>以为 C++ 的可移植是「exe 到处跑」</td>
+<td>是<strong>源码到处重新编译</strong>，不是同一个 exe</td>
+</tr>
+</tbody>
+</table>
+<h3 id="142-操作类坑">14.2 操作类坑</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>坑</th>
+<th>怎么避免</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>9</td>
+<td>在错的目录里敲命令，报「找不到文件」</td>
+<td>敲命令前先 <code>pwd</code> 确认当前位置</td>
+</tr>
+<tr>
+<td>10</td>
+<td>路径里有空格不加引号</td>
+<td><code>cd "C:\My Projects"</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>直接敲 <code>demo.exe</code> 说「无法识别」</td>
+<td>PowerShell 里要写 <code>.\demo.exe</code></td>
+</tr>
+<tr>
+<td>12</td>
+<td>忘了 <code>-o</code>，结果可执行文件变成默认名</td>
+<td>命令里始终写清 <code>-o 名字.exe</code></td>
+</tr>
+<tr>
+<td>13</td>
+<td>用 <code>-std</code> 链接 <code>.o</code> 时多余恐慌</td>
+<td>链接 <code>.o</code> 时不需要也不影响 <code>-std</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="143-排错类坑">14.3 排错类坑</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>坑</th>
+<th>正确做法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>14</td>
+<td>报错说 <code>expected ';' before 'return'</code>，就去 <code>return</code> 行找</td>
+<td>真正的错误<strong>几乎总在上一行末尾</strong></td>
+</tr>
+<tr>
+<td>15</td>
+<td>看到报错行号和自己的文件对不上，怀疑编译器坏了</td>
+<td>先想 <code>#include</code>/<code>#define</code> 展开导致的行号偏移</td>
+</tr>
+<tr>
+<td>16</td>
+<td>看到 <code>undefined reference</code> 却去改语法</td>
+<td>这是<strong>链接</strong>错误，去查函数定义和编译命令里漏掉的文件</td>
+</tr>
+<tr>
+<td>17</td>
+<td>看到 <code>collect2.exe</code> / <code>ld</code> 以为是编译器坏了</td>
+<td>那是<strong>链接器</strong>在报错，问题在第 ④ 步</td>
+</tr>
+<tr>
+<td>18</td>
+<td>忽略 <code>warning:</code>，觉得「反正能跑」</td>
+<td>警告往往就是未来的 bug，<strong>当错误处理</strong></td>
+</tr>
+<tr>
+<td>19</td>
+<td>程序没输出就反复改代码</td>
+<td>先<strong>看退出码</strong>：非 0 说明运行期崩了</td>
+</tr>
+<tr>
+<td>20</td>
+<td>数组越界没崩，就以为代码是对的</td>
+<td>越界是<strong>未定义行为</strong>，这次侥幸不代表正确</td>
+</tr>
+<tr>
+<td>21</td>
+<td>只测「正常输入」</td>
+<td>必须测<strong>边界</strong>：空、1 个、最后一个、最大/最小</td>
+</tr>
+<tr>
+<td>22</td>
+<td>看到 <code>std::__cxx11::basic_string&lt;char&gt;</code> 这种长名字就慌</td>
+<td>那只是 <code>std::string</code> 的<strong>真实名字</strong>，<code>aka</code> 后面才是别名</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="15-过关标准">15. 过关标准</h2>
+<p>本章不写代码，所以「过关」的标准是<strong>能不能说清楚</strong>和<strong>能不能复现</strong>。下面每一条都能独立打勾才算过关：</p>
+<h3 id="151-概念关能讲给别人听">15.1 概念关（能讲给别人听）</h3>
+<ul>
+<li>[ ] 能用<strong>比喻</strong>说清源代码 / 编译器 / 可执行文件三者的关系</li>
+<li>[ ] 能说出编译型语言和解释型语言的<strong>至少 3 点差异</strong></li>
+<li>[ ] 能说出 C++ 的<strong>三个思想来源</strong>，以及各自带来的语法特征（函数 / 类 / 模板）</li>
+<li>[ ] 能解释<strong>头文件 vs 库</strong> = <strong>说明书 vs 实物</strong>，并说清「声明」和「定义」的区别</li>
+<li>[ ] 能解释<strong>为什么 <code>#include</code> 不加分号</strong>（因为它是预处理指令，不是语句）</li>
+<li>[ ] 能解释<strong>为什么 <code>.cpp</code> 文件名要用英文</strong>（代码页不一致 → 报错里的文件名乱码 → 失去点击跳转功能）</li>
+<li>[ ] 能说出<strong>一条经验法则</strong>：一个函数只做一件事，10–30 行，超过 50 行要拆</li>
+</ul>
+<h3 id="152-操作关亲手做过">15.2 操作关（亲手做过）</h3>
+<ul>
+<li>[ ] 独立跑通编译<strong>四步</strong>：<code>-E</code> → <code>-S</code> → <code>-c</code> → 链接，并知道每步产出什么文件</li>
+<li>[ ] 能报出自己机器上的实测数字：<code>demo.i</code> 行数、<code>demo.s</code> 行数、<code>demo.o</code> 字节数、<code>demo.exe</code> 字节数</li>
+<li>[ ] 能解释「为什么 <code>demo.o</code> 比 <code>demo.exe</code> 小那么多」</li>
+<li>[ ] 用过 <code>--save-temps</code>，一次性看到全部中间文件</li>
+<li>[ ] 用过 <code>g++ --version</code> 确认编译器就绪</li>
+</ul>
+<h3 id="153-排错关形成条件反射">15.3 排错关（形成条件反射）</h3>
+<ul>
+<li>[ ] 看到报错，<strong>第一句话问「有 exe 吗？」</strong></li>
+<li>[ ] 能在 5 秒内把一条报错分成：编译错误 / 链接错误 / 运行时错误</li>
+<li>[ ] 知道编译错误看<strong>上一行</strong>；链接错误查<strong>函数定义</strong>和<strong>参与编译的文件</strong></li>
+<li>[ ] 能从报错里读出 <code>文件:行:列</code> 三个定位信息</li>
+<li>[ ] 知道退出码 0 = 正常，非 0 = 出问题</li>
+<li>[ ] 能说出<strong>数组越界为什么比崩溃更危险</strong>（不崩、退出码 0、结果错，会污染下游数据）</li>
+<li>[ ] 知道 <code>warning:</code> 要和 <code>error:</code> 一样认真对待</li>
+</ul>
+<h3 id="154-自测题合上讲义回答">15.4 自测题（合上讲义回答）</h3>
+<ol>
+<li>C++ 的三个思想来源是什么？每一个给 C++ 带来了什么特征？</li>
+<li>从 <code>demo.cpp</code> 到 <code>demo.exe</code> 有哪四步？每步用什么命令、产出什么文件？</li>
+<li>为什么 <code>#include</code> 后面<strong>不写</strong>分号？</li>
+<li>「头文件」和「库」分别扮演什么角色？打个比方说明。</li>
+<li>拿到一个报错，怎么判断它是编译错误还是链接错误？排查方向有什么不同？</li>
+<li>为什么说「编译通过」完全不代表「程序是对的」？举一个本章里的例子。</li>
+</ol>
+<p><strong>6 题都能用自己的话讲清楚 → 本章过关，可以进第 2 章。</strong></p>
+<hr />
+<p>📖 <strong>延伸阅读（可选）</strong></p>
+<ul>
+<li>附录 B C++ 保留字（p859）—— 打印出来贴在显示器边上，取名时对照</li>
+<li>附录 D 运算符优先级（p866）—— 现在不用看，写多了自然记住，记不住就查</li>
+</ul>
+<div class="pager"><a class="prev" href="../附录/零基础起飞.html">← 上一页：零基础起飞</a><a class="next" href="../讲义/第02章-开始学习C++.html">下一页：第02章-开始学习C++ →</a></div>
+<div class="footer"><a href="../index.html">← 返回总目录</a></div>
+</article></main>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('themeBtn');
+  function sync(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    btn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    btn.title = (t === 'dark') ? '切换到浅色' : '切换到深色';
+  }
+  btn.addEventListener('click', function(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    t = (t === 'dark') ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    try{ localStorage.setItem('cppcourse-theme', t); }catch(e){}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>

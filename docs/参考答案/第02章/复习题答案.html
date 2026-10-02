@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>复习题答案</title>
+<script>
+/* 在页面渲染前先定好主题，避免"白屏闪一下" */
+(function(){
+  try{
+    var t = localStorage.getItem('cppcourse-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<style>
+/* ============ 颜色变量：默认深色 ============ */
+:root, [data-theme="dark"]{
+  --bg:#14171a; --bg2:#1b1f24; --bg3:#232a31;
+  --fg:#dfe3e8; --fg2:#b6bec8; --muted:#8b95a1;
+  --line:#2b3138; --accent:#58a6ff;
+  --code-bg:#0f1216; --quote-bg:#1b2027;
+}
+[data-theme="light"]{
+  --bg:#fbfbfa; --bg2:#ffffff; --bg3:#f1f5f9;
+  --fg:#22272e; --fg2:#3b434d; --muted:#6b7280;
+  --line:#e5e7eb; --accent:#1f6feb;
+  --code-bg:#f3f4f6; --quote-bg:#f8fafc;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",Roboto,sans-serif;
+  font-size:16.5px; line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ============ 主题切换按钮 ============ */
+#themeBtn{
+  position:fixed; top:14px; right:18px; z-index:50;
+  width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--line); background:var(--bg2); color:var(--fg);
+  font-size:19px; line-height:1; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, background .15s ease;
+}
+#themeBtn:hover{transform:scale(1.08); background:var(--bg3);}
+
+.layout{display:flex; min-height:100vh;}
+
+/* ============ 侧边导航 ============ */
+nav{
+  width:288px; flex:0 0 288px; background:var(--bg2);
+  border-right:1px solid var(--line); padding:22px 0 80px;
+  overflow-y:auto; position:sticky; top:0; height:100vh;
+}
+nav .brand{
+  padding:0 20px 15px; font-weight:700; font-size:15px;
+  border-bottom:1px solid var(--line); margin-bottom:12px; color:var(--fg);
+}
+nav .group{
+  padding:16px 20px 6px; font-size:11.5px; color:var(--muted);
+  letter-spacing:.1em; font-weight:600;
+}
+nav a{display:block; padding:6px 20px; font-size:14px; color:var(--fg2);
+  border-left:3px solid transparent;}
+nav a:hover{background:var(--bg3); text-decoration:none; color:var(--fg);}
+nav a.active{color:var(--accent); font-weight:600;
+  border-left-color:var(--accent); background:var(--bg3);}
+
+main{flex:1; min-width:0; padding:46px 60px 120px; max-width:1120px;}
+article{
+  background:var(--bg2); border:1px solid var(--line);
+  border-radius:12px; padding:40px 48px;
+  box-shadow:0 1px 3px rgba(0,0,0,.10);
+}
+
+/* ============ 正文排版 ============ */
+h1,h2,h3,h4{line-height:1.4; margin:1.7em 0 .7em; font-weight:700; scroll-margin-top:20px;}
+h1{font-size:1.9em; margin-top:0; padding-bottom:.4em; border-bottom:2px solid var(--line);}
+h2{font-size:1.42em; padding-bottom:.28em; border-bottom:1px solid var(--line);}
+h3{font-size:1.16em;}
+h4{font-size:1.03em; color:var(--fg2);}
+p{margin:.8em 0;}
+ul,ol{padding-left:1.65em;}
+li{margin:.35em 0;}
+strong{font-weight:700;}
+hr{border:0; border-top:1px solid var(--line); margin:2.2em 0;}
+img{max-width:100%;}
+
+blockquote{
+  margin:1.1em 0; padding:.85em 1.15em; background:var(--quote-bg);
+  border-left:4px solid var(--accent); color:var(--fg2);
+  border-radius:0 8px 8px 0;
+}
+blockquote p{margin:.4em 0;}
+blockquote strong{color:var(--fg);}
+
+/* ============ 表格 ============ */
+table{
+  border-collapse:collapse; width:100%; margin:1.2em 0;
+  font-size:14.8px; display:block; overflow-x:auto;
+}
+th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top;}
+th{background:var(--bg3); font-weight:600; white-space:nowrap;}
+tbody tr:nth-child(even) td{background:rgba(127,127,127,.05);}
+
+/* ============ 代码 ============ */
+code{
+  font-family:"Cascadia Code",Consolas,"SF Mono",Monaco,"Courier New","Microsoft YaHei",monospace;
+  font-size:.885em; background:var(--code-bg); padding:.16em .42em;
+  border-radius:4px; border:1px solid var(--line);
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--line); border-radius:9px;
+  padding:15px 17px; overflow-x:auto; margin:1.1em 0; line-height:1.6;
+}
+pre code{background:none; padding:0; border:0; font-size:13.8px;}
+.codehilite{background:var(--code-bg); border:1px solid var(--line);
+  border-radius:9px; margin:1.1em 0;}
+.codehilite pre{border:0; margin:0; background:none;}
+
+/* ============ 本页目录 / 卡片 / 翻页 ============ */
+.toc-box{
+  background:var(--quote-bg); border:1px solid var(--line);
+  border-radius:9px; padding:13px 22px; margin:1.3em 0;
+}
+.toc-box strong{display:block; margin-bottom:5px; color:var(--muted);
+  font-size:13px; letter-spacing:.05em;}
+.toc-box ul{margin:.35em 0; padding-left:1.3em;}
+.toc-box a{color:var(--fg2);}
+.toc-box a:hover{color:var(--accent);}
+
+/* ============ 讲义页顶部的"卡住了去哪查"横幅 ============ */
+.hintbar{
+  background:var(--bg3); border:1px solid var(--line); border-radius:8px;
+  padding:9px 15px; margin:0 0 1.5em; font-size:13.5px; color:var(--muted);
+}
+.hintbar a{font-weight:600;}
+
+/* 超长的"本页目录"（比如术语表有 100+ 词条）折叠起来，别把正文挤下去 */
+details.toc-box summary{
+  cursor:pointer; color:var(--muted); font-size:13.5px;
+  font-weight:600; letter-spacing:.03em; user-select:none;
+}
+details.toc-box summary:hover{color:var(--accent);}
+details.toc-box[open] summary{margin-bottom:.5em;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px; margin:24px 0;}
+.card{background:var(--bg2); border:1px solid var(--line); border-radius:11px;
+  padding:19px 21px; transition:transform .15s ease, border-color .15s ease;}
+.card:hover{transform:translateY(-2px); border-color:var(--accent);}
+.card h3{margin:0 0 8px; font-size:1.06em;}
+.card p{margin:0; color:var(--muted); font-size:14px; line-height:1.65;}
+
+.pager{display:flex; justify-content:space-between; gap:14px; margin-top:34px;
+  padding-top:20px; border-top:1px solid var(--line);}
+.pager a{flex:1; padding:11px 16px; background:var(--bg3); border:1px solid var(--line);
+  border-radius:9px; font-size:14px; color:var(--fg2);}
+.pager a:hover{border-color:var(--accent); color:var(--accent); text-decoration:none;}
+.pager a.next{text-align:right;}
+.pager a.disabled{opacity:.35; pointer-events:none;}
+
+.footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:13.5px;}
+
+/* ============ 移动端 ============ */
+@media (max-width:900px){
+  nav{display:none;}
+  main{padding:18px 12px 60px;}
+  article{padding:22px 17px; border-radius:8px;}
+  #themeBtn{top:10px; right:10px; width:38px; height:38px;}
+}
+
+/* ===== 代码高亮（按主题隔离） ===== */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="dark"] .codehilite .hll { background-color: #49483e }
+[data-theme="dark"] .codehilite { background: #272822; color: #F8F8F2 }
+[data-theme="dark"] .codehilite .c { color: #959077 } /* Comment */
+[data-theme="dark"] .codehilite .err { color: #ED007E; background-color: #1E0010 } /* Error */
+[data-theme="dark"] .codehilite .esc { color: #F8F8F2 } /* Escape */
+[data-theme="dark"] .codehilite .g { color: #F8F8F2 } /* Generic */
+[data-theme="dark"] .codehilite .k { color: #66D9EF } /* Keyword */
+[data-theme="dark"] .codehilite .l { color: #AE81FF } /* Literal */
+[data-theme="dark"] .codehilite .n { color: #F8F8F2 } /* Name */
+[data-theme="dark"] .codehilite .o { color: #FF4689 } /* Operator */
+[data-theme="dark"] .codehilite .x { color: #F8F8F2 } /* Other */
+[data-theme="dark"] .codehilite .p { color: #F8F8F2 } /* Punctuation */
+[data-theme="dark"] .codehilite .ch { color: #959077 } /* Comment.Hashbang */
+[data-theme="dark"] .codehilite .cm { color: #959077 } /* Comment.Multiline */
+[data-theme="dark"] .codehilite .cp { color: #959077 } /* Comment.Preproc */
+[data-theme="dark"] .codehilite .cpf { color: #959077 } /* Comment.PreprocFile */
+[data-theme="dark"] .codehilite .c1 { color: #959077 } /* Comment.Single */
+[data-theme="dark"] .codehilite .cs { color: #959077 } /* Comment.Special */
+[data-theme="dark"] .codehilite .gd { color: #FF4689 } /* Generic.Deleted */
+[data-theme="dark"] .codehilite .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+[data-theme="dark"] .codehilite .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="dark"] .codehilite .gr { color: #FF4689 } /* Generic.Error */
+[data-theme="dark"] .codehilite .gh { color: #F8F8F2 } /* Generic.Heading */
+[data-theme="dark"] .codehilite .gi { color: #A6E22E } /* Generic.Inserted */
+[data-theme="dark"] .codehilite .go { color: #66D9EF } /* Generic.Output */
+[data-theme="dark"] .codehilite .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+[data-theme="dark"] .codehilite .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+[data-theme="dark"] .codehilite .gu { color: #959077 } /* Generic.Subheading */
+[data-theme="dark"] .codehilite .gt { color: #66D9EF } /* Generic.Traceback */
+[data-theme="dark"] .codehilite .kc { color: #66D9EF } /* Keyword.Constant */
+[data-theme="dark"] .codehilite .kd { color: #66D9EF } /* Keyword.Declaration */
+[data-theme="dark"] .codehilite .kn { color: #FF4689 } /* Keyword.Namespace */
+[data-theme="dark"] .codehilite .kp { color: #66D9EF } /* Keyword.Pseudo */
+[data-theme="dark"] .codehilite .kr { color: #66D9EF } /* Keyword.Reserved */
+[data-theme="dark"] .codehilite .kt { color: #66D9EF } /* Keyword.Type */
+[data-theme="dark"] .codehilite .ld { color: #E6DB74 } /* Literal.Date */
+[data-theme="dark"] .codehilite .m { color: #AE81FF } /* Literal.Number */
+[data-theme="dark"] .codehilite .s { color: #E6DB74 } /* Literal.String */
+[data-theme="dark"] .codehilite .na { color: #A6E22E } /* Name.Attribute */
+[data-theme="dark"] .codehilite .nb { color: #A6E22E } /* Name.Builtin */
+[data-theme="dark"] .codehilite .nc { color: #A6E22E } /* Name.Class */
+[data-theme="dark"] .codehilite .no { color: #66D9EF } /* Name.Constant */
+[data-theme="dark"] .codehilite .nd { color: #A6E22E } /* Name.Decorator */
+[data-theme="dark"] .codehilite .ni { color: #F8F8F2 } /* Name.Entity */
+[data-theme="dark"] .codehilite .ne { color: #A6E22E } /* Name.Exception */
+[data-theme="dark"] .codehilite .nf { color: #A6E22E } /* Name.Function */
+[data-theme="dark"] .codehilite .nl { color: #F8F8F2 } /* Name.Label */
+[data-theme="dark"] .codehilite .nn { color: #F8F8F2 } /* Name.Namespace */
+[data-theme="dark"] .codehilite .nx { color: #A6E22E } /* Name.Other */
+[data-theme="dark"] .codehilite .py { color: #F8F8F2 } /* Name.Property */
+[data-theme="dark"] .codehilite .nt { color: #FF4689 } /* Name.Tag */
+[data-theme="dark"] .codehilite .nv { color: #F8F8F2 } /* Name.Variable */
+[data-theme="dark"] .codehilite .ow { color: #FF4689 } /* Operator.Word */
+[data-theme="dark"] .codehilite .pm { color: #F8F8F2 } /* Punctuation.Marker */
+[data-theme="dark"] .codehilite .w { color: #F8F8F2 } /* Text.Whitespace */
+[data-theme="dark"] .codehilite .mb { color: #AE81FF } /* Literal.Number.Bin */
+[data-theme="dark"] .codehilite .mf { color: #AE81FF } /* Literal.Number.Float */
+[data-theme="dark"] .codehilite .mh { color: #AE81FF } /* Literal.Number.Hex */
+[data-theme="dark"] .codehilite .mi { color: #AE81FF } /* Literal.Number.Integer */
+[data-theme="dark"] .codehilite .mo { color: #AE81FF } /* Literal.Number.Oct */
+[data-theme="dark"] .codehilite .sa { color: #E6DB74 } /* Literal.String.Affix */
+[data-theme="dark"] .codehilite .sb { color: #E6DB74 } /* Literal.String.Backtick */
+[data-theme="dark"] .codehilite .sc { color: #E6DB74 } /* Literal.String.Char */
+[data-theme="dark"] .codehilite .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+[data-theme="dark"] .codehilite .sd { color: #E6DB74 } /* Literal.String.Doc */
+[data-theme="dark"] .codehilite .s2 { color: #E6DB74 } /* Literal.String.Double */
+[data-theme="dark"] .codehilite .se { color: #AE81FF } /* Literal.String.Escape */
+[data-theme="dark"] .codehilite .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+[data-theme="dark"] .codehilite .si { color: #E6DB74 } /* Literal.String.Interpol */
+[data-theme="dark"] .codehilite .sx { color: #E6DB74 } /* Literal.String.Other */
+[data-theme="dark"] .codehilite .sr { color: #E6DB74 } /* Literal.String.Regex */
+[data-theme="dark"] .codehilite .s1 { color: #E6DB74 } /* Literal.String.Single */
+[data-theme="dark"] .codehilite .ss { color: #E6DB74 } /* Literal.String.Symbol */
+[data-theme="dark"] .codehilite .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+[data-theme="dark"] .codehilite .fm { color: #A6E22E } /* Name.Function.Magic */
+[data-theme="dark"] .codehilite .vc { color: #F8F8F2 } /* Name.Variable.Class */
+[data-theme="dark"] .codehilite .vg { color: #F8F8F2 } /* Name.Variable.Global */
+[data-theme="dark"] .codehilite .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+[data-theme="dark"] .codehilite .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+[data-theme="dark"] .codehilite .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="light"] .codehilite .hll { background-color: #ffffcc }
+[data-theme="light"] .codehilite { background: #f0f0f0; }
+[data-theme="light"] .codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+[data-theme="light"] .codehilite .err { border: 1px solid #F00 } /* Error */
+[data-theme="light"] .codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+[data-theme="light"] .codehilite .o { color: #666 } /* Operator */
+[data-theme="light"] .codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+[data-theme="light"] .codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+[data-theme="light"] .codehilite .cp { color: #007020 } /* Comment.Preproc */
+[data-theme="light"] .codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+[data-theme="light"] .codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+[data-theme="light"] .codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+[data-theme="light"] .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+[data-theme="light"] .codehilite .ge { font-style: italic } /* Generic.Emph */
+[data-theme="light"] .codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="light"] .codehilite .gr { color: #F00 } /* Generic.Error */
+[data-theme="light"] .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+[data-theme="light"] .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+[data-theme="light"] .codehilite .go { color: #888 } /* Generic.Output */
+[data-theme="light"] .codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+[data-theme="light"] .codehilite .gs { font-weight: bold } /* Generic.Strong */
+[data-theme="light"] .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+[data-theme="light"] .codehilite .gt { color: #04D } /* Generic.Traceback */
+[data-theme="light"] .codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+[data-theme="light"] .codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+[data-theme="light"] .codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+[data-theme="light"] .codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+[data-theme="light"] .codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+[data-theme="light"] .codehilite .kt { color: #902000 } /* Keyword.Type */
+[data-theme="light"] .codehilite .m { color: #40A070 } /* Literal.Number */
+[data-theme="light"] .codehilite .s { color: #4070A0 } /* Literal.String */
+[data-theme="light"] .codehilite .na { color: #4070A0 } /* Name.Attribute */
+[data-theme="light"] .codehilite .nb { color: #007020 } /* Name.Builtin */
+[data-theme="light"] .codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+[data-theme="light"] .codehilite .no { color: #60ADD5 } /* Name.Constant */
+[data-theme="light"] .codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+[data-theme="light"] .codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+[data-theme="light"] .codehilite .ne { color: #007020 } /* Name.Exception */
+[data-theme="light"] .codehilite .nf { color: #06287E } /* Name.Function */
+[data-theme="light"] .codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+[data-theme="light"] .codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+[data-theme="light"] .codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+[data-theme="light"] .codehilite .nv { color: #BB60D5 } /* Name.Variable */
+[data-theme="light"] .codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+[data-theme="light"] .codehilite .w { color: #BBB } /* Text.Whitespace */
+[data-theme="light"] .codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+[data-theme="light"] .codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+[data-theme="light"] .codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+[data-theme="light"] .codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+[data-theme="light"] .codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+[data-theme="light"] .codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+[data-theme="light"] .codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+[data-theme="light"] .codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+[data-theme="light"] .codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+[data-theme="light"] .codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+[data-theme="light"] .codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+[data-theme="light"] .codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+[data-theme="light"] .codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+[data-theme="light"] .codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+[data-theme="light"] .codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+[data-theme="light"] .codehilite .sr { color: #235388 } /* Literal.String.Regex */
+[data-theme="light"] .codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+[data-theme="light"] .codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+[data-theme="light"] .codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+[data-theme="light"] .codehilite .fm { color: #06287E } /* Name.Function.Magic */
+[data-theme="light"] .codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+[data-theme="light"] .codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+[data-theme="light"] .codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+[data-theme="light"] .codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+[data-theme="light"] .codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+[data-theme="dark"] .codehilite, [data-theme="dark"] .codehilite pre{background:transparent;}
+</style>
+</head>
+<body>
+<button id="themeBtn" title="切换深色 / 浅色">🌙</button>
+<div class="layout">
+<nav><div class="brand">C++ 入门课程</div>
+<a href="../../README.html">课程说明</a>
+<div class="group">附录</div>
+<a href="../../附录/术语表.html">术语表</a>
+<a href="../../附录/零基础起飞.html">零基础起飞</a>
+<div class="group">讲义</div>
+<a href="../../讲义/第01章-预备知识.html">第01章-预备知识</a>
+<a href="../../讲义/第02章-开始学习C++.html">第02章-开始学习C++</a>
+<a href="../../讲义/第03章-处理数据.html">第03章-处理数据</a>
+<a href="../../讲义/第04章A-数组与字符串.html">第04章A-数组与字符串</a>
+<a href="../../讲义/第04章B-结构共用体枚举.html">第04章B-结构共用体枚举</a>
+<div class="group">练习</div>
+<a href="../../练习/第01章-练习.html">第01章-练习</a>
+<a href="../../练习/第02章-练习.html">第02章-练习</a>
+<a href="../../练习/第03章-练习.html">第03章-练习</a>
+<a href="../../练习/第04章A-练习.html">第04章A-练习</a>
+<a href="../../练习/第04章B-练习.html">第04章B-练习</a>
+<div class="group">参考答案</div>
+<a href="../../参考答案/第01章/复习题答案.html">第01章 · 复习题答案</a>
+<a href="../../参考答案/第01章/错误分类实验-答案.html">第01章 · 错误分类实验-答案</a>
+<a href="../../参考答案/第01章/摸底测试/说明.html">第01章/摸底测试 · 说明</a>
+<a href="../../参考答案/第02章/复习题答案.html" class="active">第02章 · 复习题答案</a>
+<a href="../../参考答案/第03章/复习题答案.html">第03章 · 复习题答案</a>
+<a href="../../参考答案/第04章A/复习题答案.html">第04章A · 复习题答案</a>
+<a href="../../参考答案/第04章B/复习题答案.html">第04章B · 复习题答案</a>
+</nav>
+<main><article>
+<div class="toc-box"><strong>本页目录</strong><div class="toc">
+<ul>
+<li><a href="#一任务-2-的-5-个实验">一、任务 2 的 5 个实验</a><ul>
+<li><a href="#实验-a删掉函数原型会怎样">实验 A：删掉函数原型会怎样</a></li>
+<li><a href="#实验-b函数定义后多加一个分号会怎样-重要">实验 B：函数定义后多加一个分号会怎样 ★ 重要</a></li>
+<li><a href="#实验-c原型和定义不一致会怎样">实验 C：原型和定义不一致会怎样</a></li>
+<li><a href="#实验-dcin-读字符串">实验 D：cin &gt;&gt; 读字符串</a></li>
+<li><a href="#实验-e-wall-抓到的-bug">实验 E：-Wall 抓到的 bug</a></li>
+</ul>
+</li>
+<li><a href="#二任务-3复习题教材-p53">二、任务 3：复习题（教材 p53）</a><ul>
+<li><a href="#第-1-题c-程序的模块叫什么">第 1 题：C++ 程序的模块叫什么？</a></li>
+<li><a href="#第-2-题下面的预处理器编译指令是做什么用的">第 2 题：下面的预处理器编译指令是做什么用的？</a></li>
+<li><a href="#第-3-题下面的语句是做什么用的">第 3 题：下面的语句是做什么用的？</a></li>
+<li><a href="#第-4-题什么语句可以用来打印短语-hello-world然后开始新的一行">第 4 题：什么语句可以用来打印短语 "Hello, world"，然后开始新的一行？</a></li>
+<li><a href="#第-5-题什么语句可以用来创建名为-cheeses-的整数变量">第 5 题：什么语句可以用来创建名为 cheeses 的整数变量？</a></li>
+<li><a href="#第-6-题什么语句可以用来将值-32-赋给变量-cheeses">第 6 题：什么语句可以用来将值 32 赋给变量 cheeses？</a></li>
+<li><a href="#第-7-题什么语句可以用来将从键盘输入的值读入变量-cheeses-中">第 7 题：什么语句可以用来将从键盘输入的值读入变量 cheeses 中？</a></li>
+<li><a href="#第-8-题什么语句可以用来打印-we-have-x-varieties-of-cheese其中-x-为变量-cheeses-的当前值">第 8 题：什么语句可以用来打印 "We have X varieties of cheese,"，其中 X 为变量 cheeses 的当前值？</a></li>
+<li><a href="#第-9-题下面的函数原型指出了关于函数的哪些信息">第 9 题：下面的函数原型指出了关于函数的哪些信息？</a></li>
+<li><a href="#第-10-题定义函数时在什么情况下不必使用关键字-return">第 10 题：定义函数时，在什么情况下不必使用关键字 return？</a></li>
+<li><a href="#第-11-题cout-是未知标识符原因和-3-种修复方法">第 11 题：cout 是未知标识符——原因和 3 种修复方法</a></li>
+</ul>
+</li>
+<li><a href="#三任务-5过关自测">三、任务 5：过关自测</a><ul>
+<li><a href="#51-写一个两个函数-函数原型的小程序">5.1 写一个"两个函数 + 函数原型"的小程序</a></li>
+<li><a href="#52-两条报错分别属于哪类错误往哪个方向排查">5.2 两条报错分别属于哪类错误？往哪个方向排查？</a></li>
+<li><a href="#53-stdcout-里的-std-是干什么的为什么推荐把-using-namespace-std-放进函数内部">5.3 std::cout 里的 std:: 是干什么的？为什么推荐把 using namespace std; 放进函数内部？</a></li>
+</ul>
+</li>
+<li><a href="#附本章要记住的三句">附：本章要记住的三句</a></li>
+<li><a href="#关于编程练习">关于编程练习</a></li>
+</ul>
+</div>
+</div><h1 id="第-02-章-复习题-参考答案">第 02 章 复习题 · 参考答案</h1>
+<blockquote>
+<p><strong>教材附录 J（p933）有官方答案，建议先自己做完再对照。</strong></p>
+<p>下面每条都是「先给出参考答案，再保留一份原始作答记录，逐条核对」。
+凡是原作答有问题的地方，都在该条后面用一行小字标了 <strong>订正说明</strong>。
+原作答正确、只是可以写得更精确的地方，用 <strong>补充说明</strong> 标出，不算错误。</p>
+</blockquote>
+<p><strong>本文件覆盖</strong>：任务 2 的 5 个实验、任务 3 的 11 道复习题（教材 p53）、任务 5 的 3 道过关自测。</p>
+<p>配套代码在 <a href="代码/"><code>代码/</code></a> 目录下（<code>ex1.cpp</code>…<code>ex7.cpp</code>），每个文件顶部都写明了它对应教材哪一题、
+思路要点和值得注意的地方。本文件里的报错原文，都是在 <code>g++ -std=c++17 -Wall -Wextra</code> 下<strong>实测</strong>得到的。</p>
+<hr />
+<h2 id="一任务-2-的-5-个实验">一、任务 2 的 5 个实验</h2>
+<h3 id="实验-a删掉函数原型会怎样">实验 A：删掉函数原型会怎样</h3>
+<p><strong>参考答案</strong></p>
+<p>把 <code>04_ourfunc.cpp</code> 第 15 行的 <code>void simon(int);</code> 注释掉再编译，报错是：</p>
+<div class="codehilite"><pre><span></span><code>04_ourfunc.cpp: In function 'int main()':
+04_ourfunc.cpp:24:5: error: 'simon' was not declared in this scope
+     simon(3);                // 调用 simon，把 3 传进去
+     ^~~~~
+</code></pre></div>
+
+<p>这是<strong>编译期错误</strong>（编译错误），不是链接错误。关键词：<strong><code>was not declared in this scope</code></strong>（"在此作用域中未声明"）。</p>
+<p>原因：编译器<strong>从上往下</strong>读代码，读到 <code>main()</code> 里的 <code>simon(3)</code> 时，它还没见过 <code>simon</code> 这个名字——
+C++ 要求<strong>先声明、后使用</strong>。函数原型就是提前给编译器的一张"说明书"。
+修好它有两条路：① 把原型加回来；② 把 <code>simon</code> 的整个定义挪到 <code>main()</code> 前面（函数一多就会乱，所以不推荐）。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>报错原文抄录为 <code>error: 'simon' was not declared in this scope</code>（第 24 行）；
+错误类型填的是：<strong>编译期</strong>。</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ 报错原文抄得对，行号（24）也对得上。</li>
+<li>✅ 错误类型判断正确：这是<strong>编译期</strong>错误，因为编译器在生成目标文件之前就停下了，根本没有 <code>collect2.exe</code> / <code>ld</code> 那一行。</li>
+</ul>
+<blockquote>
+<p><strong>补充说明</strong>：原答案正确。可以再补一句判断口诀：<strong>报错里出现 <code>error:</code> 且没有 <code>collect2</code> / <code>ld</code> / <code>undefined reference</code> → 编译期；出现 <code>undefined reference</code> / <code>ld returned</code> → 链接期。</strong></p>
+</blockquote>
+<hr />
+<h3 id="实验-b函数定义后多加一个分号会怎样-重要">实验 B：函数定义后多加一个分号会怎样 ★ 重要</h3>
+<p><strong>参考答案</strong></p>
+<p>按步骤做完（① 注释掉原型 ② 在函数定义的 <code>}</code> 后面加一个 <code>;</code>），得到的报错是：</p>
+<div class="codehilite"><pre><span></span><code>04_ourfunc.cpp: In function 'int main()':
+04_ourfunc.cpp:24:5: error: 'simon' was not declared in this scope
+     simon(3);                // 调用 simon，把 3 传进去
+     ^~~~~
+</code></pre></div>
+
+<p><strong>和实验 A 一模一样</strong>。也就是说：<strong>这个错误并不是那个分号造成的</strong>，真正的成因是"原型被注释掉了"。
+用两次对照编译就能把责任分清楚：</p>
+<table>
+<thead>
+<tr>
+<th>改动</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原型注释掉 + 定义后多一个 <code>;</code></td>
+<td>❌ <code>error: 'simon' was not declared in this scope</code>（编译期）</td>
+</tr>
+<tr>
+<td>原型<strong>保留</strong> + 定义后多一个 <code>;</code>（原型后面再多一个 <code>;</code> 也一样）</td>
+<td>✅ <strong>编译通过</strong>，<code>-Wall -Wextra</code> 连一个警告都没有</td>
+</tr>
+</tbody>
+</table>
+<p>原因：函数定义结尾 <code>}</code> 后面的 <code>;</code>，在 C++ 里是一条<strong>空声明（empty declaration）</strong>。
+<code>;</code> 单独出现是合法的，编译器直接忽略它。所以"一个分号造成 <code>undefined reference</code>"这个说法<strong>不成立</strong>。</p>
+<p>⚠️ <strong>这一题要注意</strong>：题目把"注释掉原型"和"多写一个分号"两个改动放在了一起，很容易让人把报错错记在分号头上。
+要定位真正的原因，必须<strong>一次只改一个地方</strong>——这正是调试的基本功。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>编译时报错，其余不清楚</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ "编译时报错"说对了：确实是<strong>编译期</strong>错误，不是链接期错误（报错里没有 <code>undefined reference</code>）。</li>
+<li>❌ "其余不清楚"——这一题的结论和题目的暗示正好相反，值得记一笔（见订正说明）。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案写的是「编译时报错，其余不清楚」，正确应为「这是<strong>编译期</strong>错误 <code>'simon' was not declared in this scope</code>；而且它<strong>不是那个多余的分号造成的</strong>——分号加在函数定义后面只是一条合法的空声明，编译器会忽略它，真正的原因是原型被注释掉了（见实验 A）。把"原型保留 + 同样多一个分号"再编译一次就能验证：能通过，且没有任何警告」，因为题目把两个改动放在一起做，报错看起来像是分号引起的；只要把两个变量分开单独测，就能发现分号是无辜的。</p>
+</blockquote>
+<hr />
+<h3 id="实验-c原型和定义不一致会怎样">实验 C：原型和定义不一致会怎样</h3>
+<p><strong>参考答案</strong></p>
+<p>先按题目的字面做——只把<strong>返回类型</strong>从 <code>void</code> 改成 <code>double</code>，原型写成 <code>double simon(int);</code>，定义不动。
+这样得到的是<strong>编译期错误</strong>：</p>
+<div class="codehilite"><pre><span></span><code>04_ourfunc.cpp:40:6: error: ambiguating new declaration of 'void simon(int)'
+ void simon(int n)
+      ^~~~~
+04_ourfunc.cpp:15:8: note: old declaration 'double simon(int)'
+ double simon(int);
+        ^~~~~
+</code></pre></div>
+
+<p>关键词：<strong><code>ambiguating new declaration</code></strong>（含混的新声明）——参数列表相同、返回类型不同的两个声明互相冲突，
+编译器在编译阶段就直接报错，<strong>走不到链接那一步</strong>。（返回类型不参与 C++ 的函数重载区分，所以这也不能算重载。）</p>
+<p>如果改成<strong>参数类型</strong>也不一致，比如原型写成 <code>double simon(double);</code>（定义仍是 <code>void simon(int n)</code>），
+得到的才是真正的<strong>链接期错误</strong>：</p>
+<div class="codehilite"><pre><span></span><code>&lt;TEMP&gt;/ccXXXXXX.o:04_ourfunc.cpp:(.text+0x1a): undefined reference to `simon(double)'
+&lt;TEMP&gt;/ccXXXXXX.o:04_ourfunc.cpp:(.text+0x4c): undefined reference to `simon(double)'
+collect2.exe: error: ld returned 1 exit status
+</code></pre></div>
+
+<p>关键词：<strong><code>undefined reference</code></strong>（未定义的引用）。原因：<code>main()</code> 里调用的是 <code>simon(double)</code>，
+而程序里只定义了 <code>simon(int)</code>——两个函数的<strong>参数列表不同</strong>，属于重载关系，是两个不同的函数，
+链接器找不到 <code>simon(double)</code> 的函数体。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>报错原文是 <code>undefined reference to 'simon(double)'</code>（两个调用点各一条）；
+"这是哪类错误？关键词是什么？"填的是：<code>undefined reference</code>。</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ 报错原文和"关键词 <code>undefined reference</code>"能<strong>互相对上</strong>：抄下来的报错里参数类型是 <code>simon(double)</code>，说明当时改的是<strong>参数类型</strong>（不只是返回类型）。</li>
+<li>⚠️ 但按题目字面（只改返回类型、参数仍是 <code>int</code>），实际得到的是<strong>编译期</strong>的 <code>ambiguating new declaration</code>，不是链接错误。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案写的是「<code>undefined reference</code>」——如果实验时确实把原型改成了 <code>double simon(double);</code>（连带改了<strong>参数类型</strong>），那这个答案是<strong>对的，保留</strong>；但如果严格按题目文字只改<strong>返回类型</strong>（<code>double simon(int);</code>），正确应为「<strong>编译期</strong>错误，关键词 <code>ambiguating new declaration</code>」，因为同名且参数列表相同的两个函数不能只有返回类型不同——编译器把它当成互相冲突的声明，在编译阶段就报错，根本到不了链接阶段。报错原文里的 <code>simon(double)</code> 恰好说明当时改的是参数类型。<strong>建议对照教材附录 J 和题目原文，把这一题的改动步骤再核一遍</strong>（是改返回类型，还是改参数类型）。</p>
+</blockquote>
+<hr />
+<h3 id="实验-dcin-读字符串">实验 D：<code>cin &gt;&gt;</code> 读字符串</h3>
+<p><strong>参考答案</strong></p>
+<p>跑 <code>03_getinfo.cpp</code>，先输入 carrots 的数量，再在名字那里输入 <code>Li Ming</code>，实际输出是：</p>
+<div class="codehilite"><pre><span></span><code>How many carrots do you have? 3
+Here are two more. Now you have 5 carrots.
+Enter your name: Li Ming
+Hello, Li!
+</code></pre></div>
+
+<p>关键在最后一行：<strong><code>Hello, Li!</code></strong>——只读到了 <code>Li</code>，<code>Ming</code> 丢了。</p>
+<p>原因：<code>cin &gt;&gt; name</code> 在读到<strong>空白符</strong>时就停止，只把已经读到的 <code>Li</code> 存进 <code>name</code>，
+剩下的 <code>Ming</code> 还留在输入缓冲区里。<code>&gt;&gt;</code> 读 <code>char</code> 数组时读的是<strong>一个"单词"</strong>，不是一整行。
+想读整行要用 <code>cin.getline()</code>（第 4 章讲）。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>Li，因为空格被视为输入结束了</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ 正确，而且抓到了关键点：确实是<strong>空白符</strong>终止了这次读取。</li>
+</ul>
+<blockquote>
+<p><strong>补充说明</strong>：原答案正确。更精确的说法：<code>&gt;&gt;</code> 遇到空白符就停，而<strong>空白符不只有空格</strong>——还包括制表符（Tab）和换行符。所以输入 <code>Li</code> 然后直接回车，行为是一样的。</p>
+</blockquote>
+<hr />
+<h3 id="实验-e-wall-抓到的-bug">实验 E：<code>-Wall</code> 抓到的 bug</h3>
+<p><strong>参考答案</strong></p>
+<p>把 <code>02_carrots.cpp</code> 里的 <code>int garbage;</code> 保持<strong>不初始化</strong>（注意：示例代码里现在写的是 <code>int garbage = 0;</code>，
+做本实验前要先去掉 <code>= 0</code>），用 <code>-Wall</code> 编译，警告原文是：</p>
+<div class="codehilite"><pre><span></span><code>02_carrots.cpp: In function 'int main()':
+02_carrots.cpp:30:56: warning: 'garbage' is used uninitialized in this function [-Wuninitialized]
+     cout &lt;&lt; "未初始化的变量是: " &lt;&lt; garbage &lt;&lt; "  &lt;- 每次运行可能都不一样" &lt;&lt; endl;
+                                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+</code></pre></div>
+
+<p>注意这是 <strong>warning（警告）而不是 error</strong>：编译照样成功、照样生成 exe，只是程序里 <code>garbage</code> 的值是
+内存里残留的"垃圾值"，<strong>每次运行可能都不一样</strong>。这正是"未初始化变量"这个 bug 的样子。</p>
+<p>把 <code>int garbage;</code> 改成 <code>int garbage = 0;</code> 之后，警告<strong>没有了</strong>：变量有了确定的初值，
+编译器再没有"使用了未初始化变量"的理由可报。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>警告原文抄录为 <code>02_carrots.cpp:30:56: warning: 'garbage' is used uninitialized in this function [-Wuninitialized]</code>；
+"如果把 <code>int garbage;</code> 改成 <code>int garbage = 0;</code>，警告还在吗？为什么？"填的是：<strong>不在了，因为变量被正确地初始化了</strong>。</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ 警告原文抄得对，行号列号（30:56）都对得上。</li>
+<li>✅ 第二问结论和理由都正确。</li>
+</ul>
+<blockquote>
+<p><strong>补充说明</strong>：原答案正确。可以再补一句：警告不等于错误，但<strong>未初始化变量这类警告必须当错误处理</strong>——它指向的 bug 会让程序行为不确定（同样的输入，两次运行结果可能不同），是最难查的一类 bug。</p>
+<p>⚠️ 另外提醒：示例代码里这一份当前是 <code>int garbage = 0;</code>（已初始化版本），直接编译是<strong>看不到</strong>这条警告的，要先改回 <code>int garbage;</code>。</p>
+</blockquote>
+<hr />
+<h2 id="二任务-3复习题教材-p53">二、任务 3：复习题（教材 p53）</h2>
+<h3 id="第-1-题c-程序的模块叫什么">第 1 题：C++ 程序的模块叫什么？</h3>
+<p><strong>参考答案：函数（function）。</strong></p>
+<p>C++ 程序由一个或多个函数组成，其中必须有且只有一个 <code>main()</code>，程序从 <code>main()</code> 开始执行。
+函数就是 C++ 程序的组成模块。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>答：类</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>❌ 答成了"类"。方向反了：类是<strong>数据抽象</strong>的手段，不是"程序的组成模块"。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案写的是「类」，正确应为「<strong>函数</strong>」，因为 C++ 程序的基本组成模块是函数——一个 C++ 程序就是一组函数的集合，<code>main()</code> 只是其中特殊的一个（教材 p52 的答案即"函数"）。类是第 10 章才引入的机制，用来把数据和操作打包成一个新类型，它描述的是"数据长什么样"，而不是"程序由什么拼起来"。</p>
+</blockquote>
+<hr />
+<h3 id="第-2-题下面的预处理器编译指令是做什么用的">第 2 题：下面的预处理器编译指令是做什么用的？</h3>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+</code></pre></div>
+
+<p><strong>参考答案</strong>：这是一条<strong>预处理指令</strong>。在正式编译之前（预处理阶段），预处理器把 <code>iostream</code> 这个头文件的
+<strong>全部内容插入到该指令所在的位置</strong>，程序此后才能使用标准库的输入输出工具，如 <code>cout</code>、<code>cin</code>、<code>endl</code>。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>答：让预处理器把这个头文件内容都展开复制过来</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ 正确，"展开复制过来"正是"包含（include）"这个动作的准确描述。</li>
+</ul>
+<blockquote>
+<p><strong>补充说明</strong>：原答案正确。可以再补两个术语细节：① 它叫<strong>预处理指令</strong>，在<strong>预处理阶段</strong>完成，早于编译；② 它不以分号结尾（<code>#include &lt;iostream&gt;;</code> 里的分号是多余的，第 1 章的实验 C 专门试过这个）。</p>
+</blockquote>
+<hr />
+<h3 id="第-3-题下面的语句是做什么用的">第 3 题：下面的语句是做什么用的？</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+</code></pre></div>
+
+<p><strong>参考答案</strong>：这是一条 <strong>using 编译指令（using directive）</strong>，它使 <code>std</code> 名称空间中声明的名称
+（如 <code>cout</code>、<code>cin</code>、<code>endl</code>）在当前作用域内<strong>可以直接书写</strong>，不必再加 <code>std::</code> 限定。
+没有它、又没有 <code>std::</code> 限定或 <code>using std::cout;</code>，编译器就不认识 <code>cout</code>。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>答：使用std的名称空间，比如cout，不用这个命令就不认识cout是什么意思</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ 正确，抓住了"让 <code>cout</code> 这类名字变得可见"这个核心作用。</li>
+</ul>
+<blockquote>
+<p><strong>补充说明</strong>：原答案正确。术语上它叫 <strong>using 编译指令</strong>；它的作用范围是<strong>从它出现的位置到所在作用域结束</strong>（放在函数里就只对这个函数生效，见任务 5.3）。</p>
+</blockquote>
+<hr />
+<h3 id="第-4-题什么语句可以用来打印短语-hello-world然后开始新的一行">第 4 题：什么语句可以用来打印短语 "Hello, world"，然后开始新的一行？</h3>
+<p><strong>参考答案</strong>：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Hello, world</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+</code></pre></div>
+
+<p>用 <code>endl</code> 也可以（<code>endl</code> 除了换行还会刷新输出缓冲区）：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Hello, world"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endl</span><span class="p">;</span>
+</code></pre></div>
+
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>答：cout&lt;&lt; "Hello,world \n";</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>❌ 引号里的短语和题目要求的不一致：题目要打的是 <code>Hello, world</code>，原答案写成了 <code>Hello,world</code>。</li>
+<li>❌ <code>\n</code> 前面多了一个空格，会把这个空格也打印出来。</li>
+<li>✅ 大方向对：用 <code>cout</code>，用 <code>\n</code> 换行。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案写的是 <code>cout&lt;&lt; "Hello,world \n";</code>，正确应为 <code>cout &lt;&lt; "Hello, world\n";</code>，因为题目要求打印的短语是 <strong>"Hello, world"</strong>——逗号后面<strong>有一个空格</strong>，原答案漏掉了；另外 <code>\n</code> 前面多写的那个空格会被一并输出，多一个空格的输出就不再是题目要求的短语了。（<code>\n</code> 要写在引号<strong>里面</strong>才是换行符，这一点原答案是对的。）</p>
+</blockquote>
+<hr />
+<h3 id="第-5-题什么语句可以用来创建名为-cheeses-的整数变量">第 5 题：什么语句可以用来创建名为 <code>cheeses</code> 的整数变量？</h3>
+<p><strong>参考答案</strong>：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">cheeses</span><span class="p">;</span>
+</code></pre></div>
+
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>答：int cheeses;</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ 完全正确。</li>
+</ul>
+<hr />
+<h3 id="第-6-题什么语句可以用来将值-32-赋给变量-cheeses">第 6 题：什么语句可以用来将值 32 赋给变量 <code>cheeses</code>？</h3>
+<p><strong>参考答案</strong>：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cheeses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span>
+</code></pre></div>
+
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>答：cheeses = 32;</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ 完全正确。</li>
+</ul>
+<blockquote>
+<p><strong>补充说明</strong>：原答案正确。注意题目问的是<strong>赋值语句</strong>；如果想在定义变量的同时给初值，可以写 <code>int cheeses = 32;</code>，那叫<strong>初始化</strong>，不是本题所问的赋值。</p>
+</blockquote>
+<hr />
+<h3 id="第-7-题什么语句可以用来将从键盘输入的值读入变量-cheeses-中">第 7 题：什么语句可以用来将从键盘输入的值读入变量 <code>cheeses</code> 中？</h3>
+<p><strong>参考答案</strong>：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">cheeses</span><span class="p">;</span>
+</code></pre></div>
+
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>答：cin &gt;&gt; cheese;</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>❌ 变量名少写了末尾的 <code>s</code>：<code>cheese</code> ≠ <code>cheeses</code>。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案写的是 <code>cin &gt;&gt; cheese;</code>，正确应为 <strong><code>cin &gt;&gt; cheeses;</code></strong>，因为题目里的变量名是 <code>cheeses</code>（复数），少写末尾的 <code>s</code> 就变成了另一个变量：如果程序里没有 <code>cheese</code> 这个变量，编译会报 <code>'cheese' was not declared in this scope</code>；如果碰巧另外定义了一个 <code>cheese</code>，那读入的也不是题目要的那个变量——而且编译器不会报错，错误会静悄悄地留下来。</p>
+</blockquote>
+<hr />
+<h3 id="第-8-题什么语句可以用来打印-we-have-x-varieties-of-cheese其中-x-为变量-cheeses-的当前值">第 8 题：什么语句可以用来打印 "We have X varieties of cheese,"，其中 X 为变量 <code>cheeses</code> 的当前值？</h3>
+<p><strong>参考答案</strong>：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"We have "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">cheeses</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" varieties of cheese,</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+</code></pre></div>
+
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>答：cout &lt;&lt; "We have " &lt;&lt; cheeses &lt;&lt;" varieties of cheese"</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>❌ 短语末尾少了题目要求的<strong>逗号</strong>（<code>cheese,</code>）。</li>
+<li>❌ 整条语句<strong>末尾少了分号</strong>。</li>
+<li>✅ 拼接的写法对：<code>"We have " &lt;&lt; cheeses &lt;&lt; " varieties of cheese"</code> 这种"字符串 + 变量 + 字符串"的拼接是正确的。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案写的是 <code>cout &lt;&lt; "We have " &lt;&lt; cheeses &lt;&lt;" varieties of cheese"</code>，正确应为 <code>cout &lt;&lt; "We have " &lt;&lt; cheeses &lt;&lt; " varieties of cheese,\n";</code>，因为：① 题目要求打印的短语末尾有一个<strong>逗号</strong>（<code>cheese,</code>），原答案漏了；② 语句末尾<strong>没有写分号</strong>——这不是风格问题，缺分号会直接编译报错；③ <code>&lt;&lt;</code> 前后补上空格更好读（这一点不影响编译）。</p>
+</blockquote>
+<hr />
+<h3 id="第-9-题下面的函数原型指出了关于函数的哪些信息">第 9 题：下面的函数原型指出了关于函数的哪些信息？</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">froop</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">rattle</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">prune</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</code></pre></div>
+
+<p><strong>参考答案</strong>：</p>
+<ul>
+<li><code>int froop(double t);</code>——函数名 <code>froop</code>，调用时需要传入一个 <code>double</code> 类型的实参，函数返回一个 <code>int</code> 类型的值。</li>
+<li><code>void rattle(int n);</code>——函数名 <code>rattle</code>，调用时需要传入一个 <code>int</code> 类型的实参，函数<strong>不返回</strong>任何值。</li>
+<li><code>int prune(void);</code>——函数名 <code>prune</code>，<strong>不接受任何参数</strong>，函数返回一个 <code>int</code> 类型的值。</li>
+</ul>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>答：一个名为froop的函数接收一个double类型的变量，并且返回int型数据，一个名叫rattle的函数，接收一个int数据，但不返回数据，一个名为prune的函数不接受任何数据，但返回一个int型数据</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ 三条都正确，信息完整。</li>
+</ul>
+<blockquote>
+<p><strong>补充说明</strong>：原答案正确。可以再概括成一句：函数原型提供三样信息——<strong>返回类型、函数名、形参类型列表</strong>（形参名如 <code>t</code>、<code>n</code> 写不写都行，编译器不看）。</p>
+</blockquote>
+<hr />
+<h3 id="第-10-题定义函数时在什么情况下不必使用关键字-return">第 10 题：定义函数时，在什么情况下不必使用关键字 <code>return</code>？</h3>
+<p><strong>参考答案</strong>：当函数的<strong>返回类型是 <code>void</code></strong>（也就是函数不返回值）时，函数体末尾不必写 <code>return</code>，
+执行到函数体结束就自动返回。例如 <code>void rattle(int n)</code>。
+在这种函数里写一个不带返回值的 <code>return;</code> 也可以，但不是必须的。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>答：不用返回数据时 比如 int rattle(int n)</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>❌ 举的例子把返回类型写成了 <code>int</code>，恰好把条件说反了。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案写的是「不用返回数据时 比如 <code>int rattle(int n)</code>」，正确应为「当函数的<strong>返回类型是 <code>void</code></strong> 时，例如 <code>void rattle(int n)</code>」，因为原答案举的例子 <code>int rattle(int n)</code> 的返回类型是 <code>int</code>——返回类型是 <code>int</code> 的函数<strong>必须</strong>写 <code>return</code>（漏写会得到一个不确定的返回值，编译器也会警告），它恰恰是"必须用 return"的典型。判断依据不是"要不要用到返回值"这种主观说法，而是<strong>函数头里写的返回类型是不是 <code>void</code></strong>。</p>
+</blockquote>
+<hr />
+<h3 id="第-11-题cout-是未知标识符原因和-3-种修复方法">第 11 题：<code>cout</code> 是未知标识符——原因和 3 种修复方法</h3>
+<p><strong>参考答案</strong></p>
+<p><strong>原因</strong>：<code>cout</code> 不是 C++ 的关键字，它是标准库头文件 <code>iostream</code> 中、声明在 <code>std</code> 名称空间里的一个<strong>对象</strong>。
+编译器报"未知标识符"，说明这个名字在当前位置对它不可见——最可能的原因是程序<strong>没有写 <code>#include &lt;iostream&gt;</code></strong>；
+或者是写了头文件，但<strong>既没有 <code>using</code> 指令、也没有用 <code>std::</code> 限定</strong>。</p>
+<p><strong>3 种修复方法</strong>：</p>
+<ol>
+<li><strong>补上头文件</strong>：在文件开头加上 <code>#include &lt;iostream&gt;</code>（前提是原本就缺这个头文件）。</li>
+<li><strong>让 <code>std</code> 中的名字可见</strong>：加 <code>using namespace std;</code>，或更精确地只加 <code>using std::cout;</code>。</li>
+<li><strong>不加 <code>using</code>，直接写全限定名</strong>：<code>std::cout &lt;&lt; "Please enter your PIN: ";</code></li>
+</ol>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>原因：（空）</p>
+<p>修复方法 1：std::cout
+修复方法 2：using namespace std
+修复方法 3：自己定义一个名为cout的函数</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>❌ "原因"一栏是空的，没答。</li>
+<li>✅ 方法 1（<code>std::cout</code>）<strong>是正确的方法之一</strong>——等价于标准答案的第 3 种：用全限定名。</li>
+<li>✅ 方法 2（<code>using namespace std;</code>）正确。</li>
+<li>❌ 方法 3（"自己定义一个名为 cout 的函数"）是错的。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案的第 3 种方法写的是「自己定义一个名为 <code>cout</code> 的函数」，正确应为「<strong>直接用全限定名 <code>std::cout</code></strong>」（如果把原答案的方法 1、3 对调，就正好是标准答案的第 1、3 种方法），因为：① <code>cout</code> 是一个<strong>对象</strong>，不是函数，自己定义一个同名的东西并不能替代它；② 就算真定义了，也只是把标准库的名字<strong>遮住</strong>，不但解决不了"编译器不认识这个标识符"的问题，还会引入名称冲突这类新麻烦。另外原答案的"原因"一栏是<strong>空的</strong>，这里补上——报错的意思就是"编译器没见过 <code>cout</code> 这个名字"，也就是<strong>头文件或名称空间限定缺失</strong>。</p>
+</blockquote>
+<hr />
+<h2 id="三任务-5过关自测">三、任务 5：过关自测</h2>
+<h3 id="51-写一个两个函数-函数原型的小程序">5.1 写一个"两个函数 + 函数原型"的小程序</h3>
+<p><strong>参考答案</strong>（一个求两数之和的版本）：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">fun1</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">);</span><span class="w">          </span><span class="c1">// 函数原型</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">fun1</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="n">num2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"输入两个数，会输出相加: "</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">num1</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">num2</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fun1</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="n">num2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"相加结果: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>输入 <code>3 4</code>，输出：</p>
+<div class="codehilite"><pre><span></span><code>输入两个数，会输出相加: 相加结果: 7
+</code></pre></div>
+
+<p><strong>原始作答记录</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">fun1</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">fun1</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">     </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="n">num2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"输入两个数，会输出相加: "</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">num1</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">num2</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fun1</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="n">num2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"相加结果: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ <strong>思路完全对</strong>：先写 <code>fun1</code>，<code>main</code> 里读入两个数、调用 <code>fun1</code> 求和再输出——结构正是题目要的"两个函数"。</li>
+<li>✅ <code>using namespace std;</code> 放在了 <code>main</code> <strong>内部</strong>，这正是 5.3 推荐的做法。</li>
+<li>❌ <strong>这段代码编译不过</strong>。第 2 行 <code>int fun1(int x,int y)</code> 后面<strong>少了分号</strong>，它不是一条完整的声明；紧接着第 4 行又出现了同样的函数头，编译器把两行连在一起解析，于是报错：</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>original.cpp:4:1: error: expected initializer before 'int'
+ int fun1(int x, int y) {
+ ^~~
+original.cpp: In function 'int main()':
+original.cpp:14:15: error: 'fun1' was not declared in this scope
+     int sum = fun1(num1, num2);
+               ^~~~
+</code></pre></div>
+
+<blockquote>
+<p><strong>订正说明</strong>：原答案第 2 行写的是 <code>int fun1(int x,int y)</code>（<strong>没有分号</strong>），正确应为「<strong>要么删掉这一行，要么在行尾补上分号</strong>」——补上分号它才是一条合法的<strong>函数原型</strong>，删掉也可以，因为后面第 4 行就是函数定义、且定义写在 <code>main</code> 之前，编译器已经先见过它了。原答案之所以一行报出 3 个错，是因为第一条错误（<code>expected initializer before 'int'</code>）让编译器没能登记 <code>fun1</code> 这个函数，于是 <code>main</code> 里调用 <code>fun1</code> 又引发了"未声明"的连锁错误——<strong>看报错时要从第一条看起</strong>，后面几条往往只是它的后果。</p>
+</blockquote>
+<hr />
+<h3 id="52-两条报错分别属于哪类错误往哪个方向排查">5.2 两条报错分别属于哪类错误？往哪个方向排查？</h3>
+<div class="codehilite"><pre><span></span><code>a) error: 'simon' was not declared in this scope
+b) undefined reference to `simon(int)'
+</code></pre></div>
+
+<p><strong>参考答案</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>错误类型</th>
+<th>关键词</th>
+<th>往哪个方向排查</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a</td>
+<td><strong>编译期错误</strong></td>
+<td><code>was not declared in this scope</code></td>
+<td>名字在使用前没有声明：函数原型漏了 / 名字拼错 / 大小写不符 / 定义在别的作用域里</td>
+</tr>
+<tr>
+<td>b</td>
+<td><strong>链接期错误</strong></td>
+<td><code>undefined reference</code></td>
+<td>名字声明了但<strong>没有定义</strong>：函数体漏写 / 定义在别的 <code>.cpp</code> 里而那个文件没参与编译链接 / 定义的参数列表和调用的不一致（是重载，不是同一个函数）</td>
+</tr>
+</tbody>
+</table>
+<p>一句话区分：<strong>a 是"编译器不认识这个名字"，b 是"编译器认识这个名字，但链接器找不到它的实现"。</strong></p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>答：a：函数没有提前声明，b：没有在main函数里定义函数头</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ a 说对了：就是"函数没有提前声明"（缺原型或声明在使用之后）。</li>
+<li>❌ b 说错了：与"有没有在 <code>main</code> 里定义"无关。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案 b 写的是「没有在 <code>main</code> 函数里定义函数头」，正确应为「<strong>函数只有声明、没有定义</strong>（或者定义所在的源文件没有参与链接，或定义的参数列表与调用不一致）」，因为 <code>undefined reference</code> 是<strong>链接器</strong>报的错——它的意思是"我在所有目标文件里都找不到 <code>simon(int)</code> 这个函数的实体"。函数<strong>定义在 <code>main</code> 外面</strong>恰恰是最常见的正确写法（本章练习 3、5、6、7 全都是这么写的），所以"没在 <code>main</code> 里定义"根本不是问题所在。判断口诀：看到 <code>undefined reference</code> 就去找<strong>函数体</strong>，而不是去找它的声明位置。</p>
+</blockquote>
+<hr />
+<h3 id="53-stdcout-里的-std-是干什么的为什么推荐把-using-namespace-std-放进函数内部">5.3 <code>std::cout</code> 里的 <code>std::</code> 是干什么的？为什么推荐把 <code>using namespace std;</code> 放进函数内部？</h3>
+<p><strong>参考答案</strong></p>
+<p><code>std::</code> 里的 <code>std</code> 是<strong>标准库的名称空间（namespace）</strong>，<code>::</code> 是<strong>作用域解析运算符</strong>。
+<code>cout</code>、<code>cin</code>、<code>endl</code> 这些名字都声明在 <code>std</code> 里面，所以写 <code>std::cout</code> 就是告诉编译器：
+"我要用的是 <strong><code>std</code> 这个名称空间里的</strong> <code>cout</code>，不是别的同名东西。"——<code>::</code> 相当于给名字加了一个"姓"，用来消除歧义。</p>
+<p>把 <code>using namespace std;</code> 放在<strong>函数内部</strong>，作用范围就只限于<strong>那一个函数</strong>；放在文件顶部，则是<strong>整个文件</strong>都生效。推荐放函数内部，原因有两个：</p>
+<ol>
+<li><strong>减少名字冲突</strong>：一旦在文件顶部写了它，<code>std</code> 里的<strong>所有</strong>名字（<code>count</code>、<code>distance</code>、<code>data</code>、<code>swap</code>……成百上千个）都变得可见，很容易和你自己定义的、或别的头文件里的同名标识符撞车，而且报错信息往往指不到真正的原因。</li>
+<li><strong>意图更清楚</strong>：作用范围越小，读代码的人越容易看出"这个函数在用标准库的名字"；文件顶部一条 <code>using namespace std;</code> 会让整个文件的所有名字来源都变得模糊（教材 2.4.5 节讨论的就是这个取舍）。</li>
+</ol>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>答：std::相当于一个名为std的大容器，里面存放了关于基础函数的声明，比如cout cin函数，直接在顶部用using namesapce std；相当于全局声明，后续如果自己创建了一个名叫cout的函数，在调用这个自己创建的函数时就会和iostream中的cout定义冲突了，如果使用，std::cout就表示使用iostram中的cout函数</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ <strong>核心意思是对的</strong>：<code>std::</code> 是"指明用 <code>std</code> 里的那个名字"，而把 <code>using namespace std;</code> 放顶部会扩大可见范围、可能和自己定义的同名东西撞车。</li>
+<li>❌ 有两处术语不准：<code>std</code> 不叫"大容器"，它是<strong>名称空间</strong>；<code>cout</code>、<code>cin</code> 是<strong>对象</strong>，不是"函数"。另外 <code>std::cout</code> 的含义是"使用 <code>std</code> 里的 <code>cout</code> 对象"，不是"使用 <code>cout</code> 函数"。</li>
+<li>❌ 两处拼写错误：<code>namesapce</code> → <code>namespace</code>，<code>iostram</code> → <code>iostream</code>。</li>
+<li>⚠️ 还漏了推荐放函数内部的第二个理由：<strong>缩小作用范围、让意图更清楚</strong>。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案写的是「<code>std</code> 相当于一个名为 <code>std</code> 的大容器，里面存放了关于基础<strong>函数</strong>的声明，比如 <code>cout</code>、<code>cin</code> <strong>函数</strong>」，正确应为「<code>std</code> 是一个<strong>名称空间</strong>，<code>cout</code>、<code>cin</code> 是声明在其中的<strong>对象</strong>（<code>cout</code> 是输出流对象、<code>cin</code> 是输入流对象）」，因为名称空间的作用是给名字划分"姓氏"以避免重名，它本身不是容器；而 <code>cout</code> / <code>cin</code> 是<strong>对象</strong>——你写 <code>cout &lt;&lt; x</code> 是在对一个对象做运算符操作（调用重载的 <code>&lt;&lt;</code>），并不是在调用一个叫 <code>cout</code> 的函数。这个区别在第 8 章讲类与对象时会变得很重要。另外原答案里 <code>namesapce</code>、<code>iostram</code> 两处拼写要改（写错了会直接编译报错）。</p>
+</blockquote>
+<hr />
+<h2 id="附本章要记住的三句">附：本章要记住的三句</h2>
+<ol>
+<li><strong>声明可以有多个，定义只能有一个。</strong> 函数原型就是"提前给编译器一张说明书"；少了它，<code>main()</code> 里调用就会报 <code>was not declared in this scope</code>（编译期），而不是 <code>undefined reference</code>（链接期）。</li>
+<li><strong><code>cin &gt;&gt;</code> 遇到空白符就停。</strong> 读 <code>char</code> 数组时只能读到一个"单词"（输入 <code>Li Ming</code> 只得到 <code>Li</code>），想读整行要用 <code>cin.getline()</code>（第 4 章）。</li>
+<li><strong><code>return</code> 不是必需的，只看返回类型。</strong> 返回类型是 <code>void</code> 才不必写；返回类型是 <code>int</code> 之类的，必须写。</li>
+</ol>
+<hr />
+<h2 id="关于编程练习">关于编程练习</h2>
+<p>编程练习 1–7 的参考代码见同目录下的 <a href="代码/"><code>代码/</code></a>。自己动手验证时可以这样编译：</p>
+<div class="codehilite"><pre><span></span><code>g++<span class="w"> </span>-std<span class="o">=</span>c++17<span class="w"> </span>-Wall<span class="w"> </span>-Wextra<span class="w"> </span>ex1.cpp<span class="w"> </span>-o<span class="w"> </span>ex1
+</code></pre></div>
+
+<p>第 2 章只用到标准库，不需要额外链接。</p>
+<div class="pager"><a class="prev" href="../../参考答案/第01章/摸底测试/说明.html">← 上一页：说明</a><a class="next" href="../../参考答案/第03章/复习题答案.html">下一页：复习题答案 →</a></div>
+<div class="footer"><a href="../../index.html">← 返回总目录</a></div>
+</article></main>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('themeBtn');
+  function sync(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    btn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    btn.title = (t === 'dark') ? '切换到浅色' : '切换到深色';
+  }
+  btn.addEventListener('click', function(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    t = (t === 'dark') ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    try{ localStorage.setItem('cppcourse-theme', t); }catch(e){}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>

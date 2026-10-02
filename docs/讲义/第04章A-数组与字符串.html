@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第04章A-数组与字符串</title>
+<script>
+/* 在页面渲染前先定好主题，避免"白屏闪一下" */
+(function(){
+  try{
+    var t = localStorage.getItem('cppcourse-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<style>
+/* ============ 颜色变量：默认深色 ============ */
+:root, [data-theme="dark"]{
+  --bg:#14171a; --bg2:#1b1f24; --bg3:#232a31;
+  --fg:#dfe3e8; --fg2:#b6bec8; --muted:#8b95a1;
+  --line:#2b3138; --accent:#58a6ff;
+  --code-bg:#0f1216; --quote-bg:#1b2027;
+}
+[data-theme="light"]{
+  --bg:#fbfbfa; --bg2:#ffffff; --bg3:#f1f5f9;
+  --fg:#22272e; --fg2:#3b434d; --muted:#6b7280;
+  --line:#e5e7eb; --accent:#1f6feb;
+  --code-bg:#f3f4f6; --quote-bg:#f8fafc;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",Roboto,sans-serif;
+  font-size:16.5px; line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ============ 主题切换按钮 ============ */
+#themeBtn{
+  position:fixed; top:14px; right:18px; z-index:50;
+  width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--line); background:var(--bg2); color:var(--fg);
+  font-size:19px; line-height:1; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, background .15s ease;
+}
+#themeBtn:hover{transform:scale(1.08); background:var(--bg3);}
+
+.layout{display:flex; min-height:100vh;}
+
+/* ============ 侧边导航 ============ */
+nav{
+  width:288px; flex:0 0 288px; background:var(--bg2);
+  border-right:1px solid var(--line); padding:22px 0 80px;
+  overflow-y:auto; position:sticky; top:0; height:100vh;
+}
+nav .brand{
+  padding:0 20px 15px; font-weight:700; font-size:15px;
+  border-bottom:1px solid var(--line); margin-bottom:12px; color:var(--fg);
+}
+nav .group{
+  padding:16px 20px 6px; font-size:11.5px; color:var(--muted);
+  letter-spacing:.1em; font-weight:600;
+}
+nav a{display:block; padding:6px 20px; font-size:14px; color:var(--fg2);
+  border-left:3px solid transparent;}
+nav a:hover{background:var(--bg3); text-decoration:none; color:var(--fg);}
+nav a.active{color:var(--accent); font-weight:600;
+  border-left-color:var(--accent); background:var(--bg3);}
+
+main{flex:1; min-width:0; padding:46px 60px 120px; max-width:1120px;}
+article{
+  background:var(--bg2); border:1px solid var(--line);
+  border-radius:12px; padding:40px 48px;
+  box-shadow:0 1px 3px rgba(0,0,0,.10);
+}
+
+/* ============ 正文排版 ============ */
+h1,h2,h3,h4{line-height:1.4; margin:1.7em 0 .7em; font-weight:700; scroll-margin-top:20px;}
+h1{font-size:1.9em; margin-top:0; padding-bottom:.4em; border-bottom:2px solid var(--line);}
+h2{font-size:1.42em; padding-bottom:.28em; border-bottom:1px solid var(--line);}
+h3{font-size:1.16em;}
+h4{font-size:1.03em; color:var(--fg2);}
+p{margin:.8em 0;}
+ul,ol{padding-left:1.65em;}
+li{margin:.35em 0;}
+strong{font-weight:700;}
+hr{border:0; border-top:1px solid var(--line); margin:2.2em 0;}
+img{max-width:100%;}
+
+blockquote{
+  margin:1.1em 0; padding:.85em 1.15em; background:var(--quote-bg);
+  border-left:4px solid var(--accent); color:var(--fg2);
+  border-radius:0 8px 8px 0;
+}
+blockquote p{margin:.4em 0;}
+blockquote strong{color:var(--fg);}
+
+/* ============ 表格 ============ */
+table{
+  border-collapse:collapse; width:100%; margin:1.2em 0;
+  font-size:14.8px; display:block; overflow-x:auto;
+}
+th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top;}
+th{background:var(--bg3); font-weight:600; white-space:nowrap;}
+tbody tr:nth-child(even) td{background:rgba(127,127,127,.05);}
+
+/* ============ 代码 ============ */
+code{
+  font-family:"Cascadia Code",Consolas,"SF Mono",Monaco,"Courier New","Microsoft YaHei",monospace;
+  font-size:.885em; background:var(--code-bg); padding:.16em .42em;
+  border-radius:4px; border:1px solid var(--line);
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--line); border-radius:9px;
+  padding:15px 17px; overflow-x:auto; margin:1.1em 0; line-height:1.6;
+}
+pre code{background:none; padding:0; border:0; font-size:13.8px;}
+.codehilite{background:var(--code-bg); border:1px solid var(--line);
+  border-radius:9px; margin:1.1em 0;}
+.codehilite pre{border:0; margin:0; background:none;}
+
+/* ============ 本页目录 / 卡片 / 翻页 ============ */
+.toc-box{
+  background:var(--quote-bg); border:1px solid var(--line);
+  border-radius:9px; padding:13px 22px; margin:1.3em 0;
+}
+.toc-box strong{display:block; margin-bottom:5px; color:var(--muted);
+  font-size:13px; letter-spacing:.05em;}
+.toc-box ul{margin:.35em 0; padding-left:1.3em;}
+.toc-box a{color:var(--fg2);}
+.toc-box a:hover{color:var(--accent);}
+
+/* ============ 讲义页顶部的"卡住了去哪查"横幅 ============ */
+.hintbar{
+  background:var(--bg3); border:1px solid var(--line); border-radius:8px;
+  padding:9px 15px; margin:0 0 1.5em; font-size:13.5px; color:var(--muted);
+}
+.hintbar a{font-weight:600;}
+
+/* 超长的"本页目录"（比如术语表有 100+ 词条）折叠起来，别把正文挤下去 */
+details.toc-box summary{
+  cursor:pointer; color:var(--muted); font-size:13.5px;
+  font-weight:600; letter-spacing:.03em; user-select:none;
+}
+details.toc-box summary:hover{color:var(--accent);}
+details.toc-box[open] summary{margin-bottom:.5em;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px; margin:24px 0;}
+.card{background:var(--bg2); border:1px solid var(--line); border-radius:11px;
+  padding:19px 21px; transition:transform .15s ease, border-color .15s ease;}
+.card:hover{transform:translateY(-2px); border-color:var(--accent);}
+.card h3{margin:0 0 8px; font-size:1.06em;}
+.card p{margin:0; color:var(--muted); font-size:14px; line-height:1.65;}
+
+.pager{display:flex; justify-content:space-between; gap:14px; margin-top:34px;
+  padding-top:20px; border-top:1px solid var(--line);}
+.pager a{flex:1; padding:11px 16px; background:var(--bg3); border:1px solid var(--line);
+  border-radius:9px; font-size:14px; color:var(--fg2);}
+.pager a:hover{border-color:var(--accent); color:var(--accent); text-decoration:none;}
+.pager a.next{text-align:right;}
+.pager a.disabled{opacity:.35; pointer-events:none;}
+
+.footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:13.5px;}
+
+/* ============ 移动端 ============ */
+@media (max-width:900px){
+  nav{display:none;}
+  main{padding:18px 12px 60px;}
+  article{padding:22px 17px; border-radius:8px;}
+  #themeBtn{top:10px; right:10px; width:38px; height:38px;}
+}
+
+/* ===== 代码高亮（按主题隔离） ===== */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="dark"] .codehilite .hll { background-color: #49483e }
+[data-theme="dark"] .codehilite { background: #272822; color: #F8F8F2 }
+[data-theme="dark"] .codehilite .c { color: #959077 } /* Comment */
+[data-theme="dark"] .codehilite .err { color: #ED007E; background-color: #1E0010 } /* Error */
+[data-theme="dark"] .codehilite .esc { color: #F8F8F2 } /* Escape */
+[data-theme="dark"] .codehilite .g { color: #F8F8F2 } /* Generic */
+[data-theme="dark"] .codehilite .k { color: #66D9EF } /* Keyword */
+[data-theme="dark"] .codehilite .l { color: #AE81FF } /* Literal */
+[data-theme="dark"] .codehilite .n { color: #F8F8F2 } /* Name */
+[data-theme="dark"] .codehilite .o { color: #FF4689 } /* Operator */
+[data-theme="dark"] .codehilite .x { color: #F8F8F2 } /* Other */
+[data-theme="dark"] .codehilite .p { color: #F8F8F2 } /* Punctuation */
+[data-theme="dark"] .codehilite .ch { color: #959077 } /* Comment.Hashbang */
+[data-theme="dark"] .codehilite .cm { color: #959077 } /* Comment.Multiline */
+[data-theme="dark"] .codehilite .cp { color: #959077 } /* Comment.Preproc */
+[data-theme="dark"] .codehilite .cpf { color: #959077 } /* Comment.PreprocFile */
+[data-theme="dark"] .codehilite .c1 { color: #959077 } /* Comment.Single */
+[data-theme="dark"] .codehilite .cs { color: #959077 } /* Comment.Special */
+[data-theme="dark"] .codehilite .gd { color: #FF4689 } /* Generic.Deleted */
+[data-theme="dark"] .codehilite .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+[data-theme="dark"] .codehilite .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="dark"] .codehilite .gr { color: #FF4689 } /* Generic.Error */
+[data-theme="dark"] .codehilite .gh { color: #F8F8F2 } /* Generic.Heading */
+[data-theme="dark"] .codehilite .gi { color: #A6E22E } /* Generic.Inserted */
+[data-theme="dark"] .codehilite .go { color: #66D9EF } /* Generic.Output */
+[data-theme="dark"] .codehilite .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+[data-theme="dark"] .codehilite .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+[data-theme="dark"] .codehilite .gu { color: #959077 } /* Generic.Subheading */
+[data-theme="dark"] .codehilite .gt { color: #66D9EF } /* Generic.Traceback */
+[data-theme="dark"] .codehilite .kc { color: #66D9EF } /* Keyword.Constant */
+[data-theme="dark"] .codehilite .kd { color: #66D9EF } /* Keyword.Declaration */
+[data-theme="dark"] .codehilite .kn { color: #FF4689 } /* Keyword.Namespace */
+[data-theme="dark"] .codehilite .kp { color: #66D9EF } /* Keyword.Pseudo */
+[data-theme="dark"] .codehilite .kr { color: #66D9EF } /* Keyword.Reserved */
+[data-theme="dark"] .codehilite .kt { color: #66D9EF } /* Keyword.Type */
+[data-theme="dark"] .codehilite .ld { color: #E6DB74 } /* Literal.Date */
+[data-theme="dark"] .codehilite .m { color: #AE81FF } /* Literal.Number */
+[data-theme="dark"] .codehilite .s { color: #E6DB74 } /* Literal.String */
+[data-theme="dark"] .codehilite .na { color: #A6E22E } /* Name.Attribute */
+[data-theme="dark"] .codehilite .nb { color: #A6E22E } /* Name.Builtin */
+[data-theme="dark"] .codehilite .nc { color: #A6E22E } /* Name.Class */
+[data-theme="dark"] .codehilite .no { color: #66D9EF } /* Name.Constant */
+[data-theme="dark"] .codehilite .nd { color: #A6E22E } /* Name.Decorator */
+[data-theme="dark"] .codehilite .ni { color: #F8F8F2 } /* Name.Entity */
+[data-theme="dark"] .codehilite .ne { color: #A6E22E } /* Name.Exception */
+[data-theme="dark"] .codehilite .nf { color: #A6E22E } /* Name.Function */
+[data-theme="dark"] .codehilite .nl { color: #F8F8F2 } /* Name.Label */
+[data-theme="dark"] .codehilite .nn { color: #F8F8F2 } /* Name.Namespace */
+[data-theme="dark"] .codehilite .nx { color: #A6E22E } /* Name.Other */
+[data-theme="dark"] .codehilite .py { color: #F8F8F2 } /* Name.Property */
+[data-theme="dark"] .codehilite .nt { color: #FF4689 } /* Name.Tag */
+[data-theme="dark"] .codehilite .nv { color: #F8F8F2 } /* Name.Variable */
+[data-theme="dark"] .codehilite .ow { color: #FF4689 } /* Operator.Word */
+[data-theme="dark"] .codehilite .pm { color: #F8F8F2 } /* Punctuation.Marker */
+[data-theme="dark"] .codehilite .w { color: #F8F8F2 } /* Text.Whitespace */
+[data-theme="dark"] .codehilite .mb { color: #AE81FF } /* Literal.Number.Bin */
+[data-theme="dark"] .codehilite .mf { color: #AE81FF } /* Literal.Number.Float */
+[data-theme="dark"] .codehilite .mh { color: #AE81FF } /* Literal.Number.Hex */
+[data-theme="dark"] .codehilite .mi { color: #AE81FF } /* Literal.Number.Integer */
+[data-theme="dark"] .codehilite .mo { color: #AE81FF } /* Literal.Number.Oct */
+[data-theme="dark"] .codehilite .sa { color: #E6DB74 } /* Literal.String.Affix */
+[data-theme="dark"] .codehilite .sb { color: #E6DB74 } /* Literal.String.Backtick */
+[data-theme="dark"] .codehilite .sc { color: #E6DB74 } /* Literal.String.Char */
+[data-theme="dark"] .codehilite .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+[data-theme="dark"] .codehilite .sd { color: #E6DB74 } /* Literal.String.Doc */
+[data-theme="dark"] .codehilite .s2 { color: #E6DB74 } /* Literal.String.Double */
+[data-theme="dark"] .codehilite .se { color: #AE81FF } /* Literal.String.Escape */
+[data-theme="dark"] .codehilite .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+[data-theme="dark"] .codehilite .si { color: #E6DB74 } /* Literal.String.Interpol */
+[data-theme="dark"] .codehilite .sx { color: #E6DB74 } /* Literal.String.Other */
+[data-theme="dark"] .codehilite .sr { color: #E6DB74 } /* Literal.String.Regex */
+[data-theme="dark"] .codehilite .s1 { color: #E6DB74 } /* Literal.String.Single */
+[data-theme="dark"] .codehilite .ss { color: #E6DB74 } /* Literal.String.Symbol */
+[data-theme="dark"] .codehilite .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+[data-theme="dark"] .codehilite .fm { color: #A6E22E } /* Name.Function.Magic */
+[data-theme="dark"] .codehilite .vc { color: #F8F8F2 } /* Name.Variable.Class */
+[data-theme="dark"] .codehilite .vg { color: #F8F8F2 } /* Name.Variable.Global */
+[data-theme="dark"] .codehilite .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+[data-theme="dark"] .codehilite .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+[data-theme="dark"] .codehilite .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="light"] .codehilite .hll { background-color: #ffffcc }
+[data-theme="light"] .codehilite { background: #f0f0f0; }
+[data-theme="light"] .codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+[data-theme="light"] .codehilite .err { border: 1px solid #F00 } /* Error */
+[data-theme="light"] .codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+[data-theme="light"] .codehilite .o { color: #666 } /* Operator */
+[data-theme="light"] .codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+[data-theme="light"] .codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+[data-theme="light"] .codehilite .cp { color: #007020 } /* Comment.Preproc */
+[data-theme="light"] .codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+[data-theme="light"] .codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+[data-theme="light"] .codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+[data-theme="light"] .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+[data-theme="light"] .codehilite .ge { font-style: italic } /* Generic.Emph */
+[data-theme="light"] .codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="light"] .codehilite .gr { color: #F00 } /* Generic.Error */
+[data-theme="light"] .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+[data-theme="light"] .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+[data-theme="light"] .codehilite .go { color: #888 } /* Generic.Output */
+[data-theme="light"] .codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+[data-theme="light"] .codehilite .gs { font-weight: bold } /* Generic.Strong */
+[data-theme="light"] .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+[data-theme="light"] .codehilite .gt { color: #04D } /* Generic.Traceback */
+[data-theme="light"] .codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+[data-theme="light"] .codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+[data-theme="light"] .codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+[data-theme="light"] .codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+[data-theme="light"] .codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+[data-theme="light"] .codehilite .kt { color: #902000 } /* Keyword.Type */
+[data-theme="light"] .codehilite .m { color: #40A070 } /* Literal.Number */
+[data-theme="light"] .codehilite .s { color: #4070A0 } /* Literal.String */
+[data-theme="light"] .codehilite .na { color: #4070A0 } /* Name.Attribute */
+[data-theme="light"] .codehilite .nb { color: #007020 } /* Name.Builtin */
+[data-theme="light"] .codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+[data-theme="light"] .codehilite .no { color: #60ADD5 } /* Name.Constant */
+[data-theme="light"] .codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+[data-theme="light"] .codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+[data-theme="light"] .codehilite .ne { color: #007020 } /* Name.Exception */
+[data-theme="light"] .codehilite .nf { color: #06287E } /* Name.Function */
+[data-theme="light"] .codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+[data-theme="light"] .codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+[data-theme="light"] .codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+[data-theme="light"] .codehilite .nv { color: #BB60D5 } /* Name.Variable */
+[data-theme="light"] .codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+[data-theme="light"] .codehilite .w { color: #BBB } /* Text.Whitespace */
+[data-theme="light"] .codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+[data-theme="light"] .codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+[data-theme="light"] .codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+[data-theme="light"] .codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+[data-theme="light"] .codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+[data-theme="light"] .codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+[data-theme="light"] .codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+[data-theme="light"] .codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+[data-theme="light"] .codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+[data-theme="light"] .codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+[data-theme="light"] .codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+[data-theme="light"] .codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+[data-theme="light"] .codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+[data-theme="light"] .codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+[data-theme="light"] .codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+[data-theme="light"] .codehilite .sr { color: #235388 } /* Literal.String.Regex */
+[data-theme="light"] .codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+[data-theme="light"] .codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+[data-theme="light"] .codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+[data-theme="light"] .codehilite .fm { color: #06287E } /* Name.Function.Magic */
+[data-theme="light"] .codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+[data-theme="light"] .codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+[data-theme="light"] .codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+[data-theme="light"] .codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+[data-theme="light"] .codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+[data-theme="dark"] .codehilite, [data-theme="dark"] .codehilite pre{background:transparent;}
+</style>
+</head>
+<body>
+<button id="themeBtn" title="切换深色 / 浅色">🌙</button>
+<div class="layout">
+<nav><div class="brand">C++ 入门课程</div>
+<a href="../README.html">课程说明</a>
+<div class="group">附录</div>
+<a href="../附录/术语表.html">术语表</a>
+<a href="../附录/零基础起飞.html">零基础起飞</a>
+<div class="group">讲义</div>
+<a href="../讲义/第01章-预备知识.html">第01章-预备知识</a>
+<a href="../讲义/第02章-开始学习C++.html">第02章-开始学习C++</a>
+<a href="../讲义/第03章-处理数据.html">第03章-处理数据</a>
+<a href="../讲义/第04章A-数组与字符串.html" class="active">第04章A-数组与字符串</a>
+<a href="../讲义/第04章B-结构共用体枚举.html">第04章B-结构共用体枚举</a>
+<div class="group">练习</div>
+<a href="../练习/第01章-练习.html">第01章-练习</a>
+<a href="../练习/第02章-练习.html">第02章-练习</a>
+<a href="../练习/第03章-练习.html">第03章-练习</a>
+<a href="../练习/第04章A-练习.html">第04章A-练习</a>
+<a href="../练习/第04章B-练习.html">第04章B-练习</a>
+<div class="group">参考答案</div>
+<a href="../参考答案/第01章/复习题答案.html">第01章 · 复习题答案</a>
+<a href="../参考答案/第01章/错误分类实验-答案.html">第01章 · 错误分类实验-答案</a>
+<a href="../参考答案/第01章/摸底测试/说明.html">第01章/摸底测试 · 说明</a>
+<a href="../参考答案/第02章/复习题答案.html">第02章 · 复习题答案</a>
+<a href="../参考答案/第03章/复习题答案.html">第03章 · 复习题答案</a>
+<a href="../参考答案/第04章A/复习题答案.html">第04章A · 复习题答案</a>
+<a href="../参考答案/第04章B/复习题答案.html">第04章B · 复习题答案</a>
+</nav>
+<main><article>
+<details class="toc-box"><summary>本页目录（30 项，点击展开）</summary><div class="toc">
+<ul>
+<li><a href="#01-先说一个真实的难题">0.1 先说一个真实的难题</a></li>
+<li><a href="#02-补一句什么是内存地址">0.2 补一句：什么是"内存""地址"</a></li>
+<li><a href="#03-本课出现的新词先混个眼熟">0.3 本课出现的新词（先混个眼熟）</a></li>
+<li><a href="#11-语法三件事">1.1 语法：三件事</a></li>
+<li><a href="#12-铁律一下标从-0-开始">1.2 ⭐ 铁律一：下标从 0 开始</a></li>
+<li><a href="#13-铁律二数组大小必须是编译期常量">1.3 铁律二：数组大小必须是编译期常量</a></li>
+<li><a href="#14-铁律三数组没有边界检查教材-41-p89-410-p122">1.4 铁律三：数组没有边界检查（教材 4.1 p89 / 4.10 p122）</a></li>
+<li><a href="#15-一个好用的技巧用-sizeof-求数组长度">1.5 一个好用的技巧：用 sizeof 求数组长度</a></li>
+<li><a href="#21-一个必须知道的事实数组不能整体赋值">2.1 ⭐ 一个必须知道的事实：数组不能整体赋值</a></li>
+<li><a href="#31-一句话定义">3.1 一句话定义</a></li>
+<li><a href="#32-为什么需要-0">3.2 为什么需要 '\0'？</a></li>
+<li><a href="#33-字符数组-字符串">3.3 ⭐ 字符数组 ≠ 字符串</a></li>
+<li><a href="#34-字符串字面量自动带-0">3.4 字符串字面量自动带 '\0'</a><ul>
+<li><a href="#考试最爱考的考点sizeof-vs-strlen">★ 考试最爱考的考点：sizeof vs strlen ★</a></li>
+</ul>
+</li>
+<li><a href="#35-陷阱数组太小放不下-0">3.5 陷阱：数组太小放不下 '\0'</a></li>
+<li><a href="#36-埋一个引子数组名参与算术时代表的是地址不是内容">3.6 ⭐ 埋一个引子：数组名参与算术时，代表的是地址，不是内容</a></li>
+<li><a href="#41-cin-s-的两个问题">4.1 cin &gt;&gt; s 的两个问题</a><ul>
+<li><a href="#什么是缓冲区溢出为什么它是最危险的坑">⚠️ 什么是"缓冲区溢出"？为什么它是最危险的坑？</a></li>
+</ul>
+</li>
+<li><a href="#42-cingetlines-n-最省心的选择">4.2 cin.getline(s, n) —— 最省心的选择</a></li>
+<li><a href="#43-cingets-n-差别就在换行符">4.3 cin.get(s, n) —— 差别就在换行符</a></li>
+<li><a href="#44-一个有用的技巧getline-的返回值">4.4 一个有用的技巧：getline 的返回值</a></li>
+<li><a href="#51-问题现象">5.1 问题现象</a></li>
+<li><a href="#52-原因换行符还留在输入队列里">5.2 原因：换行符还留在输入队列里</a></li>
+<li><a href="#53-三种解法">5.3 三种解法</a></li>
+<li><a href="#54-这个陷阱只在特定情况下才咬你">5.4 ⚠️ 这个陷阱只在特定情况下才咬你</a></li>
+<li><a href="#61-c-风格字符串的三大痛点">6.1 C 风格字符串的三大痛点</a></li>
+<li><a href="#62-stdstring-把三个问题全解决了">6.2 std::string 把三个问题全解决了</a></li>
+<li><a href="#63-常用操作速查">6.3 常用操作速查</a></li>
+<li><a href="#64-string-的输入getlinecin-s">6.4 ⭐ string 的输入：getline(cin, s)</a></li>
+<li><a href="#65-c11-其他形式的字符串字面值教材-435p104">6.5 C++11 其他形式的字符串字面值（教材 4.3.5，p104）</a></li>
+</ul>
+</div>
+</details><div class="hintbar">遇到看不懂的专有名词？→ <a href="../附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="../附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-4-章-a-数组与字符串零基础详细版">第 4 章 A · 数组与字符串（零基础详细版）</h1>
+<blockquote>
+<p><strong>这份讲义面向</strong>：没写过代码、或者刚开始学 C++ 的读者。
+<strong>难度</strong>：★★★☆☆（语法不难，<strong>这一课的价值全在坑里</strong>）
+目标是把《C++ Primer Plus（第 6 版）》第 4 章的前半部分（数组、C 风格字符串、<code>string</code> 类）讲透。</p>
+<p><strong>教材页码</strong>：PDF <strong>p87 – p105</strong>
+文中所有「教材 pXX」都指这本 PDF 的<strong>页号</strong>（封面算第 1 页），不是书页脚印的页码。
+如果你手上的 PDF 书签完整，直接用书签跳转最快。</p>
+<p><strong>配套代码</strong>：<code>示例代码/04_数组与字符串/01_array_basics.cpp</code> ～ <code>07_std_string.cpp</code>（共 7 个文件）
+<strong>配套练习</strong>：<code>练习/第04章A-练习.md</code>　<strong>参考答案</strong>：<code>参考答案/第04章A/</code></p>
+<p><strong>📖 这一课怎么读</strong>
+你可以<strong>直接从这里开始</strong>，不需要先读完第 1–3 章：凡是需要用到的旧知识，
+本讲义都会就地解释一遍（用「补一句」的方式）。
+只有两处例外，讲到这里时会明确提醒你回去看哪一节。</p>
+</blockquote>
+<hr />
+<h1 id="本课目标">本课目标</h1>
+<p>学完这一课，你要能做到下面 8 件事：</p>
+<ol>
+<li><strong>说清楚"数组是什么"</strong>，以及为什么有了普通变量还需要它。</li>
+<li>能写出"声明数组 / 给元素赋值 / 用循环遍历"这三件事，并解释<strong>下标为什么从 0 开始</strong>。</li>
+<li>记住数组的<strong>三条铁律</strong>：下标从 0 开始、大小必须是编译期常量、<strong>没有边界检查</strong>。</li>
+<li>说清楚 <strong>C 风格字符串 = 以 <code>'\0'</code> 结尾的 <code>char</code> 数组</strong>，以及 <code>'\0'</code> 到底有什么用。</li>
+<li>分得清 <strong><code>sizeof</code> 和 <code>strlen</code></strong>（对字符串永远差 1）。</li>
+<li>说出 <code>cin &gt;&gt; s</code>、<code>cin.getline(s, n)</code>、<code>cin.get(s, n)</code> <strong>三者的区别</strong>。</li>
+<li><strong>解释并修好</strong>"混合输入数字和字符串"的换行符陷阱——这是 99% 的初学者都会踩的坑。</li>
+<li>说出 C 风格字符串的<strong>三个痛点</strong>，以及 <code>std::string</code> 分别怎么解决。</li>
+</ol>
+<p>第 4 章是全书<strong>最厚</strong>的一章（p87–141，55 页），一次讲完不现实。整套材料把它拆成 4 课：</p>
+<table>
+<thead>
+<tr>
+<th>课次</th>
+<th>内容</th>
+<th>页码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>第 4 章 A</strong></td>
+<td><strong>数组与字符串</strong>（本课）</td>
+<td>p87–105</td>
+</tr>
+<tr>
+<td>第 4 章 B</td>
+<td>结构、共用体、枚举</td>
+<td>p105–114</td>
+</tr>
+<tr>
+<td>第 4 章 C</td>
+<td>指针与自由存储空间</td>
+<td>p114–123</td>
+</tr>
+<tr>
+<td>第 4 章 D</td>
+<td>指针算术与数组替代品</td>
+<td>p123–141</td>
+</tr>
+</tbody>
+</table>
+<p><strong>为什么第 4 章这么重要？</strong> 因为 C++ 的三种<strong>复合类型</strong>（数组、结构、指针）全在这里，
+而<strong>指针是全书公认最难的部分</strong>。本课的数组是理解指针的地基——
+数组和指针在底层其实是同一件事。</p>
+<hr />
+<h1 id="阅读指南教材页码-精读-略读">阅读指南（教材页码 + 精读 / 略读）</h1>
+<p><strong>建议先读本讲义，再回去读教材对应小节。</strong> 讲义负责把「为什么」讲清楚，教材负责把「完整细节」补全。</p>
+<p><strong>时间安排</strong>：走完这一课大约需要 2–3 小时（读教材 60 分钟 + 跑代码做实验 60 分钟 + 做练习）。</p>
+<table>
+<thead>
+<tr>
+<th>小节</th>
+<th>页码</th>
+<th>怎么读</th>
+<th>本讲义对应</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4.1 数组（全部）</td>
+<td>p87–91</td>
+<td><strong>精读 3 遍</strong> ⭐</td>
+<td>第 2、3 节</td>
+</tr>
+<tr>
+<td>4.2.1 拼接字符串常量</td>
+<td>p92</td>
+<td>略读</td>
+<td>—</td>
+</tr>
+<tr>
+<td>4.2.2 在数组中使用字符串</td>
+<td>p93</td>
+<td><strong>精读</strong>，<code>'\0'</code> 是关键</td>
+<td>第 4 节</td>
+</tr>
+<tr>
+<td>4.2.3 字符串输入</td>
+<td>p94</td>
+<td>精读</td>
+<td>第 5.1 节</td>
+</tr>
+<tr>
+<td><strong>4.2.4 每次读取一行字符串输入</strong></td>
+<td>p95–98</td>
+<td><strong>精读 3 遍</strong> ⭐</td>
+<td>第 5.2–5.4 节</td>
+</tr>
+<tr>
+<td><strong>4.2.5 混合输入字符串和数字</strong></td>
+<td>p98–99</td>
+<td><strong>精读 3 遍</strong> ⭐⭐</td>
+<td>第 6 节</td>
+</tr>
+<tr>
+<td>4.3 <code>string</code> 类简介（全部）</td>
+<td>p99–105</td>
+<td><strong>精读</strong></td>
+<td>第 7 节</td>
+</tr>
+<tr>
+<td>4.10.3 比较数组、vector、array</td>
+<td>p137–139</td>
+<td>现在略读，第 4 章 D 再细看</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>额外读两页附录</strong>（本讲义会用到，不在第 4 章正文里）：</p>
+<table>
+<thead>
+<tr>
+<th>附录</th>
+<th>页码</th>
+<th>为什么要读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>附录 C ASCII 字符集</td>
+<td>p862</td>
+<td>看 <code>'\0'</code> 就是数值 0、<code>'A'</code> 就是 65</td>
+</tr>
+<tr>
+<td>附录 D 运算符优先级</td>
+<td>p866</td>
+<td>数组下标 <code>[]</code> 的优先级最高</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<hr />
+<h1 id="第-0-部分-零基础补白数组到底是什么">第 0 部分 · 零基础补白：数组到底是什么</h1>
+<blockquote>
+<p><strong>这一节是给零基础读者的地基。</strong> 如果你已经知道"什么叫数组、什么叫下标"，可以跳到第 1 节。</p>
+</blockquote>
+<h2 id="01-先说一个真实的难题">0.1 先说一个真实的难题</h2>
+<p>假设老师让你写个程序，存一个学生 5 门课的成绩。你可以这样写：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">score1</span><span class="p">,</span><span class="w"> </span><span class="n">score2</span><span class="p">,</span><span class="w"> </span><span class="n">score3</span><span class="p">,</span><span class="w"> </span><span class="n">score4</span><span class="p">,</span><span class="w"> </span><span class="n">score5</span><span class="p">;</span>
+</code></pre></div>
+
+<p><strong>但如果要存 100 个学生的成绩呢？</strong> 写 100 个变量名？不可能。</p>
+<p>而且这 100 个变量名之间毫无联系，你想"把所有人的成绩加一遍"都写不出来——
+你只能老老实实写 100 行 <code>sum = sum + scoreNN;</code>。</p>
+<p><strong>数组就是来解决这个问题的：</strong></p>
+<blockquote>
+<p><strong>数组（array）</strong>：一组<strong>同类型</strong>的、在内存里<strong>连续存放</strong>的变量，
+它们共用一个名字，靠<strong>下标</strong>（也叫索引）区分彼此。</p>
+</blockquote>
+<p><strong>打个比方——一排连号的储物柜：</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>普通变量</th>
+<th>数组</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>像什么</td>
+<td>一栋<strong>独栋房子</strong>，有自己的门牌号</td>
+<td>一排<strong>连号的储物柜</strong></td>
+</tr>
+<tr>
+<td>共同点</td>
+<td>—</td>
+<td>所有柜子<strong>一样大</strong>（同类型）、<strong>紧挨着</strong>（连续内存）</td>
+</tr>
+<tr>
+<td>怎么找</td>
+<td>用名字</td>
+<td>用<strong>柜子所在的那一排的名字 + 柜门号</strong>：<code>scores[3]</code></td>
+</tr>
+</tbody>
+</table>
+<p>一排 5 个柜子、名字叫 <code>scores</code>，柜门号就是 <code>0 1 2 3 4</code>：</p>
+<div class="codehilite"><pre><span></span><code>第 0 号柜   第 1 号柜   第 2 号柜   第 3 号柜   第 4 号柜
+  90         85         78         92         88
+ scores[0]  scores[1]  scores[2]  scores[3]  scores[4]
+</code></pre></div>
+
+<p><strong>为什么这个比方好用？</strong> 因为它顺便解释了后面所有的坑：</p>
+<ul>
+<li>柜门号从 0 开始数 → <strong>下标从 0 开始</strong>；</li>
+<li>柜子数量必须<strong>装修时就定好</strong>，不能住进去再改 → <strong>数组大小必须是编译期常量</strong>；</li>
+<li>你拿第 7 号柜门的钥匙，去开一个只有 5 个柜子的柜子 → <strong>数组越界</strong>；</li>
+<li>你跑到柜子外面去翻别人的东西 → <strong>越界访问会拿到不属于你的数据，甚至弄坏别人的东西</strong>。</li>
+</ul>
+<h2 id="02-补一句什么是内存地址">0.2 补一句：什么是"内存""地址"</h2>
+<p>后面会反复提到"内存""地址"，这里先用人话解释一遍。</p>
+<ul>
+<li><strong>内存（memory）</strong>：计算机里一长排极小的格子，每个格子只能存 0 或 1。</li>
+<li><strong>地址（address）</strong>：每个格子的<strong>门牌号</strong>（一个数字，通常用十六进制写，比如 <code>0x61fe30</code>）。
+  程序想知道"东西放在哪"，靠的就是这个号。</li>
+<li><strong>字节（byte）</strong>：8 个格子打包成一组，是内存里最小的"取用单位"。
+  一个 <code>int</code> 通常占 <strong>4 字节</strong>，也就是 4 组这样的格子。</li>
+</ul>
+<p><strong>所以"数组在内存里连续存放"的意思是</strong>：
+5 个 <code>int</code> 占 20 字节，它们住在<strong>门牌号连着的 20 个字节</strong>里
+（第 1 个从 <code>0x61fe30</code> 开始，第 2 个就在 <code>0x61fe34</code>——正好差 4 字节）。</p>
+<p><strong>这一点是可以当场看到的。</strong> 跑一下
+<code>示例代码/04_数组与字符串/01_array_basics.cpp</code>，它会打印每个元素的地址：</p>
+<div class="codehilite"><pre><span></span><code>5 个成绩：90 85 78 92 88
+
+sizeof(scores)      = 20 字节
+sizeof(scores[0])   = 4 字节
+所以元素个数 = 5
+
+各元素的内存地址（注意每个差 4 字节 = sizeof(int)）：
+  scores[0] 的地址 = 0x61fe30
+  scores[1] 的地址 = 0x61fe34
+  scores[2] 的地址 = 0x61fe38
+  scores[3] 的地址 = 0x61fe3c
+  scores[4] 的地址 = 0x61fe40
+  ^ 连续！这就是「数组」这个名字的由来
+</code></pre></div>
+
+<blockquote>
+<p>📌 <strong>不用背上面这些地址</strong>（每次运行都不一样），只要记住<strong>它们是一个挨着一个的</strong>就够了。
+后面理解"下标是什么""指针是怎么回事"，全靠这个事实。</p>
+</blockquote>
+<h2 id="03-本课出现的新词先混个眼熟">0.3 本课出现的新词（先混个眼熟）</h2>
+<p>看到术语就懵是正常的。下面这些词本课都会第一次出现，每个词在<strong>第一次出场时</strong>都会有白话解释，
+这里先列个清单让你心里有数：</p>
+<table>
+<thead>
+<tr>
+<th>名词</th>
+<th>一句话解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>下标 / 索引</strong></td>
+<td>柜门号。第几个元素，从 <strong>0</strong> 开始数</td>
+</tr>
+<tr>
+<td><strong>偏移量</strong></td>
+<td>"离起点走了几格"。下标其实就是偏移量</td>
+</tr>
+<tr>
+<td><strong>编译期常量</strong></td>
+<td>程序<strong>还没运行</strong>、编译器就已经知道值的量（比如 <code>const int kSize = 4;</code>）</td>
+</tr>
+<tr>
+<td><strong>缓冲区</strong></td>
+<td>一块<strong>临时堆放输入数据的小盆</strong>。键盘敲的字先掉进这个盆，程序再从盆里取</td>
+</tr>
+<tr>
+<td><strong>字符串字面量</strong></td>
+<td>代码里用双引号直接写出来的那段文字，比如 <code>"hello"</code></td>
+</tr>
+<tr>
+<td><strong>转义字符</strong></td>
+<td>用 <code>\</code> 开头、表示"没法直接打出来的字符"的写法，比如 <code>'\0'</code>、<code>'\n'</code></td>
+</tr>
+<tr>
+<td><strong>未定义行为</strong></td>
+<td>C++ 标准<strong>没规定结果</strong>的操作。可能没事、可能算错、可能崩溃——三种都可能</td>
+</tr>
+<tr>
+<td><strong>栈空间</strong></td>
+<td>程序给函数里的局部变量预留的一块内存区域（本课只需要知道"数组住在这里"）</td>
+</tr>
+<tr>
+<td><strong>垃圾值</strong></td>
+<td>一块<strong>没人清理过的内存</strong>里原来的东西。不是 0，也不是随机数，就是"上一个住户留下的"</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<hr />
+<h1 id="1-数组的声明与访问41p8790">1. 数组的声明与访问（4.1，p87–90）</h1>
+<h2 id="11-语法三件事">1.1 语法：三件事</h2>
+<div class="codehilite"><pre><span></span><code><span class="n">类型</span><span class="w">  </span><span class="n">名字</span><span class="p">[</span><span class="n">元素个数</span><span class="p">];</span><span class="w">        </span><span class="c1">// 声明：开一排柜子</span>
+<span class="n">名字</span><span class="p">[</span><span class="n">下标</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">值</span><span class="p">;</span><span class="w">             </span><span class="c1">// 赋值：往某个柜子里放东西</span>
+<span class="n">名字</span><span class="p">[</span><span class="n">下标</span><span class="p">]</span><span class="w">                   </span><span class="c1">// 取值：把某个柜子里的东西拿出来</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">scores</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span><span class="w">              </span><span class="c1">// 声明：5 个 int</span>
+<span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">90</span><span class="p">;</span><span class="w">             </span><span class="c1">// 第一个元素的【下标是 0】</span>
+<span class="n">scores</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">85</span><span class="p">;</span>
+<span class="n">scores</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">78</span><span class="p">;</span>
+<span class="n">scores</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">92</span><span class="p">;</span>
+<span class="n">scores</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">88</span><span class="p">;</span><span class="w">             </span><span class="c1">// 最后一个元素的下标是 4 = 5-1</span>
+</code></pre></div>
+
+<blockquote>
+<p>✅ <strong><code>int scores[5];</code> 这句话要这样读</strong>：
+「给我 5 个能装整数的柜子，这一排柜子叫 <code>scores</code>」。
+注意 <code>[5]</code> 里写的是<strong>柜子的个数</strong>，不是"最后一个柜门号"。</p>
+</blockquote>
+<h2 id="12-铁律一下标从-0-开始">1.2 ⭐ 铁律一：下标从 <strong>0</strong> 开始</h2>
+<p><strong>5 个元素的数组，合法下标是 <code>0 1 2 3 4</code>，没有 <code>5</code>。</strong></p>
+<p>这是初学者最容易犯错的地方，而它背后有个<strong>非常合理</strong>的原因：</p>
+<blockquote>
+<p><strong>下标其实表示"偏移量"——也就是"离起点走了几格"。</strong></p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code>内存里的样子（每个格子 4 字节）：
+
+  scores:  [ 90 ][ 85 ][ 78 ][ 92 ][ 88 ]
+  偏移量:    0     1     2     3     4
+  下标:      0     1     2     3     4
+             ↑
+        scores 这个名字，代表【这一排柜子的起点位置】
+        scores[3] 的意思是：从起点【往后走 3 格】，打开那个柜子
+</code></pre></div>
+
+<p>所以 <code>scores[0]</code> = "往后走 0 格" = 第一个元素。<strong>下标就是"距离起点的距离"</strong>：</p>
+<ul>
+<li><strong>第 1 个元素</strong> → 偏移 <strong>0</strong>（一步都不用走）</li>
+<li><strong>第 n 个元素</strong> → 偏移 <strong>n − 1</strong></li>
+<li><strong>最后一个元素</strong>（一共 len 个）→ 偏移 <strong>len − 1</strong></li>
+</ul>
+<blockquote>
+<p>💡 <strong>这个理解在后面学指针时会变得极其重要</strong>：
+数组名 <code>scores</code> 本质上代表"第一个元素的地址"（地址就是门牌号，见 0.2），
+而 <code>scores[i]</code> 等价于 <code>*(scores + i)</code>——"从那个门牌号往后走 i 格，然后打开柜子取东西"。
+<strong>这就是下标从 0 开始的真正原因。</strong></p>
+<p>📌 <strong>这一条考试很爱考，而且"差一"是最高频的错误</strong>：
+题目问"第 2 个元素"，写 <code>ideas[2]</code> 是错的，正确是 <code>ideas[1]</code>。
+复习题第 4、5 题考的就是这个，答案里有一张专门的对照表。</p>
+</blockquote>
+<h2 id="13-铁律二数组大小必须是编译期常量">1.3 铁律二：数组大小必须是<strong>编译期常量</strong></h2>
+<div class="codehilite"><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">kSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">good</span><span class="p">[</span><span class="n">kSize</span><span class="p">];</span><span class="w">            </span><span class="c1">// ✅ 合法：kSize 是编译期常量</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">bad</span><span class="p">[</span><span class="n">n</span><span class="p">];</span><span class="w">                 </span><span class="c1">// ❌ 标准 C++ 不允许"变长数组"</span>
+</code></pre></div>
+
+<p><strong>先解释一下"编译期常量"是什么：</strong>
+程序从一段文字变成能运行的程序，要经过两步——先<strong>编译</strong>（编译器把你的代码翻译成机器能懂的指令），
+再<strong>运行</strong>。<strong>编译期</strong>就是"还没运行的那一步"。
+<strong>编译期常量</strong>就是"编译器在翻译的时候就已经知道它的值、并且这个值不会再变"的量。</p>
+<p><strong>为什么数组大小必须是编译期常量？</strong>
+因为数组要在<strong>编译的时候</strong>就确定"要占多少内存、住哪一段地址"，编译器得提前把位置排好。
+<code>n</code> 要等程序跑起来、用户敲了键盘才知道，编译器没法提前给它预留位置。</p>
+<blockquote>
+<p>📌 <strong>如果大小真的非要等运行的时候才知道，怎么办？</strong>
+用 <code>new</code>（第 4 章 C 讲）或 <code>std::vector</code>（第 4 章 D 讲）。
+这两个是本章后面要介绍的"数组替代品"。</p>
+<p>⚠️ <strong>一个容易误导人的细节（实测过）</strong>：
+有些编译器（比如本机用的 GCC/MinGW）<strong>默认会把变长数组当扩展放行</strong>，
+所以 <code>int bad[n];</code> 可能<strong>编译通过、还能跑对</strong>。
+但<strong>这不代表它合法</strong>——换一个编译器（比如 MSVC）或者加上 <code>-pedantic-errors</code> 就会直接报错。
+<strong>写标准 C++ 就别这么写。</strong></p>
+</blockquote>
+<h2 id="14-铁律三数组没有边界检查教材-41-p89-410-p122">1.4 铁律三：数组<strong>没有</strong>边界检查（教材 4.1 p89 / 4.10 p122）</h2>
+<p><strong>这是 C++ 最著名的坑。</strong> <code>scores[i]</code> 只是"起点地址 + 往后 i 格"的算术，
+<strong>它完全不检查 <code>i</code> 是否越界</strong>——就像储物柜管理员根本不查你的钥匙对不对。</p>
+<p>跑 <code>示例代码/04_数组与字符串/03_array_no_bounds_check.cpp</code>，你会看到：</p>
+<div class="codehilite"><pre><span></span><code>合法范围：squares[0] ~ squares[4]
+squares[4]   = 25   (合法，最后一个)
+squares[5]   = 0   &lt;- 越界读，垃圾值
+squares[100] = 0   &lt;- 越界 100 个，垃圾值
+  ^ 不报错、不崩溃，只是给你一块【不属于你的内存】的内容
+</code></pre></div>
+
+<p><strong>注意这里的现象</strong>：越界读出来的两个值都是 <code>0</code>。
+它们<strong>不是</strong>"数组的下一个元素"（数组根本没有第 6 个元素），
+而是那块内存里<strong>碰巧躺着的东西</strong>。这次是 0，下次可能是别的数——
+<strong>这就是"未定义行为"的意思：C++ 标准不规定会发生什么。</strong></p>
+<p><strong>先解释一下"垃圾值"</strong>：内存就像一块可以反复擦写的白板。
+你声明 <code>int a[3];</code> 时没有给它初值，白板上<strong>上一个程序留下的字迹还在</strong>，
+你读出来的就是那些旧字迹。<strong>它不是 0，也不是随机数，就是"上一个住户留下的"</strong>。</p>
+<p><strong>更可怕的是"写越界"——它会破坏别的变量的数据：</strong></p>
+<div class="codehilite"><pre><span></span><code>内存布局（示意）：
+  [scores[0]][scores[1]][scores[2]][scores[3]][scores[4]][ 别的变量 ]
+                                        ↑
+                              你写 scores[5] = 100
+                              就把「别的变量」给改了！
+</code></pre></div>
+
+<blockquote>
+<p>🔁 <strong>通用对照</strong>：如果你做过第 1 章「错误分类实验」里的 E（数组越界），
+当时 <code>a[3]</code>（数组只有 3 个元素）输出了 <code>1 2 3 3</code>，退出码还是 0，看起来"一切正常"。
+<strong>那就是越界读</strong>——和上面 <code>squares[5]</code> 是同一件事。</p>
+<p><strong>先解释一下"未定义行为（undefined behavior）"</strong>：
+它不是说"程序一定会崩"，而是说 <strong>C++ 标准没有规定这里应该发生什么</strong>。
+所以编译器可以随便处理：可能没事、可能算出莫名其妙的结果、可能崩溃、可能今天是好的明天就坏了。
+<strong>看到"未定义行为"四个字，就当它是"随时可能爆炸的地雷"，不要去赌。</strong></p>
+</blockquote>
+<p><strong>教材 p122 讲了解决办法</strong>：<code>vector</code> 和 <code>array</code> 对象提供了成员函数 <code>at()</code>：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">a2</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.3</span><span class="p">;</span><span class="w">      </span><span class="c1">// 安全版本：会检查下标</span>
+<span class="n">a2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mf">2.3</span><span class="p">;</span><span class="w">      </span><span class="c1">// 中括号版本：不检查</span>
+</code></pre></div>
+
+<p><code>at()</code> 会在<strong>运行的时候</strong>发现非法下标、并中断程序（报一个异常，比默默改坏数据好得多）。
+<strong>代价是慢一点点</strong>——这就是 C++ 给你两种选择的原因：<strong>"不为你不需要的东西付费"</strong>。</p>
+<blockquote>
+<p>🛡️ <strong>本课你要养成的三个习惯</strong>
+1. 循环遍历数组，老老实实写 <code>i &lt; n</code>，<strong>别写 <code>i &lt;= n</code></strong>（这是最高频的低级错误）；
+2. 需要安全访问时用 <code>vector</code> 的 <code>.at()</code>；
+3. 拿不准的时候，用下面 1.5 的办法把数组长度"算"出来，而不是手写一个数字。</p>
+</blockquote>
+<h2 id="15-一个好用的技巧用-sizeof-求数组长度">1.5 一个好用的技巧：用 <code>sizeof</code> 求数组长度</h2>
+<p>写 <code>for (int i = 0; i &lt; 5; ++i)</code> 的时候，那个 <code>5</code> 是<strong>手写的</strong>。
+哪天你把数组改成 8 个元素，却忘了改循环里的 5，就立刻越界了。</p>
+<p><strong>C++ 里经典的求数组长度写法是：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span><span class="w">   </span><span class="c1">// 20 / 4 = 5</span>
+</code></pre></div>
+
+<p>意思很好懂：</p>
+<ul>
+<li><code>sizeof(scores)</code> = 整个数组占多少字节（5 × 4 = 20）；</li>
+<li><code>sizeof(scores[0])</code> = 一个元素占多少字节（4）；</li>
+<li>两者一除，就是元素个数。</li>
+</ul>
+<p>（<code>sizeof</code> 到底是什么，下一节就会讲清楚。）</p>
+<hr />
+<h1 id="2-数组的初始化规则412413p9091">2. 数组的初始化规则（4.1.2–4.1.3，p90–91）</h1>
+<p>跑 <code>示例代码/04_数组与字符串/02_array_init_rules.cpp</code>，六条规则：</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>写法</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>int a[3];</code></td>
+<td><strong>垃圾值</strong>（内存里上一个住户留下的东西）</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>int a[5] = {1, 2};</code></td>
+<td><code>1 2 0 0 0</code> ← <strong>剩下的自动补 0</strong> ⭐</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>int a[5] = {0};</code></td>
+<td><code>0 0 0 0 0</code> ← <strong>全部清零的常用技巧</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>int a[] = {1,2,3,4};</code></td>
+<td>编译器<strong>自己数</strong>出 4 个</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>int a[3]{7,8,9};</code></td>
+<td>C++11：<strong>可以省略等号</strong>；<code>int a[3]{};</code> 全 0</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>int a[kSize];</code></td>
+<td>大小必须是<strong>编译期常量</strong></td>
+</tr>
+</tbody>
+</table>
+<p>实测输出：</p>
+<div class="codehilite"><pre><span></span><code>int a1[3];                -&gt; 0 66 0   &lt;- 垃圾值（每次运行可能不同）
+int a2[5] = {1, 2};       -&gt; 1 2 0 0 0   &lt;- 后面三个自动变 0！
+int a3[5] = {0};          -&gt; 0 0 0 0 0   &lt;- 全部是 0
+int a4[] = {10,20,30,40}; -&gt; 编译器数出 4 个元素
+int a5[3]{7, 8, 9};       -&gt; 7 8 9
+int a6[3]{};              -&gt; 0 0 0  (全 0)
+</code></pre></div>
+
+<blockquote>
+<p>⚠️ <strong>规则 2 特别重要</strong>：<code>{1, 2}</code> 只给了两个值，<strong>剩下的三个自动是 0</strong>。
+很多新手以为剩下的是垃圾值——<strong>不是</strong>。
+只有"完全不初始化"（规则 1）才是垃圾值。</p>
+<p><strong>"只给一部分值"叫部分初始化。</strong> 规则是：
+<strong>只要你写了 <code>= {...}</code>，没写到的元素一律被填 0</strong>；一个都不写，才是不清理。</p>
+<p>顺带一个实用结论：<strong>想快速把整个数组清零，写 <code>int a[100] = {0};</code> 就行</strong>——
+只要写了 <code>{0}</code>，后面 99 个也会被填 0。这是最常用的清零技巧。</p>
+<p>📌 <strong>规则 5 的 <code>int a[3]{};</code> 是 C++11 才有的写法</strong>（花括号替代等号加初值）。
+看到它不要惊讶，它和 <code>int a[3] = {};</code> 是一回事，都是"全部清零"。</p>
+</blockquote>
+<h2 id="21-一个必须知道的事实数组不能整体赋值">2.1 ⭐ 一个必须知道的事实：数组<strong>不能整体赋值</strong></h2>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">};</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w">                  </span><span class="c1">// ❌ 编译错误！</span>
+</code></pre></div>
+
+<p>实测报错（教科书式的一行）：</p>
+<div class="codehilite"><pre><span></span><code>error: invalid array assignment
+</code></pre></div>
+
+<p><strong>为什么？</strong> 因为 <strong>C++ 里数组不是"一个值"</strong>，它是"一串变量共用一个名字"——
+就像"一排柜子"不是一个能搬走的东西。</p>
+<p><code>a</code> 这个名字在大多数场合会<strong>退化成</strong>"第一个元素的门牌号（地址）"，
+而"给一排柜子赋值"这件事在语法上根本没有意义，所以编译器直接拒绝。</p>
+<blockquote>
+<p>📌 <strong>"退化成地址"是什么意思？</strong>
+名字 <code>a</code> 本来代表"整排柜子"，但 C++ 规定：<strong>在大多数用到它的地方，它会被当成"第一个柜子的门牌号"来用</strong>。
+这个"从一整排降级成一个门牌号"的过程，就叫<strong>退化（decay）</strong>。
+本课只需要知道有这么回事，<strong>第 4 章 C 讲指针时会彻底讲透</strong>。</p>
+</blockquote>
+<p><strong>想复制数组内容，只能逐个元素复制</strong>（或者用 <code>memcpy</code>）：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w">      </span><span class="c1">// ✅ 这样才行</span>
+</code></pre></div>
+
+<blockquote>
+<p>💡 <strong>这也正是 <code>std::string</code> 和 <code>vector</code> 存在的理由之一</strong>——
+它们<strong>可以</strong>直接赋值，因为它们内部帮你处理了这件事（见第 7 节）。</p>
+</blockquote>
+<hr />
+<h1 id="3-c-风格字符串的本质42p9194-本课最重要的概念">3. ⭐⭐ C 风格字符串的本质（4.2，p91–94）—— 本课最重要的概念</h1>
+<h2 id="31-一句话定义">3.1 一句话定义</h2>
+<blockquote>
+<p><strong>C 风格字符串 = 以 <code>'\0'</code> 结尾的 <code>char</code> 数组。</strong></p>
+</blockquote>
+<p>这里的每个词都要拆开讲：</p>
+<ul>
+<li><strong><code>char</code></strong>：专门用来存<strong>一个字符</strong>的类型（<code>'a'</code>、<code>'5'</code>、<code>' '</code> 都是 <code>char</code>）。</li>
+<li><strong><code>char</code> 数组</strong>：一排 <code>char</code> 柜子，比如 <code>char s[100];</code> 是 100 个格子，每个格子放一个字符。</li>
+<li><strong><code>'\0'</code></strong>：一个特殊的字符，它的<strong>数值是 0</strong>（不是字符 <code>'0'</code>，那个的数值是 48）。</li>
+<li><strong>"以 <code>'\0'</code> 结尾"</strong>：这一排格子里，<strong>有效字符后面</strong>必须紧跟着放一个 <code>'\0'</code>。</li>
+</ul>
+<p><strong>先解释一下"转义字符"是什么。</strong>
+有些字符你没法直接写在代码里——比如"换行"，你总不能真的在引号中间敲一下回车吧？
+于是 C++ 规定：<strong>用 <code>\</code> 开头写一个代号</strong>。这类写法就叫<strong>转义字符</strong>。常用的有：</p>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>含义</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>'\n'</code></td>
+<td>换行</td>
+<td>10</td>
+</tr>
+<tr>
+<td><code>'\t'</code></td>
+<td>制表符（Tab）</td>
+<td>9</td>
+</tr>
+<tr>
+<td><code>'\0'</code></td>
+<td><strong>字符串结束标记</strong></td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td><code>'\\'</code></td>
+<td>一个反斜杠本身</td>
+<td>92</td>
+</tr>
+</tbody>
+</table>
+<p>所以 <code>'\0'</code> 读作「反斜杠零」，它是<strong>一个字符</strong>，但在内存里存的<strong>数值就是 0</strong>。</p>
+<h2 id="32-为什么需要-0">3.2 为什么需要 <code>'\0'</code>？</h2>
+<p><strong>因为数组不知道自己的内容有多长！</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span><span class="w">         </span><span class="c1">// 100 个字节的空间</span>
+<span class="n">strcpy</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="s">"hello"</span><span class="p">);</span><span class="w">  </span><span class="c1">// 只用了 5 个字符</span>
+</code></pre></div>
+
+<p>现在问题来了：<strong>读 <code>s</code> 的时候，怎么知道该读到第 6 个字节就停？</strong>
+数组本身只知道"我有 100 格"，不知道"我装了 5 个字符"。</p>
+<p><strong>所以 C/C++ 定了一个约定：</strong></p>
+<blockquote>
+<p>在有效字符后面放一个<strong>数值为 0 的特殊字符</strong> <code>'\0'</code>，
+读到它就说明"字符串到此结束"。</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code>char s[100] = "hello";
+
+  'h' 'e' 'l' 'l' 'o' '\0'  ?  ?  ?  ...
+   ↑                    ↑
+  s[0]                 s[5]  &lt;- 结束标记
+  （后面那些格子没用到，内容是垃圾）
+</code></pre></div>
+
+<p><strong>打个比方：<code>'\0'</code> 就是一句话末尾的句号，告诉程序"到此为止"。</strong></p>
+<ul>
+<li>没有句号，读的人就不知道这句话在哪儿结束，会一直往下念，念到别人的稿子上；</li>
+<li>有了句号，读到它就知道"这句完了"。</li>
+</ul>
+<p>这也是为什么下面这件事会发生：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span><span class="w">                 </span><span class="c1">// 只有 5 格</span>
+<span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'h'</span><span class="p">;</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'e'</span><span class="p">;</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'l'</span><span class="p">;</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'l'</span><span class="p">;</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'o'</span><span class="p">;</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">;</span><span class="w">                 </span><span class="c1">// ❌ 危险！没有 '\0'，它会一直往后念</span>
+</code></pre></div>
+
+<h2 id="33-字符数组-字符串">3.3 ⭐ 字符数组 ≠ 字符串</h2>
+<p>跑 <code>示例代码/04_数组与字符串/04_cstring_basics.cpp</code>：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">dog</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="sc">'b'</span><span class="p">,</span><span class="sc">'e'</span><span class="p">,</span><span class="sc">'a'</span><span class="p">,</span><span class="sc">'u'</span><span class="p">,</span><span class="sc">'x'</span><span class="p">,</span><span class="sc">' '</span><span class="p">,</span><span class="sc">'I'</span><span class="p">,</span><span class="sc">'I'</span><span class="p">};</span><span class="w">    </span><span class="c1">// ❌ 没有 '\0'，不是字符串</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">cat</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="sc">'f'</span><span class="p">,</span><span class="sc">'a'</span><span class="p">,</span><span class="sc">'t'</span><span class="p">,</span><span class="sc">'e'</span><span class="p">,</span><span class="sc">'s'</span><span class="p">,</span><span class="sc">'s'</span><span class="p">,</span><span class="sc">'a'</span><span class="p">,</span><span class="sc">'\0'</span><span class="p">};</span><span class="w">   </span><span class="c1">// ✅ 有 '\0'，是字符串</span>
+</code></pre></div>
+
+<p><strong>用逐个字符的方式初始化数组时，编译器不会自动帮你加 <code>'\0'</code>。</strong>
+<code>dog</code> 没有结束标记，所以 <code>cout &lt;&lt; dog</code> 会<strong>一直往后读</strong>，直到碰巧遇到某个 0 才停。</p>
+<p>实测输出：</p>
+<div class="codehilite"><pre><span></span><code>char dog[8] = {'b','e','a','u','x',' ','I','I'};  (无 \0)
+  当成字符串输出 -&gt; beaux II   &lt;- 后面是垃圾内容，因为找不到结束标记
+
+char cat[8] = {...'a','\0'};  (有 \0)
+  当成字符串输出 -&gt; fatessa   &lt;- 正常
+</code></pre></div>
+
+<blockquote>
+<p>⚠️ <strong>这里有一个"看起来很正常"的陷阱，特别值得说清楚。</strong></p>
+<p><code>dog</code> 打印出来的刚好是 <code>beaux II</code>——<strong>8 个字符一个不多一个不少，看起来完全正常</strong>。
+但它是<strong>错的</strong>：<code>dog</code> 里根本没有 <code>'\0'</code>，程序只是<strong>运气好</strong>，
+读到第 9 个字节时那里恰好是 0 才停下来。</p>
+<p><strong>换台机器、换个编译器、甚至同一台机器上改动一下别的代码，输出就可能变成一串乱码。</strong>
+这就是"未定义行为"最讨厌的地方：<strong>它不一定当场出错，而是让你以为代码是对的。</strong></p>
+<p><strong>判断标准永远是"数组里有没有 <code>'\0'</code>"，不是"这次打印得对不对"。</strong></p>
+</blockquote>
+<p><strong>记住</strong>：<strong>是 <code>'\0'</code> 让一个 char 数组成为"字符串"。</strong></p>
+<h2 id="34-字符串字面量自动带-0">3.4 字符串字面量自动带 <code>'\0'</code></h2>
+<p><strong>先解释一下"字符串字面量"</strong>：代码里<strong>用双引号直接写出来的那段文字</strong>，比如 <code>"bubbles"</code>。
+叫"字面量"是因为它就"字面上摆在那里"，是一个写死的值。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">fish</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"bubbles"</span><span class="p">;</span><span class="w">        </span><span class="c1">// 用双引号初始化，编译器会自动加 '\0'</span>
+</code></pre></div>
+
+<p><strong>用双引号初始化（而不是用 <code>{...}</code> 逐个字符写），编译器会自动补上 <code>'\0'</code>。</strong>
+这也是最省事、最不容易漏的写法。实测：</p>
+<div class="codehilite"><pre><span></span><code>sizeof(fish) = 8      &lt;- 7 个字母 + 1 个 '\0'
+strlen(fish) = 7      &lt;- 只数有效字符
+</code></pre></div>
+
+<blockquote>
+<h3 id="考试最爱考的考点sizeof-vs-strlen">★ 考试最爱考的考点：<code>sizeof</code> vs <code>strlen</code> ★</h3>
+<p><strong>先解释这两个东西是什么：</strong></p>
+<ul>
+<li><strong><code>sizeof</code></strong> 是一个<strong>运算符</strong>（不用 <code>#include</code> 任何东西），
+  它问的是"<strong>这个东西占多少字节</strong>"。它在<strong>编译期</strong>就把答案算好了。</li>
+<li><strong><code>strlen</code></strong> 是一个<strong>函数</strong>（住在 <code>&lt;cstring&gt;</code> 头文件里，得先 <code>#include &lt;cstring&gt;</code>），
+  它问的是"<strong>从这串字符的开头数起，到 <code>'\0'</code> 之前有几个字符</strong>"。它得<strong>运行的时候</strong>一个一个数。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>sizeof</code></th>
+<th><code>strlen</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>是什么</td>
+<td><strong>运算符</strong>，编译期求值</td>
+<td><strong>函数</strong>（在 <code>&lt;cstring&gt;</code> 里），运行时数</td>
+</tr>
+<tr>
+<td>数什么</td>
+<td>数组占的<strong>总字节数</strong></td>
+<td><strong>有效字符数</strong>，不含 <code>'\0'</code></td>
+</tr>
+<tr>
+<td><code>"bubbles"</code>（<code>char fish[] = "bubbles";</code>）</td>
+<td><strong>8</strong></td>
+<td><strong>7</strong></td>
+</tr>
+<tr>
+<td>对 <code>int arr[10]</code></td>
+<td>40（10×4）</td>
+<td>无意义（只能用于字符串）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>两者永远差 1</strong>（对字符串而言）——因为 <code>sizeof</code> 把结尾的 <code>'\0'</code> 也算上了，
+而 <code>strlen</code> 明确不含 <code>'\0'</code>。</p>
+<p><strong>一句话记忆</strong>：<code>sizeof</code> 量的是<strong>柜子有多大</strong>，<code>strlen</code> 数的是<strong>柜子里装了几个字</strong>。</p>
+</blockquote>
+<h2 id="35-陷阱数组太小放不下-0">3.5 陷阱：数组太小放不下 <code>'\0'</code></h2>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">bad</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"abcd"</span><span class="p">;</span><span class="w">      </span><span class="c1">// ❌ "abcd" 需要 5 个字节（4 个字母 + '\0'）</span>
+</code></pre></div>
+
+<p>C++11 起编译器<strong>直接报错</strong>：</p>
+<div class="codehilite"><pre><span></span><code>error: initializer-string for array of chars is too long [-fpermissive]
+</code></pre></div>
+
+<p><strong>所以安全的做法是：数组大小 ≥ 字符数 + 1。</strong> 或者干脆用 <code>std::string</code>（第 7 节）。</p>
+<blockquote>
+<p>📌 <strong>这个错误比它看起来的好</strong>：编译器直接拦住了你，总比运行时偷偷改坏别人的数据强。
+<strong>凡是编译器能拦住的错误，都是好错误。</strong></p>
+</blockquote>
+<h2 id="36-埋一个引子数组名参与算术时代表的是地址不是内容">3.6 ⭐ 埋一个引子：数组名参与算术时，代表的是<strong>地址</strong>，不是内容</h2>
+<p>这一小节只是<strong>埋个引子</strong>，<strong>第 4 章 C（指针那一课）会彻底讲透</strong>。现在只要看懂现象。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">letter_grade</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"B"</span><span class="p">;</span>
+
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">letter_grade</span><span class="p">;</span><span class="w">          </span><span class="c1">// 输出：B</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">letter_grade</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">      </span><span class="c1">// 输出：（空字符串！）</span>
+</code></pre></div>
+
+<p><strong>为什么 <code>letter_grade + 1</code> 不是"内容加一"、也不是 <code>C</code>？</strong></p>
+<p>因为<strong>数组名 <code>letter_grade</code> 在参与算术时，代表的是"第一个字符所在的门牌号（地址）"</strong>，
+而不是"数组里装的内容"。</p>
+<ul>
+<li><code>letter_grade</code> 代表 <code>'B'</code> <strong>所在的那个门牌号</strong>；</li>
+<li><code>letter_grade + 1</code> 代表<strong>"往后挪一格"的那个门牌号</strong>；</li>
+<li>而 <code>"B"</code> 这个字符串在内存里是 <code>'B'</code> 后面紧跟着 <code>'\0'</code>：</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>  letter_grade[0]  letter_grade[1]
+       'B'              '\0'
+        ↑                 ↑
+   letter_grade    letter_grade + 1
+</code></pre></div>
+
+<p>所以 <code>letter_grade + 1</code> 指向的是 <strong><code>'\0'</code> 所在的位置</strong>，
+<code>cout</code> 从这个位置开始打印——<strong>第一个字符就是结束标记，于是它打出了一个空字符串</strong>。</p>
+<p><strong>"内容加一"的正确写法是给某个元素加：</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">letter_grade</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">letter_grade</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">   </span><span class="c1">// ✅ 'B' 变成 'C'（char 本质就是小整数）</span>
+</code></pre></div>
+
+<blockquote>
+<p>📌 <strong>第 4 章 C 会讲清楚</strong>：为什么数组名会"退化成地址"、
+为什么 <code>letter_grade[i]</code> 和 <code>*(letter_grade + i)</code> 是一回事。
+<strong>现在记住结论就行</strong>：<strong>数组名参与算术 = 挪门牌号，不是改内容。</strong></p>
+</blockquote>
+<hr />
+<h1 id="4-字符串输入三种方式423424p9498">4. 字符串输入：三种方式（4.2.3–4.2.4，p94–98）</h1>
+<p>跑 <code>示例代码/04_数组与字符串/05_string_input.cpp</code> 对照着看。</p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>行为</th>
+<th>换行符</th>
+<th>能限长吗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cin &gt;&gt; s</code></td>
+<td>遇<strong>空白符</strong>（空格 / Tab / 换行）就停</td>
+<td>留在队列里</td>
+<td>❌ <strong>不能</strong>（危险！）</td>
+</tr>
+<tr>
+<td><code>cin.getline(s, n)</code></td>
+<td>读<strong>一整行</strong></td>
+<td><strong>丢弃</strong></td>
+<td>✅ 最多 n−1 个字符</td>
+</tr>
+<tr>
+<td><code>cin.get(s, n)</code></td>
+<td>读<strong>一整行</strong></td>
+<td><strong>保留</strong></td>
+<td>✅ 最多 n−1 个字符</td>
+</tr>
+</tbody>
+</table>
+<p><strong>先解释两个词：</strong></p>
+<ul>
+<li><strong>空白符</strong>：看不见的"分隔符"，包括<strong>空格、Tab、换行</strong>。
+  它们的共同点是"看起来是一片空白"，程序用它们来区分"一个词说完了"。</li>
+<li><strong>输入队列 / 缓冲区</strong>：<strong>"缓冲区"就是一块临时堆放输入数据的小盆</strong>。
+  你从键盘敲进去的字，<strong>不是直接被程序取走的</strong>，而是先掉进这个盆里；
+  程序再从盆里一个一个取。<strong>盆里剩下的东西，会影响下一次取。</strong>
+  （水龙头一直开着，盆里的水没人接就会留着——这就是本课所有"奇怪现象"的总根源。）</li>
+</ul>
+<h2 id="41-cin-s-的两个问题">4.1 <code>cin &gt;&gt; s</code> 的两个问题</h2>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">name</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
+<span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w">              </span><span class="c1">// 输入 "Li Ming"</span>
+<span class="c1">// name 里只有 "Li"</span>
+</code></pre></div>
+
+<ol>
+<li><strong>遇空格就停</strong> —— 读不到带空格的名字（只拿到第一个词）</li>
+<li><strong>不能限制长度</strong> —— 如果用户输入 100 个字符，而数组只有 20，
+   它<strong>照样往后写</strong> → <strong>缓冲区溢出</strong></li>
+</ol>
+<blockquote>
+<h3 id="什么是缓冲区溢出为什么它是最危险的坑">⚠️ 什么是"缓冲区溢出"？为什么它是最危险的坑？</h3>
+<p><strong>缓冲区</strong>就是上面那个"接水的盆"，在这里指 <code>char name[20]</code> 这 20 个格子的空间。
+<strong>缓冲区溢出</strong>就是：<strong>往一个 20 格的盆里倒了 100 格的水，多出来的 80 格溢到了桌子上</strong>
+——也就是<strong>写到了数组后面的内存里</strong>，把别人的数据覆盖掉了。</p>
+<p><strong>最危险的地方在于：它可能不崩溃、看起来还正常。</strong> 实测（本机 g++ 8.1.0）：</p>
+<p><code>cpp
+char name[20];
+cin.getline(name, 80);      // ❌ 第二参数必须 ≤ 数组大小！</code></p>
+<p>这段代码用 <code>-std=c++17 -Wall -Wextra</code> 编译<strong>一个警告都没有</strong>；
+输入 60 个字符，程序<strong>正常跑完、没有崩溃</strong>。
+但此时数组后面的内存已经被写坏了——<strong>今天是别的变量被改，明天可能是程序崩溃，
+后天可能是段错误</strong>。这就是它比"直接报错"危险得多的原因。</p>
+<p><strong>✅ 正确写法：第二个参数必须 ≤ 数组大小</strong>（习惯上直接写数组大小）：</p>
+<p><code>cpp
+char name[20];
+cin.getline(name, 20);      // ✅ 最多读 19 个字符，剩下 1 格留给 '\0'</code></p>
+<p><strong>记住这条规则</strong>：<code>cin.getline(数组, n)</code> 里的 <code>n</code> <strong>绝对不能大于数组的真实大小</strong>。
+因为函数<strong>只信你给的这个数字</strong>，它不会去查数组到底多大。</p>
+</blockquote>
+<h2 id="42-cingetlines-n-最省心的选择">4.2 <code>cin.getline(s, n)</code> —— 最省心的选择</h2>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">name</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
+<span class="n">cin</span><span class="p">.</span><span class="n">getline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span><span class="w">    </span><span class="c1">// 最多读 19 个字符，剩下的空间留给 '\0'</span>
+</code></pre></div>
+
+<ul>
+<li>读<strong>一整行</strong>（空格也读进来）</li>
+<li><strong>自动丢掉</strong>结尾的换行符 → 下次读输入不会被干扰</li>
+<li><strong>自动加 <code>'\0'</code></strong> → 保证结果一定是合法字符串</li>
+</ul>
+<p><strong>为什么最多是 n−1 个字符？</strong> 因为要留一格放 <code>'\0'</code>。
+<code>cin.getline(name, 20)</code> = "这排柜子有 20 格，你最多往里放 19 个字，最后一格我要留着放句号"。</p>
+<h2 id="43-cingets-n-差别就在换行符">4.3 <code>cin.get(s, n)</code> —— 差别就在换行符</h2>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="mi">20</span><span class="p">],</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
+<span class="n">cin</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span><span class="w">           </span><span class="c1">// 读完 "Li Ming"，但换行符【还留在盆里】</span>
+<span class="n">cin</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span><span class="w">           </span><span class="c1">// 一读就遇到换行 → b 是空的！</span>
+</code></pre></div>
+
+<p>实测（<code>05_string_input.cpp</code> 的"方式三"）：</p>
+<div class="codehilite"><pre><span></span><code>【方式三 cin.get】请输入你的全名:   第一次读: "2026 Somewhere Lane"
+  紧接着再读一次: ""  &lt;- 空的！因为换行符还在队列里
+</code></pre></div>
+
+<p><strong>所以用 <code>get</code> 的时候，末尾要手动再吃一个换行符</strong>：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cin</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+<span class="n">cin</span><span class="p">.</span><span class="n">get</span><span class="p">();</span><span class="w">                </span><span class="c1">// 吃掉换行符（不接参数 = 只取走一个字符）</span>
+</code></pre></div>
+
+<blockquote>
+<p><strong>为什么会有 <code>get</code> 这么"别扭"的函数？</strong>
+因为它能让你知道<strong>为什么停</strong>：是读满 n−1 个字符了，还是遇到换行符了？
+<code>cin.get(a, 20)</code> 遇到换行符时<strong>不会提取</strong>它，你可以用 <code>cin.get()</code> 单独处理。
+这个"更细的控制"在某些场景是必要的（比如你要自己判断这一行有没有读完整）。</p>
+</blockquote>
+<h2 id="44-一个有用的技巧getline-的返回值">4.4 一个有用的技巧：<code>getline</code> 的返回值</h2>
+<p><code>cin.getline()</code> 返回的是 <code>cin</code> 这个对象本身，
+而 <code>cin</code> 在<strong>"流状态"</strong>下可以直接当 <code>bool</code>（真/假）用：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">cin</span><span class="p">.</span><span class="n">getline</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">))</span><span class="w">     </span><span class="c1">// 读失败（比如读到文件末尾）时循环结束</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// 处理 buf</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><strong>先解释一下"流状态"</strong>：<code>cin</code> 除了装数据，还随身带着一个"状态标签"，
+记录"上一次读取成功了没有"。读成功了它算"真"，读失败了（比如输入没了）它算"假"。
+所以 <code>while (cin.getline(...))</code> 读作：<strong>"只要还能读进来一行，就继续循环"</strong>。</p>
+<blockquote>
+<p>📌 这个写法本课不要求掌握，看到能认出来就行。</p>
+</blockquote>
+<hr />
+<h1 id="5-混合输入数字和字符串的陷阱425p9899">5. ⭐⭐ 混合输入数字和字符串的陷阱（4.2.5，p98–99）</h1>
+<p><strong>这是 99% 的 C++ 初学者都会踩的坑</strong>，而且现象非常诡异：
+程序好像<strong>"吞掉"了一次输入</strong>。跑 <code>示例代码/04_数组与字符串/06_mixed_input_trap.cpp</code> 亲手体验。</p>
+<h2 id="51-问题现象">5.1 问题现象</h2>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">year</span><span class="p">;</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">address</span><span class="p">[</span><span class="mi">80</span><span class="p">];</span>
+
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Enter the year: "</span><span class="p">;</span>
+<span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">year</span><span class="p">;</span><span class="w">                        </span><span class="c1">// 输入 2026 然后按回车</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Enter the address: "</span><span class="p">;</span>
+<span class="n">cin</span><span class="p">.</span><span class="n">getline</span><span class="p">(</span><span class="n">address</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">);</span><span class="w">           </span><span class="c1">// ← 它【跳过】了你的输入！</span>
+
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"address = </span><span class="se">\"</span><span class="s">"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"</span><span class="se">\"</span><span class="s">"</span><span class="p">;</span><span class="w">   </span><span class="c1">// 输出：address = ""</span>
+</code></pre></div>
+
+<p>实测输出：</p>
+<div class="codehilite"><pre><span></span><code>Enter the year: Enter the address:   year    = 2026
+  address = ""   &lt;- 空的！
+</code></pre></div>
+
+<h2 id="52-原因换行符还留在输入队列里">5.2 原因：换行符还留在输入队列里</h2>
+<p><strong>关键是要理解"你按的那个回车，也是一个字符"。</strong>
+你在键盘上按回车，敲进去的不是"什么都不输入"，而是敲了一个<strong>换行符</strong>（<code>'\n'</code>）。</p>
+<div class="codehilite"><pre><span></span><code>你输入：  2 0 2 6 \n
+          └──┬──┘  └┬┘
+      cin &gt;&gt; year   └── 这个换行符【没人取走】，留在盆里
+     只取走了 2026
+
+接下来 getline 一看：盆里第一个字符是 '\n'
+  → "哦，这一行是空的" → 于是它读了个空字符串，直接返回
+</code></pre></div>
+
+<p><strong>图示</strong>：</p>
+<div class="codehilite"><pre><span></span><code>输入缓冲区（那个"盆"）：  [2][0][2][6][\n]
+                         ↑
+                   cin &gt;&gt; year 只吃到这里
+
+缓冲区：      [\n]                    ← 换行符还在
+                ↑
+          getline 一读就看见换行 → 读到空行
+</code></pre></div>
+
+<p><strong>注意 <code>cin &gt;&gt; year</code> 的行为</strong>：它读到 <code>6</code> 之后，遇到的第一个非数字字符是 <code>\n</code>，
+它认为"这个数字到此为止"，于是<strong>把 <code>6</code> 取走就收工了——那个 <code>\n</code> 它留在盆里没动</strong>。</p>
+<h2 id="53-三种解法">5.3 三种解法</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// ---- 解法 1：读完数字后，手动吃掉换行符 ----</span>
+<span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">year</span><span class="p">;</span>
+<span class="n">cin</span><span class="p">.</span><span class="n">get</span><span class="p">();</span><span class="w">                          </span><span class="c1">// ← 就这一行（不接参数 = 取走一个字符）</span>
+<span class="n">cin</span><span class="p">.</span><span class="n">getline</span><span class="p">(</span><span class="n">address</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">);</span>
+
+<span class="c1">// ---- 解法 2：把两步连起来写 ----</span>
+<span class="p">(</span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">year</span><span class="p">).</span><span class="n">get</span><span class="p">();</span><span class="w">                </span><span class="c1">// cin &gt;&gt; year 返回 cin，再对它调 get()</span>
+<span class="n">cin</span><span class="p">.</span><span class="n">getline</span><span class="p">(</span><span class="n">address</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">);</span>
+
+<span class="c1">// ---- 解法 3：全部用 getline，数字自己转 ----</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">buf</span><span class="p">[</span><span class="mi">80</span><span class="p">];</span>
+<span class="n">cin</span><span class="p">.</span><span class="n">getline</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">);</span>
+<span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atoi</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span><span class="w">                   </span><span class="c1">// 字符串 → 整数（atoi 在 &lt;cstdlib&gt; 里）</span>
+<span class="n">cin</span><span class="p">.</span><span class="n">getline</span><span class="p">(</span><span class="n">address</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">);</span>
+</code></pre></div>
+
+<blockquote>
+<p>💡 <strong>推荐</strong>：解法 1 最直观；解法 2 写熟了更简洁。
+学会 <code>std::string</code> 后，<strong>解法 3</strong> 会更常用（用 <code>stoi()</code> 代替 <code>atoi()</code>，
+<code>stoi</code> 在 <code>&lt;string&gt;</code> 里，用法一样是把字符串转成整数）。</p>
+</blockquote>
+<p><strong>关于什么"吞掉"之类的怪现象，一句总结就够了：</strong></p>
+<blockquote>
+<p>🔑 <strong>换行符是「上一个 <code>cin &gt;&gt;</code> 读数字」留下的，所以要在「下一个读整行的操作」之前清掉它。</strong></p>
+<p>📌 <strong>教材 p98 用了一整节讲这个</strong>，因为它是每个人都会遇到的真实问题。
+<strong>一定要亲手跑一遍，光看是记不住的。</strong></p>
+</blockquote>
+<h2 id="54-这个陷阱只在特定情况下才咬你">5.4 ⚠️ 这个陷阱<strong>只在特定情况下</strong>才咬你</h2>
+<p>这一条非常重要，因为初学者常常"今天遇到、明天遇不到"，越试越糊涂。</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">year</span><span class="p">;</span>
+<span class="n">cin</span><span class="p">.</span><span class="n">getline</span><span class="p">(</span><span class="n">address</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">);</span><span class="w">      </span><span class="c1">// ❌ 被换行符骗了 → address 是空的</span>
+</code></pre></div>
+
+<p>但如果是这样：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">year</span><span class="p">;</span>
+<span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">age</span><span class="p">;</span><span class="w">                    </span><span class="c1">// ✅ 没问题！</span>
+</code></pre></div>
+
+<p><strong>为什么第二个没事？</strong> 因为 <strong><code>cin &gt;&gt;</code> 会自动跳过开头的空白符</strong>（空格、Tab、换行），
+所以残留在盆里的那个换行符，被它当"分隔符"跳过去了——它<strong>压根不在乎前面有几个空白</strong>。</p>
+<p><strong>四种组合，一张表看懂：</strong></p>
+<table>
+<thead>
+<tr>
+<th>上一个操作</th>
+<th>下一个操作</th>
+<th>会出问题吗</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cin &gt;&gt; year</code></td>
+<td><strong><code>cin.getline(...)</code></strong></td>
+<td>❌ <strong>会</strong></td>
+<td><code>getline</code> 不跳空白，看到换行就当"空行"</td>
+</tr>
+<tr>
+<td><code>cin &gt;&gt; year</code></td>
+<td><strong><code>cin.get(...)</code></strong></td>
+<td>❌ <strong>会</strong></td>
+<td>同上</td>
+</tr>
+<tr>
+<td><code>cin &gt;&gt; year</code></td>
+<td><code>cin &gt;&gt; age</code></td>
+<td>✅ 不会</td>
+<td><code>&gt;&gt;</code> 自己会跳过前面的空白</td>
+</tr>
+<tr>
+<td><code>cin.getline(...)</code></td>
+<td><code>cin.getline(...)</code></td>
+<td>✅ 不会</td>
+<td><code>getline</code> 会把<strong>自己那一行的</strong>换行符丢掉</td>
+</tr>
+<tr>
+<td><code>cin.get(...)</code></td>
+<td><code>cin.get(...)</code></td>
+<td>❌ <strong>会</strong></td>
+<td><code>get</code> 会把换行符<strong>留着</strong>，下一次又撞上</td>
+</tr>
+<tr>
+<td><code>cin.getline(...)</code></td>
+<td><code>cin &gt;&gt; age</code></td>
+<td>✅ 不会</td>
+<td><code>&gt;&gt;</code> 自己跳空白</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🔑 <strong>一行总结</strong>：
+<strong>只有当"下一个操作是 <code>getline</code> / <code>get</code>（要读整行）"时，残留的换行符才会咬你；
+如果下一个是 <code>cin &gt;&gt;</code>，它自己会跳过空白，你根本看不出问题。</strong></p>
+<p>⚠️ <strong>也正因为"看不出问题"，这个坑最坑</strong>：
+同样的写法，一处报错、一处正常，很多人就以为是自己"运气不好"。</p>
+</blockquote>
+<p><strong>一个省心的习惯</strong>（在"先读数字、再读整行"这种场景下）：
+每次 <code>cin &gt;&gt;</code> 读完数字 / 单个字符之后，<strong>顺手接一个 <code>cin.get();</code></strong> 把这个换行符吃掉。
+多写这一行不会有害，但能同时防住上面那两种会出问题的情况。</p>
+<blockquote>
+<p>⚠️ <strong>但这个习惯有边界，别到处乱加</strong>：
+<code>cin.get();</code> 是"取走一个字符"，它<strong>并不检查那个字符到底是不是换行符</strong>。
+- 在"先读数字、再读整行"的场景里，盆里下一个必然是那个换行符，所以<strong>安全、推荐</strong>；
+- 但如果你的程序是<strong>逐个字符处理输入</strong>的循环（比如一个一个读字符做统计），
+  那个 <code>cin.get();</code> 会<strong>误吃掉一个本该被处理的字符</strong>，反而制造 bug。</p>
+<p><strong>一句话</strong>：知道自己在清什么，再清。</p>
+</blockquote>
+<hr />
+<h1 id="6-stdstring-类43p99105">6. <code>std::string</code> 类（4.3，p99–105）</h1>
+<h2 id="61-c-风格字符串的三大痛点">6.1 C 风格字符串的三大痛点</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>痛点</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>要手动管大小</strong>，写小了就溢出</td>
+<td><code>char s[5] = "hello!";</code> 装不下</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>不能整体赋值</strong></td>
+<td><code>s1 = s2;</code> ❌ 编译错误</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>不能用 <code>==</code> 比较内容</strong></td>
+<td><code>s1 == s2</code> 比的是<strong>地址</strong>，不是文字</td>
+</tr>
+</tbody>
+</table>
+<p>第 3 点特别坑。实测（<code>示例代码/04_数组与字符串/07_std_string.cpp</code>）：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">ca</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"apple"</span><span class="p">;</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">cb</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"apple"</span><span class="p">;</span>
+<span class="n">ca</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cb</span><span class="w">                 </span><span class="c1">// 结果是 false（打印出来是 0）！</span>
+<span class="n">strcmp</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span><span class="w"> </span><span class="n">cb</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w">      </span><span class="c1">// 这才是比较内容，结果是 true（打印出来是 1）</span>
+</code></pre></div>
+
+<p><strong>为什么 <code>ca == cb</code> 是 false？</strong>
+因为<strong>数组名参与比较时，代表的是"地址"</strong>（和 3.6 节那个 <code>letter_grade + 1</code> 是同一件事）。
+两个数组是<strong>两块不同的内存</strong>，门牌号当然不一样，所以比较的结果是"不相等"——
+哪怕它们装的内容一模一样。</p>
+<p><strong>要比较内容，得用 <code>strcmp()</code></strong>（住在 <code>&lt;cstring&gt;</code> 里）：</p>
+<ul>
+<li><code>strcmp(a, b) == 0</code> → 两个字符串内容相同</li>
+<li><code>strcmp(a, b) &lt; 0</code> → <code>a</code> 排在 <code>b</code> 前面（按字符编码比较）</li>
+<li><code>strcmp(a, b) &gt; 0</code> → <code>a</code> 排在 <code>b</code> 后面</li>
+</ul>
+<p><strong>注意这个约定的别扭之处</strong>：<strong>"相等"的结果是 0</strong>，而 <code>0</code> 在 <code>if</code> 里是"假"！
+所以 <code>if (strcmp(a, b))</code> 和 <code>if (strcmp(a, b) == 0)</code> 意思<strong>正好相反</strong>，
+写的时候一定要把 <code>== 0</code> 写上。</p>
+<h2 id="62-stdstring-把三个问题全解决了">6.2 <code>std::string</code> 把三个问题全解决了</h2>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span><span class="w">               </span><span class="c1">// 必须包含这个头文件</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Hello"</span><span class="p">;</span>
+<span class="n">s1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">", world!"</span><span class="p">;</span><span class="w">           </span><span class="c1">// ① 自动伸缩，不用管大小</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">s2</span><span class="p">;</span>
+<span class="n">s2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s1</span><span class="p">;</span><span class="w">                        </span><span class="c1">// ② 可以直接赋值</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span><span class="w">       </span><span class="c1">// ③ == 比较的是内容</span>
+</code></pre></div>
+
+<p><strong><code>std::string</code> 是什么？</strong> 它是一个"自带管理功能"的字符串类型：
+你只管往里放字，<strong>它自己负责向系统申请内存、自己记着有多长、自己保证结尾有 <code>'\0'</code></strong>。
+所以上面三个痛点它都能解决：</p>
+<table>
+<thead>
+<tr>
+<th>痛点</th>
+<th><code>std::string</code> 怎么解决</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. 手动管大小</td>
+<td><strong>它自己管</strong>：不够了会自动去申请更大的空间再搬过去</td>
+</tr>
+<tr>
+<td>2. 不能整体赋值</td>
+<td><strong>它重载了 <code>=</code></strong>：<code>s2 = s1;</code> 就是"把内容复制过去"</td>
+</tr>
+<tr>
+<td>3. <code>==</code> 比的是地址</td>
+<td><strong>它重载了 <code>==</code></strong>：<code>a == b</code> 比的是<strong>内容</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>"重载"是什么意思？</strong>
+同一个符号（<code>=</code>、<code>==</code>、<code>+</code>），对不同类型做不同的事，这叫<strong>重载</strong>。
+对 <code>int</code> 来说 <code>+</code> 是加法，对 <code>std::string</code> 来说 <code>+</code> 是"把两段文字接起来"。
+现在不用深究，知道"<code>std::string</code> 上的 <code>=</code>、<code>==</code>、<code>+</code> 都是被专门定义过的"就够了。</p>
+</blockquote>
+<h2 id="63-常用操作速查">6.3 常用操作速查</h2>
+<div class="codehilite"><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Hello"</span><span class="p">;</span>
+
+<span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w">          </span><span class="c1">// 长度（也可以用 s.length()，一样）</span>
+<span class="n">s</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w">         </span><span class="c1">// 是否为空</span>
+<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w">              </span><span class="c1">// 像数组一样用下标取字符</span>
+<span class="n">s1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s2</span><span class="w">           </span><span class="c1">// 拼接（生成新字符串）</span>
+<span class="n">s1</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">s2</span><span class="w">          </span><span class="c1">// 追加（修改 s1）</span>
+<span class="n">s</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w">    </span><span class="c1">// 取子串：从第 0 个开始取 5 个</span>
+<span class="n">s</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">"llo"</span><span class="p">)</span><span class="w">     </span><span class="c1">// 查找，返回位置；找不到返回 std::string::npos</span>
+<span class="n">s</span><span class="p">.</span><span class="n">c_str</span><span class="p">()</span><span class="w">         </span><span class="c1">// 转成 C 风格字符串（要和 C 函数交互时用）← 第 4 章 D 会用到</span>
+</code></pre></div>
+
+<p><strong>几个要注意的点：</strong></p>
+<ul>
+<li><code>s[i]</code> 的<strong>下标也是从 0 开始</strong>的，和数组一样（<code>s[1]</code> 是第 2 个字符）。</li>
+<li><code>s.find()</code> <strong>找不到时返回 <code>std::string::npos</code></strong>——
+  <code>npos</code> 是一个特殊的大数字（"不存在的位置"）。
+  ⚠️ <strong>判断"找到没找到"不能写 <code>if (s.find(...) == -1)</code></strong>，
+  正确写法是 <code>if (s.find(...) == std::string::npos)</code>。</li>
+<li><code>s.size()</code> 返回的类型<strong>不是 <code>int</code></strong>，是这个类专门定义的无符号类型。
+  和 <code>int</code> 混着用偶尔会出警告，遇到就知道是这里。</li>
+</ul>
+<p>实测输出：</p>
+<div class="codehilite"><pre><span></span><code>s.size()          = 5      (长度)
+s[1]              = e      (像数组一样用下标取字符)
+s.empty()         = 0      (是否为空)
+s += " there"     -&gt; Hello there
+s.substr(0, 5)    = Hello  (取子串)
+s.find("there")   = 6     (找位置，找不到返回 npos)
+</code></pre></div>
+
+<h2 id="64-string-的输入getlinecin-s">6.4 ⭐ <code>string</code> 的输入：<code>getline(cin, s)</code></h2>
+<div class="codehilite"><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">line</span><span class="p">;</span>
+<span class="n">getline</span><span class="p">(</span><span class="n">cin</span><span class="p">,</span><span class="w"> </span><span class="n">line</span><span class="p">);</span><span class="w">             </span><span class="c1">// 注意：写法是 getline(cin, 变量)，【不用】写大小！</span>
+</code></pre></div>
+
+<p><strong>和 <code>cin.getline(char数组, n)</code> 的区别</strong>：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>cin.getline(s, n)</code></th>
+<th><code>getline(cin, s)</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数</td>
+<td><code>(char数组, 最大长度)</code></td>
+<td><code>(cin, string对象)</code></td>
+</tr>
+<tr>
+<td>要写大小吗</td>
+<td><strong>要</strong></td>
+<td><strong>不用</strong>（string 自己管）</td>
+</tr>
+<tr>
+<td>属于</td>
+<td><code>istream</code> 类的<strong>成员函数</strong></td>
+<td><code>&lt;string&gt;</code> 里的<strong>普通函数</strong></td>
+</tr>
+<tr>
+<td>安全吗</td>
+<td>长度受保护</td>
+<td><strong>完全安全</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>这是 C++ 里最容易混的一对写法</strong>，务必分清：
+<strong><code>cin.getline(...)</code> 有那个点 <code>.</code>；<code>getline(cin, ...)</code> 没有点。</strong></p>
+<ul>
+<li>看到 <code>.</code> → 是 <code>cin</code> 自己的功能 → 参数写 <code>(数组, 大小)</code></li>
+<li>没有 <code>.</code> → 是一个独立函数 → 参数写 <code>(cin, 变量)</code></li>
+</ul>
+<p><strong>一个更简单的记法</strong>：<code>cin.getline</code> 管的是 <strong>C 风格数组</strong>（所以要手动告诉它大小），
+<code>getline(cin, ...)</code> 管的是 <strong><code>std::string</code></strong>（不用告诉大小）。</p>
+<p>⚠️ 好消息是：<strong><code>getline(cin, s)</code> 同样会自动丢掉那一行的换行符</strong>，
+所以第 5 节那个陷阱在 <code>string</code> 版本里是<strong>一样的</strong>——
+<code>cin &gt;&gt; year;</code> 之后接 <code>getline(cin, line);</code> 同样会读到空串，同样要 <code>cin.get();</code>。</p>
+</blockquote>
+<h2 id="65-c11-其他形式的字符串字面值教材-435p104">6.5 C++11 其他形式的字符串字面值（教材 4.3.5，p104）</h2>
+<table>
+<thead>
+<tr>
+<th>前缀</th>
+<th>类型</th>
+<th>例子</th>
+<th>干什么用的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>u8"..."</code></td>
+<td>UTF-8</td>
+<td><code>u8"你好"</code></td>
+<td>明确用 UTF-8 编码存文字</td>
+</tr>
+<tr>
+<td><code>u"..."</code></td>
+<td><code>char16_t</code></td>
+<td><code>u"hello"</code></td>
+<td>16 位宽的字符（UTF-16）</td>
+</tr>
+<tr>
+<td><code>U"..."</code></td>
+<td><code>char32_t</code></td>
+<td><code>U"hello"</code></td>
+<td>32 位宽的字符（UTF-32）</td>
+</tr>
+<tr>
+<td><code>L"..."</code></td>
+<td><code>wchar_t</code></td>
+<td><code>L"hello"</code></td>
+<td>"宽字符"，Windows API 常用</td>
+</tr>
+<tr>
+<td><code>R"(...)"</code></td>
+<td><strong>原始字符串</strong></td>
+<td><code>R"(C:\path\file)"</code></td>
+<td>里面的 <code>\</code> <strong>不再是转义符</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>先说这些前缀是干什么的</strong>：
+普通的 <code>"..."</code> 每个字符占 1 字节，只能装下很小一部分字符（英文够用，中文勉强）。
+要想稳当地处理中文、日文这些字符，就得用"每个字符多占几字节"的类型——
+上面这几个前缀就是用来明确指定这件事的。</p>
+<p><strong><code>R"(...)"</code> 最实用</strong>：普通字符串里写 Windows 路径要写成 <code>"C:\\path\\file"</code>（<code>\\</code> 是转义），
+用原始字符串就可以直接写 <code>R"(C:\path\file)"</code>，所见即所得。</p>
+<blockquote>
+<p>📌 <strong>本课只需要认识这几行字面值的写法</strong>，不用掌握它们的用法。
+<code>char16_t</code> / <code>char32_t</code> / <code>wchar_t</code> 的大小和用法在第 4 章后面的课程里才会碰到。</p>
+</blockquote>
+<hr />
+<h1 id="7-本课常见坑汇总每条都有实测证据">7. 本课常见坑汇总（每条都有实测证据）</h1>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>坑</th>
+<th>后果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>int a[5];</code> 然后访问 <code>a[5]</code></td>
+<td>越界！拿到垃圾值或破坏别的变量（<strong>不报错</strong>）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>循环写 <code>i &lt;= 5</code>（数组 5 个元素）</td>
+<td><strong>越界一整个元素</strong>，最常见的低级错误</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>char s[5] = "hello";</code></td>
+<td>装不下 <code>'\0'</code>，编译报错</td>
+</tr>
+<tr>
+<td>4</td>
+<td>以为 <code>int a[5] = {1,2};</code> 剩下的也是垃圾值</td>
+<td>其实<strong>自动补 0</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>b = a;</code> 想复制数组</td>
+<td>编译错误（数组不能整体赋值）</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>cin &gt;&gt; name</code> 想读带空格的名字</td>
+<td>只读到第一个空格</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>cin &gt;&gt; year;</code> 之后立刻 <code>cin.getline(...)</code></td>
+<td><strong>读到空行</strong>（换行符残留）</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>if (ca == cb)</code> 比较 C 字符串内容</td>
+<td>比的是<strong>地址</strong>，永远错。要用 <code>strcmp(...) == 0</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>sizeof(s)</code> 和 <code>strlen(s)</code> 搞混</td>
+<td>差 1，考试必错</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>getline(cin, s)</code> 写成 <code>cin.getline(s, n)</code> 或反过来</td>
+<td>编译错误</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>cin.getline(name, 80)</code> 而 <code>name</code> 只有 20 格</td>
+<td><strong>缓冲区溢出</strong>：可能不崩溃、看起来还正常（最危险）</td>
+</tr>
+<tr>
+<td>12</td>
+<td>用逐个字符 <code>{...}</code> 初始化字符串，忘了 <code>'\0'</code></td>
+<td>打印时<strong>越读越远</strong>，输出垃圾（也可能碰巧看起来正常）</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>letters + 1</code> 想"把内容加一"</td>
+<td>实际是"挪地址"，<code>cout</code> 打出空字符串（见 3.6 节）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="8-本课作业">8. 本课作业</h1>
+<p>见 <strong><code>练习/第04章A-练习.md</code></strong>：</p>
+<ul>
+<li><strong>第一部分</strong>：教材 p123 复习题中<strong>与本课相关</strong>的 7 题（1、3、4、5、6、7、16 题）</li>
+<li>复习题 2、8–15、17 涉及 <code>array</code> / 结构 / 指针 / <code>new</code>，属于第 4 章 B–D</li>
+<li><strong>第二部分</strong>：教材 p124 编程练习 <strong>1–4 题</strong>（全部关于 char 数组和 string）</li>
+<li>练习 5–10 涉及结构 / <code>new</code> / <code>array</code>，属于第 4 章 B–D</li>
+</ul>
+<p><strong>做题时的三条要求</strong>：</p>
+<ol>
+<li><strong>手敲代码</strong>，不要复制粘贴——肌肉记忆是学语法最快的方式。</li>
+<li><strong>每题都用题目给的"输入 → 输出"例子跑一遍</strong>，对不上就先怀疑自己的代码。</li>
+<li><strong>编译时打开 <code>-Wall -Wextra</code></strong>，警告要认真看（比如"变量没初始化就用"）。</li>
+</ol>
+<hr />
+<h1 id="9-过关标准">9. 过关标准</h1>
+<p>全部能做到，就算过关：</p>
+<ol>
+<li><strong>不看资料</strong>解释：为什么下标从 0 开始？<code>'\0'</code> 是干什么用的？</li>
+<li>说出 <code>sizeof(fish)</code> 和 <code>strlen(fish)</code> 的区别（<code>char fish[] = "bubbles";</code>）。</li>
+<li><strong>说清楚</strong>下面这段为什么会跳过输入，并写出<strong>两种</strong>修法：</li>
+</ol>
+<p><code>cpp
+   int year;
+   char address[80];
+   cin &gt;&gt; year;
+   cin.getline(address, 80);</code></p>
+<ol start="4">
+<li>说出 <code>cin &gt;&gt; s</code> / <code>cin.getline(s, n)</code> / <code>cin.get(s, n)</code> 三者的区别，
+   以及<strong>为什么"下一个操作是 <code>cin &gt;&gt;</code> 时就不会出问题"</strong>。</li>
+<li>说出 C 风格字符串的三个痛点，以及 <code>std::string</code> 分别怎么解决。</li>
+<li>说出下面两句话各自错在哪、怎么改：
+   - <code>char name[20]; cin.getline(name, 80);</code>
+   - <code>char a[] = "apple"; char b[] = "apple"; if (a == b) ...</code></li>
+</ol>
+<blockquote>
+<p><strong>下一课</strong>：第 4 章 B：结构、共用体、枚举（p105–114）——
+把"多个<strong>不同类型</strong>的数据"打包成一个整体。</p>
+</blockquote>
+<hr />
+<p>📖 <strong>延伸阅读（可选）</strong></p>
+<ul>
+<li>教材 4.10.3 比较数组、vector、array（p137–139）—— 现在略读，第 4 章 D 细讲</li>
+<li>教材附录 C ASCII 字符集（p862）—— 看 <code>'\0'</code> 就是数值 0、<code>'A'</code> 就是 65</li>
+<li>教材附录 D 运算符优先级（p866）—— <code>[]</code> 的优先级最高</li>
+</ul>
+<div class="pager"><a class="prev" href="../讲义/第03章-处理数据.html">← 上一页：第03章-处理数据</a><a class="next" href="../讲义/第04章B-结构共用体枚举.html">下一页：第04章B-结构共用体枚举 →</a></div>
+<div class="footer"><a href="../index.html">← 返回总目录</a></div>
+</article></main>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('themeBtn');
+  function sync(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    btn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    btn.title = (t === 'dark') ? '切换到浅色' : '切换到深色';
+  }
+  btn.addEventListener('click', function(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    t = (t === 'dark') ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    try{ localStorage.setItem('cppcourse-theme', t); }catch(e){}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>

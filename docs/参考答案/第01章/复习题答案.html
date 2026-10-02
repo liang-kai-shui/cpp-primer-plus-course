@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>复习题答案</title>
+<script>
+/* 在页面渲染前先定好主题，避免"白屏闪一下" */
+(function(){
+  try{
+    var t = localStorage.getItem('cppcourse-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<style>
+/* ============ 颜色变量：默认深色 ============ */
+:root, [data-theme="dark"]{
+  --bg:#14171a; --bg2:#1b1f24; --bg3:#232a31;
+  --fg:#dfe3e8; --fg2:#b6bec8; --muted:#8b95a1;
+  --line:#2b3138; --accent:#58a6ff;
+  --code-bg:#0f1216; --quote-bg:#1b2027;
+}
+[data-theme="light"]{
+  --bg:#fbfbfa; --bg2:#ffffff; --bg3:#f1f5f9;
+  --fg:#22272e; --fg2:#3b434d; --muted:#6b7280;
+  --line:#e5e7eb; --accent:#1f6feb;
+  --code-bg:#f3f4f6; --quote-bg:#f8fafc;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",Roboto,sans-serif;
+  font-size:16.5px; line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ============ 主题切换按钮 ============ */
+#themeBtn{
+  position:fixed; top:14px; right:18px; z-index:50;
+  width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--line); background:var(--bg2); color:var(--fg);
+  font-size:19px; line-height:1; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, background .15s ease;
+}
+#themeBtn:hover{transform:scale(1.08); background:var(--bg3);}
+
+.layout{display:flex; min-height:100vh;}
+
+/* ============ 侧边导航 ============ */
+nav{
+  width:288px; flex:0 0 288px; background:var(--bg2);
+  border-right:1px solid var(--line); padding:22px 0 80px;
+  overflow-y:auto; position:sticky; top:0; height:100vh;
+}
+nav .brand{
+  padding:0 20px 15px; font-weight:700; font-size:15px;
+  border-bottom:1px solid var(--line); margin-bottom:12px; color:var(--fg);
+}
+nav .group{
+  padding:16px 20px 6px; font-size:11.5px; color:var(--muted);
+  letter-spacing:.1em; font-weight:600;
+}
+nav a{display:block; padding:6px 20px; font-size:14px; color:var(--fg2);
+  border-left:3px solid transparent;}
+nav a:hover{background:var(--bg3); text-decoration:none; color:var(--fg);}
+nav a.active{color:var(--accent); font-weight:600;
+  border-left-color:var(--accent); background:var(--bg3);}
+
+main{flex:1; min-width:0; padding:46px 60px 120px; max-width:1120px;}
+article{
+  background:var(--bg2); border:1px solid var(--line);
+  border-radius:12px; padding:40px 48px;
+  box-shadow:0 1px 3px rgba(0,0,0,.10);
+}
+
+/* ============ 正文排版 ============ */
+h1,h2,h3,h4{line-height:1.4; margin:1.7em 0 .7em; font-weight:700; scroll-margin-top:20px;}
+h1{font-size:1.9em; margin-top:0; padding-bottom:.4em; border-bottom:2px solid var(--line);}
+h2{font-size:1.42em; padding-bottom:.28em; border-bottom:1px solid var(--line);}
+h3{font-size:1.16em;}
+h4{font-size:1.03em; color:var(--fg2);}
+p{margin:.8em 0;}
+ul,ol{padding-left:1.65em;}
+li{margin:.35em 0;}
+strong{font-weight:700;}
+hr{border:0; border-top:1px solid var(--line); margin:2.2em 0;}
+img{max-width:100%;}
+
+blockquote{
+  margin:1.1em 0; padding:.85em 1.15em; background:var(--quote-bg);
+  border-left:4px solid var(--accent); color:var(--fg2);
+  border-radius:0 8px 8px 0;
+}
+blockquote p{margin:.4em 0;}
+blockquote strong{color:var(--fg);}
+
+/* ============ 表格 ============ */
+table{
+  border-collapse:collapse; width:100%; margin:1.2em 0;
+  font-size:14.8px; display:block; overflow-x:auto;
+}
+th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top;}
+th{background:var(--bg3); font-weight:600; white-space:nowrap;}
+tbody tr:nth-child(even) td{background:rgba(127,127,127,.05);}
+
+/* ============ 代码 ============ */
+code{
+  font-family:"Cascadia Code",Consolas,"SF Mono",Monaco,"Courier New","Microsoft YaHei",monospace;
+  font-size:.885em; background:var(--code-bg); padding:.16em .42em;
+  border-radius:4px; border:1px solid var(--line);
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--line); border-radius:9px;
+  padding:15px 17px; overflow-x:auto; margin:1.1em 0; line-height:1.6;
+}
+pre code{background:none; padding:0; border:0; font-size:13.8px;}
+.codehilite{background:var(--code-bg); border:1px solid var(--line);
+  border-radius:9px; margin:1.1em 0;}
+.codehilite pre{border:0; margin:0; background:none;}
+
+/* ============ 本页目录 / 卡片 / 翻页 ============ */
+.toc-box{
+  background:var(--quote-bg); border:1px solid var(--line);
+  border-radius:9px; padding:13px 22px; margin:1.3em 0;
+}
+.toc-box strong{display:block; margin-bottom:5px; color:var(--muted);
+  font-size:13px; letter-spacing:.05em;}
+.toc-box ul{margin:.35em 0; padding-left:1.3em;}
+.toc-box a{color:var(--fg2);}
+.toc-box a:hover{color:var(--accent);}
+
+/* ============ 讲义页顶部的"卡住了去哪查"横幅 ============ */
+.hintbar{
+  background:var(--bg3); border:1px solid var(--line); border-radius:8px;
+  padding:9px 15px; margin:0 0 1.5em; font-size:13.5px; color:var(--muted);
+}
+.hintbar a{font-weight:600;}
+
+/* 超长的"本页目录"（比如术语表有 100+ 词条）折叠起来，别把正文挤下去 */
+details.toc-box summary{
+  cursor:pointer; color:var(--muted); font-size:13.5px;
+  font-weight:600; letter-spacing:.03em; user-select:none;
+}
+details.toc-box summary:hover{color:var(--accent);}
+details.toc-box[open] summary{margin-bottom:.5em;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px; margin:24px 0;}
+.card{background:var(--bg2); border:1px solid var(--line); border-radius:11px;
+  padding:19px 21px; transition:transform .15s ease, border-color .15s ease;}
+.card:hover{transform:translateY(-2px); border-color:var(--accent);}
+.card h3{margin:0 0 8px; font-size:1.06em;}
+.card p{margin:0; color:var(--muted); font-size:14px; line-height:1.65;}
+
+.pager{display:flex; justify-content:space-between; gap:14px; margin-top:34px;
+  padding-top:20px; border-top:1px solid var(--line);}
+.pager a{flex:1; padding:11px 16px; background:var(--bg3); border:1px solid var(--line);
+  border-radius:9px; font-size:14px; color:var(--fg2);}
+.pager a:hover{border-color:var(--accent); color:var(--accent); text-decoration:none;}
+.pager a.next{text-align:right;}
+.pager a.disabled{opacity:.35; pointer-events:none;}
+
+.footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:13.5px;}
+
+/* ============ 移动端 ============ */
+@media (max-width:900px){
+  nav{display:none;}
+  main{padding:18px 12px 60px;}
+  article{padding:22px 17px; border-radius:8px;}
+  #themeBtn{top:10px; right:10px; width:38px; height:38px;}
+}
+
+/* ===== 代码高亮（按主题隔离） ===== */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="dark"] .codehilite .hll { background-color: #49483e }
+[data-theme="dark"] .codehilite { background: #272822; color: #F8F8F2 }
+[data-theme="dark"] .codehilite .c { color: #959077 } /* Comment */
+[data-theme="dark"] .codehilite .err { color: #ED007E; background-color: #1E0010 } /* Error */
+[data-theme="dark"] .codehilite .esc { color: #F8F8F2 } /* Escape */
+[data-theme="dark"] .codehilite .g { color: #F8F8F2 } /* Generic */
+[data-theme="dark"] .codehilite .k { color: #66D9EF } /* Keyword */
+[data-theme="dark"] .codehilite .l { color: #AE81FF } /* Literal */
+[data-theme="dark"] .codehilite .n { color: #F8F8F2 } /* Name */
+[data-theme="dark"] .codehilite .o { color: #FF4689 } /* Operator */
+[data-theme="dark"] .codehilite .x { color: #F8F8F2 } /* Other */
+[data-theme="dark"] .codehilite .p { color: #F8F8F2 } /* Punctuation */
+[data-theme="dark"] .codehilite .ch { color: #959077 } /* Comment.Hashbang */
+[data-theme="dark"] .codehilite .cm { color: #959077 } /* Comment.Multiline */
+[data-theme="dark"] .codehilite .cp { color: #959077 } /* Comment.Preproc */
+[data-theme="dark"] .codehilite .cpf { color: #959077 } /* Comment.PreprocFile */
+[data-theme="dark"] .codehilite .c1 { color: #959077 } /* Comment.Single */
+[data-theme="dark"] .codehilite .cs { color: #959077 } /* Comment.Special */
+[data-theme="dark"] .codehilite .gd { color: #FF4689 } /* Generic.Deleted */
+[data-theme="dark"] .codehilite .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+[data-theme="dark"] .codehilite .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="dark"] .codehilite .gr { color: #FF4689 } /* Generic.Error */
+[data-theme="dark"] .codehilite .gh { color: #F8F8F2 } /* Generic.Heading */
+[data-theme="dark"] .codehilite .gi { color: #A6E22E } /* Generic.Inserted */
+[data-theme="dark"] .codehilite .go { color: #66D9EF } /* Generic.Output */
+[data-theme="dark"] .codehilite .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+[data-theme="dark"] .codehilite .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+[data-theme="dark"] .codehilite .gu { color: #959077 } /* Generic.Subheading */
+[data-theme="dark"] .codehilite .gt { color: #66D9EF } /* Generic.Traceback */
+[data-theme="dark"] .codehilite .kc { color: #66D9EF } /* Keyword.Constant */
+[data-theme="dark"] .codehilite .kd { color: #66D9EF } /* Keyword.Declaration */
+[data-theme="dark"] .codehilite .kn { color: #FF4689 } /* Keyword.Namespace */
+[data-theme="dark"] .codehilite .kp { color: #66D9EF } /* Keyword.Pseudo */
+[data-theme="dark"] .codehilite .kr { color: #66D9EF } /* Keyword.Reserved */
+[data-theme="dark"] .codehilite .kt { color: #66D9EF } /* Keyword.Type */
+[data-theme="dark"] .codehilite .ld { color: #E6DB74 } /* Literal.Date */
+[data-theme="dark"] .codehilite .m { color: #AE81FF } /* Literal.Number */
+[data-theme="dark"] .codehilite .s { color: #E6DB74 } /* Literal.String */
+[data-theme="dark"] .codehilite .na { color: #A6E22E } /* Name.Attribute */
+[data-theme="dark"] .codehilite .nb { color: #A6E22E } /* Name.Builtin */
+[data-theme="dark"] .codehilite .nc { color: #A6E22E } /* Name.Class */
+[data-theme="dark"] .codehilite .no { color: #66D9EF } /* Name.Constant */
+[data-theme="dark"] .codehilite .nd { color: #A6E22E } /* Name.Decorator */
+[data-theme="dark"] .codehilite .ni { color: #F8F8F2 } /* Name.Entity */
+[data-theme="dark"] .codehilite .ne { color: #A6E22E } /* Name.Exception */
+[data-theme="dark"] .codehilite .nf { color: #A6E22E } /* Name.Function */
+[data-theme="dark"] .codehilite .nl { color: #F8F8F2 } /* Name.Label */
+[data-theme="dark"] .codehilite .nn { color: #F8F8F2 } /* Name.Namespace */
+[data-theme="dark"] .codehilite .nx { color: #A6E22E } /* Name.Other */
+[data-theme="dark"] .codehilite .py { color: #F8F8F2 } /* Name.Property */
+[data-theme="dark"] .codehilite .nt { color: #FF4689 } /* Name.Tag */
+[data-theme="dark"] .codehilite .nv { color: #F8F8F2 } /* Name.Variable */
+[data-theme="dark"] .codehilite .ow { color: #FF4689 } /* Operator.Word */
+[data-theme="dark"] .codehilite .pm { color: #F8F8F2 } /* Punctuation.Marker */
+[data-theme="dark"] .codehilite .w { color: #F8F8F2 } /* Text.Whitespace */
+[data-theme="dark"] .codehilite .mb { color: #AE81FF } /* Literal.Number.Bin */
+[data-theme="dark"] .codehilite .mf { color: #AE81FF } /* Literal.Number.Float */
+[data-theme="dark"] .codehilite .mh { color: #AE81FF } /* Literal.Number.Hex */
+[data-theme="dark"] .codehilite .mi { color: #AE81FF } /* Literal.Number.Integer */
+[data-theme="dark"] .codehilite .mo { color: #AE81FF } /* Literal.Number.Oct */
+[data-theme="dark"] .codehilite .sa { color: #E6DB74 } /* Literal.String.Affix */
+[data-theme="dark"] .codehilite .sb { color: #E6DB74 } /* Literal.String.Backtick */
+[data-theme="dark"] .codehilite .sc { color: #E6DB74 } /* Literal.String.Char */
+[data-theme="dark"] .codehilite .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+[data-theme="dark"] .codehilite .sd { color: #E6DB74 } /* Literal.String.Doc */
+[data-theme="dark"] .codehilite .s2 { color: #E6DB74 } /* Literal.String.Double */
+[data-theme="dark"] .codehilite .se { color: #AE81FF } /* Literal.String.Escape */
+[data-theme="dark"] .codehilite .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+[data-theme="dark"] .codehilite .si { color: #E6DB74 } /* Literal.String.Interpol */
+[data-theme="dark"] .codehilite .sx { color: #E6DB74 } /* Literal.String.Other */
+[data-theme="dark"] .codehilite .sr { color: #E6DB74 } /* Literal.String.Regex */
+[data-theme="dark"] .codehilite .s1 { color: #E6DB74 } /* Literal.String.Single */
+[data-theme="dark"] .codehilite .ss { color: #E6DB74 } /* Literal.String.Symbol */
+[data-theme="dark"] .codehilite .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+[data-theme="dark"] .codehilite .fm { color: #A6E22E } /* Name.Function.Magic */
+[data-theme="dark"] .codehilite .vc { color: #F8F8F2 } /* Name.Variable.Class */
+[data-theme="dark"] .codehilite .vg { color: #F8F8F2 } /* Name.Variable.Global */
+[data-theme="dark"] .codehilite .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+[data-theme="dark"] .codehilite .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+[data-theme="dark"] .codehilite .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="light"] .codehilite .hll { background-color: #ffffcc }
+[data-theme="light"] .codehilite { background: #f0f0f0; }
+[data-theme="light"] .codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+[data-theme="light"] .codehilite .err { border: 1px solid #F00 } /* Error */
+[data-theme="light"] .codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+[data-theme="light"] .codehilite .o { color: #666 } /* Operator */
+[data-theme="light"] .codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+[data-theme="light"] .codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+[data-theme="light"] .codehilite .cp { color: #007020 } /* Comment.Preproc */
+[data-theme="light"] .codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+[data-theme="light"] .codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+[data-theme="light"] .codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+[data-theme="light"] .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+[data-theme="light"] .codehilite .ge { font-style: italic } /* Generic.Emph */
+[data-theme="light"] .codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="light"] .codehilite .gr { color: #F00 } /* Generic.Error */
+[data-theme="light"] .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+[data-theme="light"] .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+[data-theme="light"] .codehilite .go { color: #888 } /* Generic.Output */
+[data-theme="light"] .codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+[data-theme="light"] .codehilite .gs { font-weight: bold } /* Generic.Strong */
+[data-theme="light"] .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+[data-theme="light"] .codehilite .gt { color: #04D } /* Generic.Traceback */
+[data-theme="light"] .codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+[data-theme="light"] .codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+[data-theme="light"] .codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+[data-theme="light"] .codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+[data-theme="light"] .codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+[data-theme="light"] .codehilite .kt { color: #902000 } /* Keyword.Type */
+[data-theme="light"] .codehilite .m { color: #40A070 } /* Literal.Number */
+[data-theme="light"] .codehilite .s { color: #4070A0 } /* Literal.String */
+[data-theme="light"] .codehilite .na { color: #4070A0 } /* Name.Attribute */
+[data-theme="light"] .codehilite .nb { color: #007020 } /* Name.Builtin */
+[data-theme="light"] .codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+[data-theme="light"] .codehilite .no { color: #60ADD5 } /* Name.Constant */
+[data-theme="light"] .codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+[data-theme="light"] .codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+[data-theme="light"] .codehilite .ne { color: #007020 } /* Name.Exception */
+[data-theme="light"] .codehilite .nf { color: #06287E } /* Name.Function */
+[data-theme="light"] .codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+[data-theme="light"] .codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+[data-theme="light"] .codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+[data-theme="light"] .codehilite .nv { color: #BB60D5 } /* Name.Variable */
+[data-theme="light"] .codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+[data-theme="light"] .codehilite .w { color: #BBB } /* Text.Whitespace */
+[data-theme="light"] .codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+[data-theme="light"] .codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+[data-theme="light"] .codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+[data-theme="light"] .codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+[data-theme="light"] .codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+[data-theme="light"] .codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+[data-theme="light"] .codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+[data-theme="light"] .codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+[data-theme="light"] .codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+[data-theme="light"] .codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+[data-theme="light"] .codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+[data-theme="light"] .codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+[data-theme="light"] .codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+[data-theme="light"] .codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+[data-theme="light"] .codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+[data-theme="light"] .codehilite .sr { color: #235388 } /* Literal.String.Regex */
+[data-theme="light"] .codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+[data-theme="light"] .codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+[data-theme="light"] .codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+[data-theme="light"] .codehilite .fm { color: #06287E } /* Name.Function.Magic */
+[data-theme="light"] .codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+[data-theme="light"] .codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+[data-theme="light"] .codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+[data-theme="light"] .codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+[data-theme="light"] .codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+[data-theme="dark"] .codehilite, [data-theme="dark"] .codehilite pre{background:transparent;}
+</style>
+</head>
+<body>
+<button id="themeBtn" title="切换深色 / 浅色">🌙</button>
+<div class="layout">
+<nav><div class="brand">C++ 入门课程</div>
+<a href="../../README.html">课程说明</a>
+<div class="group">附录</div>
+<a href="../../附录/术语表.html">术语表</a>
+<a href="../../附录/零基础起飞.html">零基础起飞</a>
+<div class="group">讲义</div>
+<a href="../../讲义/第01章-预备知识.html">第01章-预备知识</a>
+<a href="../../讲义/第02章-开始学习C++.html">第02章-开始学习C++</a>
+<a href="../../讲义/第03章-处理数据.html">第03章-处理数据</a>
+<a href="../../讲义/第04章A-数组与字符串.html">第04章A-数组与字符串</a>
+<a href="../../讲义/第04章B-结构共用体枚举.html">第04章B-结构共用体枚举</a>
+<div class="group">练习</div>
+<a href="../../练习/第01章-练习.html">第01章-练习</a>
+<a href="../../练习/第02章-练习.html">第02章-练习</a>
+<a href="../../练习/第03章-练习.html">第03章-练习</a>
+<a href="../../练习/第04章A-练习.html">第04章A-练习</a>
+<a href="../../练习/第04章B-练习.html">第04章B-练习</a>
+<div class="group">参考答案</div>
+<a href="../../参考答案/第01章/复习题答案.html" class="active">第01章 · 复习题答案</a>
+<a href="../../参考答案/第01章/错误分类实验-答案.html">第01章 · 错误分类实验-答案</a>
+<a href="../../参考答案/第01章/摸底测试/说明.html">第01章/摸底测试 · 说明</a>
+<a href="../../参考答案/第02章/复习题答案.html">第02章 · 复习题答案</a>
+<a href="../../参考答案/第03章/复习题答案.html">第03章 · 复习题答案</a>
+<a href="../../参考答案/第04章A/复习题答案.html">第04章A · 复习题答案</a>
+<a href="../../参考答案/第04章B/复习题答案.html">第04章B · 复习题答案</a>
+</nav>
+<main><article>
+<div class="toc-box"><strong>本页目录</strong><div class="toc">
+<ul>
+<li><a href="#41-c-的三个思想来源分别是什么每一个给-c-带来了什么特征">4.1 C++ 的三个思想来源分别是什么？每一个给 C++ 带来了什么特征？</a></li>
+<li><a href="#42-从-democpp-到-demoexe-有哪四步每步用什么命令产出什么文件">4.2 从 demo.cpp 到 demo.exe 有哪四步？每步用什么命令、产出什么文件？</a></li>
+<li><a href="#43-为什么-include-后面不写分号">4.3 为什么 #include 后面不写分号？</a></li>
+<li><a href="#44-头文件和库分别扮演什么角色打个比方说明">4.4 「头文件」和「库」分别扮演什么角色？打个比方说明。</a></li>
+<li><a href="#45-拿到一个报错你怎么判断它是编译错误还是链接错误两者的排查方向有什么不同">4.5 拿到一个报错，你怎么判断它是编译错误还是链接错误？两者的排查方向有什么不同？</a></li>
+<li><a href="#46-为什么说编译通过完全不代表程序是对的举一个你自己代码里的例子">4.6 为什么说"编译通过"完全不代表"程序是对的"？举一个你自己代码里的例子。</a></li>
+<li><a href="#任务-5-找-bug-练习凯撒密码在-xyz-上输出">任务 5 · 找 bug 练习：凯撒密码在 XYZ 上输出 [\]</a><ul>
+<li><a href="#第一问根本原因是什么">第一问：根本原因是什么？</a></li>
+<li><a href="#第二问这个-bug-属于哪一类错误编译-链接-运行时">第二问：这个 bug 属于哪一类错误？（编译 / 链接 / 运行时）</a></li>
+<li><a href="#第三问为什么只看输入-abc-输出-def发现不了它你会多测哪几个输入">第三问：为什么只看"输入 abc 输出 def"发现不了它？你会多测哪几个输入？</a></li>
+</ul>
+</li>
+<li><a href="#附本文件涉及的原始作答对照总表">附：本文件涉及的原始作答对照总表</a></li>
+</ul>
+</div>
+</div><h1 id="第-01-章-复习题-参考答案">第 01 章 复习题 · 参考答案</h1>
+<blockquote>
+<p><strong>教材附录 J（p933）有官方答案，建议先自己做完再对照。</strong></p>
+<p>下面每条都是「先给出参考答案，再保留一份原始作答记录，逐条核对」。
+凡是原作答有问题的地方，都在该条后面用一行小字标了 <strong>订正说明</strong>。
+拿不准的地方会明确写出「此处建议对照教材附录 J 核对」，不会硬改。</p>
+</blockquote>
+<hr />
+<h2 id="41-c-的三个思想来源分别是什么每一个给-c-带来了什么特征">4.1 C++ 的三个思想来源分别是什么？每一个给 C++ 带来了什么特征？</h2>
+<p><strong>参考答案</strong></p>
+<table>
+<thead>
+<tr>
+<th>思想来源</th>
+<th>给 C++ 带来的特征</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C 语言</strong>（过程性 / 结构化编程）</td>
+<td>高效、贴近硬件、可直接操作内存。C++ 完整继承了 C 的语法和运行效率，「C++ 是更好的 C」这一半就来自这里</td>
+</tr>
+<tr>
+<td><strong>Simula 67</strong>（面向对象编程）</td>
+<td>类（class）、对象、封装、继承、多态。C++ 最初的名字就叫「C with Classes」</td>
+</tr>
+<tr>
+<td><strong>泛型编程</strong>（模板机制，思想可追溯到 Ada / CLU / ML 等语言）</td>
+<td>模板（template）、STL 容器与算法。「写一次，适配任意类型」，同一份代码能处理 <code>int</code>、<code>double</code>、自定义类</td>
+</tr>
+</tbody>
+</table>
+<p>一句话概括：<strong>C 给了 C++ 效率与底层能力，Simula 67 给了它面向对象的抽象能力，模板给了它泛型复用的能力。</strong></p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>过程性思想来自 C，面向对象来自 Simula 67，泛型编程来自 不知道</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>「过程性来自 C」——✅ 对。</li>
+<li>「面向对象来自 Simula 67」——✅ 对。更细的说法是「Simula 67（或写作 Simula）」，两种写法教材里都出现过。</li>
+<li>「泛型编程来自 不知道」——❌ 没答出来。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案泛型编程一栏写的是「不知道」，正确应为「来自模板（template）机制，其思想可追溯到 Ada、CLU、ML 等语言」，因为它给 C++ 带来的正是 <strong>template 模板</strong>，以及建立在其上的 <strong>STL（标准模板库）</strong>——同一份代码可以适配任意类型，这是 C++ 区别于 C 的第三大支柱。
+此处建议对照教材附录 J（p933）核对措辞，不同版本教材对「泛型来源」列举的语言可能略有差异。</p>
+</blockquote>
+<hr />
+<h2 id="42-从-democpp-到-demoexe-有哪四步每步用什么命令产出什么文件">4.2 从 <code>demo.cpp</code> 到 <code>demo.exe</code> 有哪四步？每步用什么命令、产出什么文件？</h2>
+<p><strong>参考答案</strong></p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>名称</th>
+<th>命令</th>
+<th>产出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td><strong>预处理</strong></td>
+<td><code>g++ -E -std=c++17 demo.cpp -o demo.i</code></td>
+<td><code>demo.i</code>（展开后的源代码文本）</td>
+</tr>
+<tr>
+<td>②</td>
+<td><strong>编译</strong></td>
+<td><code>g++ -S -std=c++17 demo.cpp -o demo.s</code></td>
+<td><code>demo.s</code>（汇编代码）</td>
+</tr>
+<tr>
+<td>③</td>
+<td><strong>汇编</strong></td>
+<td><code>g++ -c -std=c++17 demo.cpp -o demo.o</code></td>
+<td><code>demo.o</code>（目标文件，机器码）</td>
+</tr>
+<tr>
+<td>④</td>
+<td><strong>链接</strong></td>
+<td><code>g++ demo.o -o demo.exe</code></td>
+<td><code>demo.exe</code>（可执行文件）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>记忆要点：<strong>E → S → c → 链接</strong>。
+<code>-E</code> 只做预处理；<code>-S</code> 产出汇编；<code>-c</code> 产出目标文件；不加任何字母就是一路做完再链接。</p>
+</blockquote>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>预处理：g++ -E　编译：g++ -S　汇编：g++ -c　链接：g++ main.o -o main.exe</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>四步的<strong>名字</strong>全对，四个关键选项 <code>-E</code> / <code>-S</code> / <code>-c</code> 也全对，顺序正确。✅</li>
+<li>但<strong>少了「产出什么文件」</strong>：题目问了两件事（命令 + 产出文件），答案只答了命令。</li>
+<li>链接一步的文件名写成了 <code>main.o</code> / <code>main.exe</code>，与本题的 <code>demo.cpp</code> 对不上。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案的链接命令写的是 <code>g++ main.o -o main.exe</code>，本题的源文件叫 <code>demo.cpp</code>，正确应为 <code>g++ demo.o -o demo.exe</code>，因为 <code>main.o</code>/<code>main.exe</code> 是另一个文件名，跟本题的 <code>demo.*</code> 不是一回事；另外原答案漏答了每步的产出文件，正确应为 ①<code>demo.i</code> ②<code>demo.s</code> ③<code>demo.o</code> ④<code>demo.exe</code>，因为题目明确问了「产出什么文件」，答全才算完整。</p>
+<p>⚠️ 补充一个容易混的点：编译器的 <code>-S</code> 选项名字看着像「Source」，但它产出的是<strong>汇编</strong>（<code>.s</code>）；<code>-c</code> 看着像「compile」，但它其实是<strong>只编译不链接</strong>，产出<strong>目标文件</strong>（<code>.o</code>）。名字和实际含义是错位的，别按字面猜。</p>
+</blockquote>
+<hr />
+<h2 id="43-为什么-include-后面不写分号">4.3 为什么 <code>#include</code> 后面<strong>不写</strong>分号？</h2>
+<p><strong>参考答案</strong></p>
+<p>因为 <code>#include</code> 是<strong>预处理指令</strong>，不是 C++ 语句。</p>
+<ul>
+<li>第①步预处理时，编译器<strong>根本还没开始真正编译 C++ 代码</strong>，它先把 <code>#include &lt;iostream&gt;</code> 这一行<strong>整行替换成 <code>iostream</code> 头文件的全文内容</strong>（相当于把那个文件的内容复制粘贴到这一行）。</li>
+<li>预处理指令是<strong>按行</strong>识别的、以 <code>#</code> 开头的命令，一行就是一条指令，<strong>它的结束标志是换行，不是分号</strong>。</li>
+<li>相比之下，C++ 语句（如 <code>int a = 1;</code>）必须用分号结尾，因为 C++ 允许语句跨行书写，编译器需要一个明确的结束符号。</li>
+<li>如果在 <code>#include</code> 后面加了分号，预处理把它替换成头文件全文以后，那个多出来的 <code>;</code> 就孤零零地留在代码里。GCC 会给出警告 <code>extra tokens at end of #include directive</code>（该指令末尾有多余的记号）。<strong>它通常不会报错</strong>（见错误分类实验 C），但这是错误写法，换一个编译器或换一个标准就可能真的报错。</li>
+</ul>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p><code>#</code> 是预处理命令，相当于导入工具包</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>「<code>#</code> 是预处理命令」——✅ 方向对。</li>
+<li>但没答到题目真正问的点：「为什么<strong>不写分号</strong>」。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案写的是「# 是预处理命令，相当于导入工具包」，只说了 <code>#include</code> 是什么，没有回答「为什么不能写分号」；正确应为「因为它是<strong>预处理指令</strong>，第①步预处理时会把这一行<strong>整行替换成头文件全文</strong>，预处理指令以<strong>换行</strong>为结束标志而不是分号，<strong>分号是 C++ 语句的结束符</strong>，两者属于不同的层次」。因为题目问的是「为什么」，必须说到「替换成头文件全文」和「结束符是换行」这两层机制才算答对。</p>
+</blockquote>
+<hr />
+<h2 id="44-头文件和库分别扮演什么角色打个比方说明">4.4 「头文件」和「库」分别扮演什么角色？打个比方说明。</h2>
+<p><strong>参考答案</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>头文件（header file）</th>
+<th>库（library）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>里面装的是什么</td>
+<td><strong>声明</strong>：函数原型、类定义、宏、模板等「说明书」</td>
+<td><strong>定义</strong>：已经编译好的机器码（目标文件 / <code>.lib</code> / <code>.a</code> / <code>.dll</code>）</td>
+</tr>
+<tr>
+<td>什么时候用</td>
+<td><strong>编译期</strong>（第①②步）需要它，编译器靠它检查你的调用写得对不对</td>
+<td><strong>链接期</strong>（第④步）需要它，链接器靠它把真正的机器码接进你的程序</td>
+</tr>
+<tr>
+<td>典型例子</td>
+<td><code>iostream</code>、<code>string</code>、<code>vector</code></td>
+<td>标准库 <code>libstdc++</code>、<code>libc</code>、Windows 的 <code>.dll</code></td>
+</tr>
+<tr>
+<td>少了它会怎样</td>
+<td>编译错误：<code>'cout' was not declared</code> 之类</td>
+<td>链接错误：<code>undefined reference to ...</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>打个比方</strong>（餐厅的比喻）：</p>
+<ul>
+<li><strong>头文件 = 菜单</strong>。上面写着「本店有这道菜、叫什么名字、什么口味、几个参数」。你看着菜单就能点菜，也就能检查自己点得对不对。但菜单不能吃。</li>
+<li><strong>库 = 后厨</strong>。真正把菜做出来的是厨房。你不需要知道厨师怎么做，只要菜单上的名字对得上，厨房就能把菜端上来。</li>
+<li>所以：<strong>菜单（头文件）写错了 → 点菜时就被拦下来 = 编译错误</strong>；
+  <strong>后厨（库）里没有这道菜 → 点了半天端不上来 = 链接错误（undefined reference）</strong>。</li>
+</ul>
+<blockquote>
+<p>一句话：<strong>头文件管「编译期能不能通过」，库管「链接期能不能接上」。</strong> 这也正是判断编译错误和链接错误的分界线（呼应 4.5 题）。</p>
+</blockquote>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>头文件是一个具体的文件，里面装着库，比方想不出来</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>「头文件是一个具体的文件」——✅ 对。</li>
+<li>「里面装着库」——❌ 不准确。头文件里装的是<strong>声明</strong>，不是库本身。它只是告诉编译器「库里有这些东西」，真正的机器码在别处。</li>
+<li>「比方想不出来」——❌ 没答。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案写的是「头文件里面装着库」，正确应为「头文件里装的是<strong>声明</strong>（函数原型、类定义等），<strong>库</strong>里装的才是<strong>编译好的机器码</strong>」；因为头文件是<strong>文本</strong>，链接器没法直接拿它来生成程序，它只负责在编译期让编译器认识这些名字，真正的机器码由第④步从库里取。比方可以打「头文件=菜单，库=后厨」。
+此处建议对照教材附录 J（p933）核对，官方答案的比方可能与上面不同，但「声明 / 定义」这一层区分是一致的。</p>
+</blockquote>
+<hr />
+<h2 id="45-拿到一个报错你怎么判断它是编译错误还是链接错误两者的排查方向有什么不同">4.5 拿到一个报错，你怎么判断它是编译错误还是链接错误？两者的排查方向有什么不同？</h2>
+<p><strong>参考答案</strong></p>
+<p><strong>第一句话先问自己：「有 exe 吗？」</strong></p>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>判断</th>
+<th>报错特征</th>
+<th>排查方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>没有 exe</strong>，报错里有 <code>error:</code> + <code>文件名:行:列</code></td>
+<td><strong>编译错误</strong></td>
+<td><code>error: expected ';' before 'return'</code>、<code>'x' was not declared</code>、<code>expected primary-expression</code></td>
+<td>去看<strong>报错的行号处</strong>。注意 GCC 报的行号常指向「发现错误的地点」而不是「错误本身」——看到 <code>expected ';' before X</code>，先去查 <strong>X 的上一行末尾</strong></td>
+</tr>
+<tr>
+<td><strong>没有 exe</strong>，报错里有 <code>undefined reference</code> / <code>ld</code> / <code>collect2</code></td>
+<td><strong>链接错误</strong></td>
+<td><code>undefined reference to 'add(int, int)'</code>、<code>collect2.exe: error: ld returned 1 exit status</code></td>
+<td>去查<strong>函数有没有定义</strong>、<strong>定义所在的那个 .cpp 有没有加进编译命令</strong>（<code>g++ a.cpp b.cpp -o app.exe</code>）、<strong>库有没有用 <code>-l</code> 链接上</strong></td>
+</tr>
+<tr>
+<td><strong>有 exe</strong>，但结果不对 / 中途崩了</td>
+<td><strong>运行时错误</strong></td>
+<td>编译器一声不吭，退出码非 0</td>
+<td>去看<strong>退出码</strong>（0 = 正常，非 0 = 出问题了）、打日志、上调试器、写测试。这类错误编译器帮不了你，因为值要到运行时才确定</td>
+</tr>
+</tbody>
+</table>
+<p><strong>两个最实用的抓手：</strong></p>
+<ol>
+<li><strong>看有没有 <code>.o</code> 被生成出来</strong>。编译（①②③）全过了才轮到链接，所以在链接报错里你会看到形如 <code>C:\Users\...\Temp\xxxx.o</code> 的临时目标文件路径——它出现，说明前面三步都成功了，问题只在最后一步。</li>
+<li><strong>看报错者是谁</strong>。报错主体是 <code>g++</code>/<code>cc1plus</code> → 编译器；报错主体是 <code>ld</code>/<code>collect2</code> → 链接器。</li>
+</ol>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>不清楚</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>❌ 未作答（如实写了「不清楚」，没有硬编——这一点是对的，看不出来就是看不出来）。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案写的是「不清楚」，本题空缺；正确应为「先看<strong>有没有生成 exe</strong>：没有 exe 且报错带 <code>error:</code> + <code>文件:行:列</code> 的是<strong>编译错误</strong>（去看行号处或上一行），没有 exe 且报错带 <code>undefined reference</code> / <code>ld</code> / <code>collect2</code> 的是<strong>链接错误</strong>（去查函数定义和参与编译的文件），有 exe 但结果不对或崩溃的是<strong>运行时错误</strong>（去看退出码、写测试）」，因为这三类错误分别发生在第①②③步、第④步、和第④步之后，报错主体和关键词完全不同，是完全可以分开的。</p>
+<p>这条是本章最该掌握的一条，建议对着 <code>参考答案/第01章/错误分类实验-答案.md</code> 的「你现在应该建立的条件反射」一节再读一遍。</p>
+</blockquote>
+<hr />
+<h2 id="46-为什么说编译通过完全不代表程序是对的举一个你自己代码里的例子">4.6 为什么说"编译通过"完全不代表"程序是对的"？举一个你自己代码里的例子。</h2>
+<p><strong>参考答案</strong></p>
+<p>因为编译器<strong>只检查语法和类型</strong>，它检查不了<strong>语义和逻辑</strong>。</p>
+<ul>
+<li>编译器能管的：漏分号、拼错名字、类型不匹配、函数没定义。</li>
+<li>编译器管不了的：数组越界、除以 0、整数溢出、忘了初始化、循环边界差一、算法本身写错。这些都叫<strong>未定义行为（UB）或逻辑错误</strong>——标准里说「这种情况下的行为不做任何保证」。</li>
+<li>根源在于：很多值要到<strong>运行时</strong>才确定。例如 <code>int a = 10; int b = 0; cout &lt;&lt; a / b;</code>——编译器编译时<strong>不知道</strong> <code>b</code> 是 0，它没法预知。</li>
+<li>更危险的是：这类错误可能<strong>不崩溃、退出码 0、输出看着还挺正常</strong>，于是你以为程序没问题，直到错误的数据被写进了数据库。</li>
+</ul>
+<p><strong>例子（结合本课做过的实验）</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">};</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w">     </span><span class="c1">// 注意是 &lt;= 3，越界了</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" "</span><span class="p">;</span>
+</code></pre></div>
+
+<ul>
+<li><code>g++ -std=c++17 -Wall -Wextra</code> 编译：<strong>零警告，生成 exe 成功</strong></li>
+<li>运行结果：输出 <code>1 2 3 3</code>，<strong>退出码 0（正常结束！）</strong></li>
+<li>那个多出来的 <code>3</code> 是<strong>内存里的垃圾数据</strong>，这次恰好是 3，下次可能是一千万，也可能是负数</li>
+<li>结论：<strong>编译通过 + 没崩溃 + 退出码 0，程序依然是错的</strong></li>
+</ul>
+<blockquote>
+<p>所以真正能救你的是<strong>测试</strong>——把边界情况都试一遍（比如数组的 <code>i = size</code>、字符串的首尾字符、除数为 0、空容器）。</p>
+</blockquote>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>数组越界访问</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ 对。这个例子选得准，属于「编译通过但程序错了」的典型案例。</li>
+<li>只是太简略：题目要求「说明为什么」+「举一个例子」，答案只给了例子。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明（补充而非改错）</strong>：原答案写的是「数组越界访问」，例子正确；补充说明应为「因为编译器只检查<strong>语法和类型</strong>，检查不了<strong>运行时才确定的值和逻辑</strong>——数组越界属于<strong>未定义行为</strong>，编译器默认不检查数组下标，所以它<strong>连警告都不给</strong>，还能正常生成 exe」，因为「编译通过≠程序对」的<strong>原因</strong>在于编译器看不到运行时才确定的值，这一点原答案没有点出来。</p>
+</blockquote>
+<hr />
+<h2 id="任务-5-找-bug-练习凯撒密码在-xyz-上输出">任务 5 · 找 bug 练习：凯撒密码在 <code>XYZ</code> 上输出 <code>[\]</code></h2>
+<h3 id="第一问根本原因是什么">第一问：根本原因是什么？</h3>
+<p><strong>参考答案</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'A'</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="sc">'A'</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+</code></pre></div>
+
+<p>逐步算一遍输入 <code>'X'</code> 的情况：</p>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>'X' - 'A'</code></td>
+<td><code>23</code></td>
+<td><code>'X'</code> 是第 24 个字母，偏移量是 23（A 是 0）</td>
+</tr>
+<tr>
+<td><code>'X' - 'A' + 3</code></td>
+<td><code>26</code></td>
+<td><strong>越过了 <code>'Z'</code>（偏移量 25），跑到字母表外面去了</strong></td>
+</tr>
+<tr>
+<td><code>'A' + 26</code></td>
+<td><code>'['</code></td>
+<td>ASCII 码里 <code>'Z'</code> 是 90，<code>'A' + 26</code> = 91 = <code>'['</code></td>
+</tr>
+<tr>
+<td>同理 <code>'Y'</code> → <code>'\'</code>，<code>'Z'</code> → <code>']'</code></td>
+<td></td>
+<td>所以输出 <code>[\]</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>根本原因：偏移量累加后超过了 25，却没有「绕回」字母表开头。</strong></p>
+<p><strong>修复方法：对 26 取模。</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'A'</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="sc">'A'</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">26</span><span class="p">;</span><span class="w">    </span><span class="c1">// 26 是字母个数</span>
+</code></pre></div>
+
+<p>取模以后：<code>(23 + 3) % 26 = 0</code> → <code>'A' + 0 = 'A'</code>；<code>'Y'</code> → <code>'B'</code>；<code>'Z'</code> → <code>'C'</code>。输出正确变成 <code>ABC</code>。</p>
+<p><strong>这类错误的学名：边界条件 bug（off-by-one / wrap-around bug）</strong> ——只测了 <code>abc</code> 这种「顺利的中间情况」，没有测 <code>XYZ</code> 这种「顶到边界的情况」。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>因为这些字母用 ascll 码表示，ascll 码同时也有代指一些特殊字符的编号，并且 ascll 码的码是顺序的，所以就会出现这种情况</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>「字母用 ASCII 码表示」「ASCII 码也用来表示特殊字符」「ASCII 码是连续的 / 有序的」——✅ 这三句本身都对，是理解这个 bug 的<strong>必要背景</strong>。</li>
+<li>但<strong>没有指出根本原因</strong>（偏移量超 25 没取模、没有绕回）。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案写的是「因为这些字母用 ASCII 码表示，ASCII 码同时也有代指一些特殊字符的编号，并且 ASCII 码的码是顺序的」——这些话描述的是<strong>现象的背景</strong>，正确应为「根本原因是<strong>偏移量超过 25 之后没有绕回字母表开头</strong>：<code>'X' - 'A' + 3 = 26 &gt; 25</code>，<code>'A' + 26</code> 就落到了 <code>'Z'</code> 后面的字符 <code>'['</code> 上，修复办法是<strong>对 26 取模</strong> <code>% 26</code>」，因为题目问的是「<strong>根本原因</strong>」，答「用了 ASCII 码」等于没答——ASCII 连续性恰恰是这个算法<strong>成立的前提</strong>，出问题的是<strong>忘了处理溢出边界</strong>。</p>
+</blockquote>
+<hr />
+<h3 id="第二问这个-bug-属于哪一类错误编译-链接-运行时">第二问：这个 bug 属于哪一类错误？（编译 / 链接 / 运行时）</h3>
+<p><strong>参考答案</strong></p>
+<p><strong>运行时错误</strong>（更准确地说：<strong>运行时才发作的逻辑错误 / 未定义行为</strong>）。</p>
+<ul>
+<li>语法和类型完全合法，<strong>编译 0 报错、0 警告，链接也正常，exe 正常生成</strong>。</li>
+<li>只有<strong>运行起来、且输入恰好踩到边界（<code>XYZ</code>）</strong>时，结果才是错的。</li>
+<li>而且它<strong>不会崩溃</strong>：照常打印 <code>[\]</code>，退出码 0。这正是它危险的地方——和错误分类实验 E 属于同一类。</li>
+</ul>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>我觉得是运行时</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ <strong>完全正确。</strong></li>
+</ul>
+<blockquote>
+<p>无需订正。（原答案用了「我觉得」，说明是推理出来的而不是背的，这个方向是对的。）</p>
+</blockquote>
+<hr />
+<h3 id="第三问为什么只看输入-abc-输出-def发现不了它你会多测哪几个输入">第三问：为什么只看"输入 <code>abc</code> 输出 <code>def</code>"发现不了它？你会多测哪几个输入？</h3>
+<p><strong>参考答案</strong></p>
+<p><strong>为什么发现不了</strong>：<code>abc</code> 里的每个字母偏移 3 位后都<strong>没有越过 <code>Z</code></strong>，走的全是「顺利路径」。测试用例只覆盖了中间情况，<strong>没覆盖边界</strong>，所以 bug 藏在了没被走到的代码分支里。</p>
+<blockquote>
+<p>这是新手最常见的失分点：<strong>用「典型输入」测通了，就以为程序对了。</strong>
+程序在边界上的行为，和它在中间的行为，是两件事。</p>
+</blockquote>
+<p><strong>应该多测哪些输入</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>测什么</th>
+<th>具体输入</th>
+<th>会暴露什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>字母表末尾边界</strong></td>
+<td><code>XYZ</code> → 应为 <code>ABC</code></td>
+<td>直接命中本题的 bug</td>
+</tr>
+<tr>
+<td><strong>字母表开头</strong></td>
+<td><code>ABC</code> → 应为 <code>DEF</code></td>
+<td>确认起点偏移正确</td>
+</tr>
+<tr>
+<td><strong>单个字母的边界</strong></td>
+<td><code>Z</code>、<code>z</code></td>
+<td>最极端的越界情况</td>
+</tr>
+<tr>
+<td><strong>大小写混合</strong></td>
+<td><code>aBcXyZ</code></td>
+<td>小写 <code>'a' + 26</code> 会跑到 <code>'{'</code>，同样的问题</td>
+</tr>
+<tr>
+<td><strong>非字母字符</strong></td>
+<td><code>a1!Z</code></td>
+<td>数字和符号应原样保留，不该被偏移</td>
+</tr>
+<tr>
+<td><strong>空字符串</strong></td>
+<td><code>""</code></td>
+<td>循环体一次都不该执行</td>
+</tr>
+<tr>
+<td><strong>正好绕一圈</strong></td>
+<td>偏移 26 位（等价于 0 位）</td>
+<td>结果应等于原文</td>
+</tr>
+</tbody>
+</table>
+<p>一句话原则：<strong>测「第一个」「最后一个」「空的」「刚好越界的」，别只测中间的。</strong></p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>测末尾字母</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ <strong>对，而且答到了要害。</strong>「末尾字母」正是命中这个 bug 的关键输入。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明（补充而非改错）</strong>：原答案写的是「测末尾字母」，方向完全正确；补充说明应为「除末尾（<code>XYZ</code>、<code>Z</code>）之外，还应测<strong>开头</strong>（<code>ABC</code>）、<strong>大小写混合</strong>（<code>aBcXyZ</code>）、<strong>非字母字符</strong>（<code>a1!Z</code>）、<strong>空字符串</strong>，以及<strong>偏移量恰好等于 26（绕一整圈）</strong>的情况」，因为本题 bug 的本质是<strong>边界条件</strong>，而边界不止一端：末尾会溢出，开头可能算错，大小写各有一套边界，非字母和空串则是「不该被改动」的边界。</p>
+</blockquote>
+<hr />
+<h2 id="附本文件涉及的原始作答对照总表">附：本文件涉及的原始作答对照总表</h2>
+<table>
+<thead>
+<tr>
+<th>题号</th>
+<th>原作答评价</th>
+<th>是否订正</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4.1</td>
+<td>前两项对，泛型一栏空缺</td>
+<td>✅ 已订正（补充泛型来源）</td>
+</tr>
+<tr>
+<td>4.2</td>
+<td>四步名与选项全对，漏答产出文件，链接文件名与本例不符</td>
+<td>✅ 已订正</td>
+</tr>
+<tr>
+<td>4.3</td>
+<td>只答了「是什么」，没答「为什么」</td>
+<td>✅ 已订正</td>
+</tr>
+<tr>
+<td>4.4</td>
+<td>「头文件里装着库」是概念性错误，比方未答</td>
+<td>✅ 已订正</td>
+</tr>
+<tr>
+<td>4.5</td>
+<td>未作答</td>
+<td>✅ 已订正（补全完整答案）</td>
+</tr>
+<tr>
+<td>4.6</td>
+<td>例子选得准，缺「为什么」</td>
+<td>✅ 已订正（补充原因）</td>
+</tr>
+<tr>
+<td>5-1</td>
+<td>只描述了背景现象，未指出根本原因</td>
+<td>✅ 已订正</td>
+</tr>
+<tr>
+<td>5-2</td>
+<td>完全正确</td>
+<td>⬜ 无需订正</td>
+</tr>
+<tr>
+<td>5-3</td>
+<td>方向正确，略简</td>
+<td>✅ 已订正（补充测试清单）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>共 8 条订正，1 条完全正确。</strong></p>
+<div class="pager"><a class="prev" href="../../练习/第04章B-练习.html">← 上一页：第04章B-练习</a><a class="next" href="../../参考答案/第01章/错误分类实验-答案.html">下一页：错误分类实验-答案 →</a></div>
+<div class="footer"><a href="../../index.html">← 返回总目录</a></div>
+</article></main>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('themeBtn');
+  function sync(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    btn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    btn.title = (t === 'dark') ? '切换到浅色' : '切换到深色';
+  }
+  btn.addEventListener('click', function(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    t = (t === 'dark') ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    try{ localStorage.setItem('cppcourse-theme', t); }catch(e){}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>

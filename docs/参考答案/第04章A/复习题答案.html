@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>复习题答案</title>
+<script>
+/* 在页面渲染前先定好主题，避免"白屏闪一下" */
+(function(){
+  try{
+    var t = localStorage.getItem('cppcourse-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<style>
+/* ============ 颜色变量：默认深色 ============ */
+:root, [data-theme="dark"]{
+  --bg:#14171a; --bg2:#1b1f24; --bg3:#232a31;
+  --fg:#dfe3e8; --fg2:#b6bec8; --muted:#8b95a1;
+  --line:#2b3138; --accent:#58a6ff;
+  --code-bg:#0f1216; --quote-bg:#1b2027;
+}
+[data-theme="light"]{
+  --bg:#fbfbfa; --bg2:#ffffff; --bg3:#f1f5f9;
+  --fg:#22272e; --fg2:#3b434d; --muted:#6b7280;
+  --line:#e5e7eb; --accent:#1f6feb;
+  --code-bg:#f3f4f6; --quote-bg:#f8fafc;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",Roboto,sans-serif;
+  font-size:16.5px; line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ============ 主题切换按钮 ============ */
+#themeBtn{
+  position:fixed; top:14px; right:18px; z-index:50;
+  width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--line); background:var(--bg2); color:var(--fg);
+  font-size:19px; line-height:1; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, background .15s ease;
+}
+#themeBtn:hover{transform:scale(1.08); background:var(--bg3);}
+
+.layout{display:flex; min-height:100vh;}
+
+/* ============ 侧边导航 ============ */
+nav{
+  width:288px; flex:0 0 288px; background:var(--bg2);
+  border-right:1px solid var(--line); padding:22px 0 80px;
+  overflow-y:auto; position:sticky; top:0; height:100vh;
+}
+nav .brand{
+  padding:0 20px 15px; font-weight:700; font-size:15px;
+  border-bottom:1px solid var(--line); margin-bottom:12px; color:var(--fg);
+}
+nav .group{
+  padding:16px 20px 6px; font-size:11.5px; color:var(--muted);
+  letter-spacing:.1em; font-weight:600;
+}
+nav a{display:block; padding:6px 20px; font-size:14px; color:var(--fg2);
+  border-left:3px solid transparent;}
+nav a:hover{background:var(--bg3); text-decoration:none; color:var(--fg);}
+nav a.active{color:var(--accent); font-weight:600;
+  border-left-color:var(--accent); background:var(--bg3);}
+
+main{flex:1; min-width:0; padding:46px 60px 120px; max-width:1120px;}
+article{
+  background:var(--bg2); border:1px solid var(--line);
+  border-radius:12px; padding:40px 48px;
+  box-shadow:0 1px 3px rgba(0,0,0,.10);
+}
+
+/* ============ 正文排版 ============ */
+h1,h2,h3,h4{line-height:1.4; margin:1.7em 0 .7em; font-weight:700; scroll-margin-top:20px;}
+h1{font-size:1.9em; margin-top:0; padding-bottom:.4em; border-bottom:2px solid var(--line);}
+h2{font-size:1.42em; padding-bottom:.28em; border-bottom:1px solid var(--line);}
+h3{font-size:1.16em;}
+h4{font-size:1.03em; color:var(--fg2);}
+p{margin:.8em 0;}
+ul,ol{padding-left:1.65em;}
+li{margin:.35em 0;}
+strong{font-weight:700;}
+hr{border:0; border-top:1px solid var(--line); margin:2.2em 0;}
+img{max-width:100%;}
+
+blockquote{
+  margin:1.1em 0; padding:.85em 1.15em; background:var(--quote-bg);
+  border-left:4px solid var(--accent); color:var(--fg2);
+  border-radius:0 8px 8px 0;
+}
+blockquote p{margin:.4em 0;}
+blockquote strong{color:var(--fg);}
+
+/* ============ 表格 ============ */
+table{
+  border-collapse:collapse; width:100%; margin:1.2em 0;
+  font-size:14.8px; display:block; overflow-x:auto;
+}
+th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top;}
+th{background:var(--bg3); font-weight:600; white-space:nowrap;}
+tbody tr:nth-child(even) td{background:rgba(127,127,127,.05);}
+
+/* ============ 代码 ============ */
+code{
+  font-family:"Cascadia Code",Consolas,"SF Mono",Monaco,"Courier New","Microsoft YaHei",monospace;
+  font-size:.885em; background:var(--code-bg); padding:.16em .42em;
+  border-radius:4px; border:1px solid var(--line);
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--line); border-radius:9px;
+  padding:15px 17px; overflow-x:auto; margin:1.1em 0; line-height:1.6;
+}
+pre code{background:none; padding:0; border:0; font-size:13.8px;}
+.codehilite{background:var(--code-bg); border:1px solid var(--line);
+  border-radius:9px; margin:1.1em 0;}
+.codehilite pre{border:0; margin:0; background:none;}
+
+/* ============ 本页目录 / 卡片 / 翻页 ============ */
+.toc-box{
+  background:var(--quote-bg); border:1px solid var(--line);
+  border-radius:9px; padding:13px 22px; margin:1.3em 0;
+}
+.toc-box strong{display:block; margin-bottom:5px; color:var(--muted);
+  font-size:13px; letter-spacing:.05em;}
+.toc-box ul{margin:.35em 0; padding-left:1.3em;}
+.toc-box a{color:var(--fg2);}
+.toc-box a:hover{color:var(--accent);}
+
+/* ============ 讲义页顶部的"卡住了去哪查"横幅 ============ */
+.hintbar{
+  background:var(--bg3); border:1px solid var(--line); border-radius:8px;
+  padding:9px 15px; margin:0 0 1.5em; font-size:13.5px; color:var(--muted);
+}
+.hintbar a{font-weight:600;}
+
+/* 超长的"本页目录"（比如术语表有 100+ 词条）折叠起来，别把正文挤下去 */
+details.toc-box summary{
+  cursor:pointer; color:var(--muted); font-size:13.5px;
+  font-weight:600; letter-spacing:.03em; user-select:none;
+}
+details.toc-box summary:hover{color:var(--accent);}
+details.toc-box[open] summary{margin-bottom:.5em;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px; margin:24px 0;}
+.card{background:var(--bg2); border:1px solid var(--line); border-radius:11px;
+  padding:19px 21px; transition:transform .15s ease, border-color .15s ease;}
+.card:hover{transform:translateY(-2px); border-color:var(--accent);}
+.card h3{margin:0 0 8px; font-size:1.06em;}
+.card p{margin:0; color:var(--muted); font-size:14px; line-height:1.65;}
+
+.pager{display:flex; justify-content:space-between; gap:14px; margin-top:34px;
+  padding-top:20px; border-top:1px solid var(--line);}
+.pager a{flex:1; padding:11px 16px; background:var(--bg3); border:1px solid var(--line);
+  border-radius:9px; font-size:14px; color:var(--fg2);}
+.pager a:hover{border-color:var(--accent); color:var(--accent); text-decoration:none;}
+.pager a.next{text-align:right;}
+.pager a.disabled{opacity:.35; pointer-events:none;}
+
+.footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:13.5px;}
+
+/* ============ 移动端 ============ */
+@media (max-width:900px){
+  nav{display:none;}
+  main{padding:18px 12px 60px;}
+  article{padding:22px 17px; border-radius:8px;}
+  #themeBtn{top:10px; right:10px; width:38px; height:38px;}
+}
+
+/* ===== 代码高亮（按主题隔离） ===== */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="dark"] .codehilite .hll { background-color: #49483e }
+[data-theme="dark"] .codehilite { background: #272822; color: #F8F8F2 }
+[data-theme="dark"] .codehilite .c { color: #959077 } /* Comment */
+[data-theme="dark"] .codehilite .err { color: #ED007E; background-color: #1E0010 } /* Error */
+[data-theme="dark"] .codehilite .esc { color: #F8F8F2 } /* Escape */
+[data-theme="dark"] .codehilite .g { color: #F8F8F2 } /* Generic */
+[data-theme="dark"] .codehilite .k { color: #66D9EF } /* Keyword */
+[data-theme="dark"] .codehilite .l { color: #AE81FF } /* Literal */
+[data-theme="dark"] .codehilite .n { color: #F8F8F2 } /* Name */
+[data-theme="dark"] .codehilite .o { color: #FF4689 } /* Operator */
+[data-theme="dark"] .codehilite .x { color: #F8F8F2 } /* Other */
+[data-theme="dark"] .codehilite .p { color: #F8F8F2 } /* Punctuation */
+[data-theme="dark"] .codehilite .ch { color: #959077 } /* Comment.Hashbang */
+[data-theme="dark"] .codehilite .cm { color: #959077 } /* Comment.Multiline */
+[data-theme="dark"] .codehilite .cp { color: #959077 } /* Comment.Preproc */
+[data-theme="dark"] .codehilite .cpf { color: #959077 } /* Comment.PreprocFile */
+[data-theme="dark"] .codehilite .c1 { color: #959077 } /* Comment.Single */
+[data-theme="dark"] .codehilite .cs { color: #959077 } /* Comment.Special */
+[data-theme="dark"] .codehilite .gd { color: #FF4689 } /* Generic.Deleted */
+[data-theme="dark"] .codehilite .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+[data-theme="dark"] .codehilite .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="dark"] .codehilite .gr { color: #FF4689 } /* Generic.Error */
+[data-theme="dark"] .codehilite .gh { color: #F8F8F2 } /* Generic.Heading */
+[data-theme="dark"] .codehilite .gi { color: #A6E22E } /* Generic.Inserted */
+[data-theme="dark"] .codehilite .go { color: #66D9EF } /* Generic.Output */
+[data-theme="dark"] .codehilite .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+[data-theme="dark"] .codehilite .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+[data-theme="dark"] .codehilite .gu { color: #959077 } /* Generic.Subheading */
+[data-theme="dark"] .codehilite .gt { color: #66D9EF } /* Generic.Traceback */
+[data-theme="dark"] .codehilite .kc { color: #66D9EF } /* Keyword.Constant */
+[data-theme="dark"] .codehilite .kd { color: #66D9EF } /* Keyword.Declaration */
+[data-theme="dark"] .codehilite .kn { color: #FF4689 } /* Keyword.Namespace */
+[data-theme="dark"] .codehilite .kp { color: #66D9EF } /* Keyword.Pseudo */
+[data-theme="dark"] .codehilite .kr { color: #66D9EF } /* Keyword.Reserved */
+[data-theme="dark"] .codehilite .kt { color: #66D9EF } /* Keyword.Type */
+[data-theme="dark"] .codehilite .ld { color: #E6DB74 } /* Literal.Date */
+[data-theme="dark"] .codehilite .m { color: #AE81FF } /* Literal.Number */
+[data-theme="dark"] .codehilite .s { color: #E6DB74 } /* Literal.String */
+[data-theme="dark"] .codehilite .na { color: #A6E22E } /* Name.Attribute */
+[data-theme="dark"] .codehilite .nb { color: #A6E22E } /* Name.Builtin */
+[data-theme="dark"] .codehilite .nc { color: #A6E22E } /* Name.Class */
+[data-theme="dark"] .codehilite .no { color: #66D9EF } /* Name.Constant */
+[data-theme="dark"] .codehilite .nd { color: #A6E22E } /* Name.Decorator */
+[data-theme="dark"] .codehilite .ni { color: #F8F8F2 } /* Name.Entity */
+[data-theme="dark"] .codehilite .ne { color: #A6E22E } /* Name.Exception */
+[data-theme="dark"] .codehilite .nf { color: #A6E22E } /* Name.Function */
+[data-theme="dark"] .codehilite .nl { color: #F8F8F2 } /* Name.Label */
+[data-theme="dark"] .codehilite .nn { color: #F8F8F2 } /* Name.Namespace */
+[data-theme="dark"] .codehilite .nx { color: #A6E22E } /* Name.Other */
+[data-theme="dark"] .codehilite .py { color: #F8F8F2 } /* Name.Property */
+[data-theme="dark"] .codehilite .nt { color: #FF4689 } /* Name.Tag */
+[data-theme="dark"] .codehilite .nv { color: #F8F8F2 } /* Name.Variable */
+[data-theme="dark"] .codehilite .ow { color: #FF4689 } /* Operator.Word */
+[data-theme="dark"] .codehilite .pm { color: #F8F8F2 } /* Punctuation.Marker */
+[data-theme="dark"] .codehilite .w { color: #F8F8F2 } /* Text.Whitespace */
+[data-theme="dark"] .codehilite .mb { color: #AE81FF } /* Literal.Number.Bin */
+[data-theme="dark"] .codehilite .mf { color: #AE81FF } /* Literal.Number.Float */
+[data-theme="dark"] .codehilite .mh { color: #AE81FF } /* Literal.Number.Hex */
+[data-theme="dark"] .codehilite .mi { color: #AE81FF } /* Literal.Number.Integer */
+[data-theme="dark"] .codehilite .mo { color: #AE81FF } /* Literal.Number.Oct */
+[data-theme="dark"] .codehilite .sa { color: #E6DB74 } /* Literal.String.Affix */
+[data-theme="dark"] .codehilite .sb { color: #E6DB74 } /* Literal.String.Backtick */
+[data-theme="dark"] .codehilite .sc { color: #E6DB74 } /* Literal.String.Char */
+[data-theme="dark"] .codehilite .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+[data-theme="dark"] .codehilite .sd { color: #E6DB74 } /* Literal.String.Doc */
+[data-theme="dark"] .codehilite .s2 { color: #E6DB74 } /* Literal.String.Double */
+[data-theme="dark"] .codehilite .se { color: #AE81FF } /* Literal.String.Escape */
+[data-theme="dark"] .codehilite .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+[data-theme="dark"] .codehilite .si { color: #E6DB74 } /* Literal.String.Interpol */
+[data-theme="dark"] .codehilite .sx { color: #E6DB74 } /* Literal.String.Other */
+[data-theme="dark"] .codehilite .sr { color: #E6DB74 } /* Literal.String.Regex */
+[data-theme="dark"] .codehilite .s1 { color: #E6DB74 } /* Literal.String.Single */
+[data-theme="dark"] .codehilite .ss { color: #E6DB74 } /* Literal.String.Symbol */
+[data-theme="dark"] .codehilite .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+[data-theme="dark"] .codehilite .fm { color: #A6E22E } /* Name.Function.Magic */
+[data-theme="dark"] .codehilite .vc { color: #F8F8F2 } /* Name.Variable.Class */
+[data-theme="dark"] .codehilite .vg { color: #F8F8F2 } /* Name.Variable.Global */
+[data-theme="dark"] .codehilite .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+[data-theme="dark"] .codehilite .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+[data-theme="dark"] .codehilite .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="light"] .codehilite .hll { background-color: #ffffcc }
+[data-theme="light"] .codehilite { background: #f0f0f0; }
+[data-theme="light"] .codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+[data-theme="light"] .codehilite .err { border: 1px solid #F00 } /* Error */
+[data-theme="light"] .codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+[data-theme="light"] .codehilite .o { color: #666 } /* Operator */
+[data-theme="light"] .codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+[data-theme="light"] .codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+[data-theme="light"] .codehilite .cp { color: #007020 } /* Comment.Preproc */
+[data-theme="light"] .codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+[data-theme="light"] .codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+[data-theme="light"] .codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+[data-theme="light"] .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+[data-theme="light"] .codehilite .ge { font-style: italic } /* Generic.Emph */
+[data-theme="light"] .codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="light"] .codehilite .gr { color: #F00 } /* Generic.Error */
+[data-theme="light"] .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+[data-theme="light"] .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+[data-theme="light"] .codehilite .go { color: #888 } /* Generic.Output */
+[data-theme="light"] .codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+[data-theme="light"] .codehilite .gs { font-weight: bold } /* Generic.Strong */
+[data-theme="light"] .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+[data-theme="light"] .codehilite .gt { color: #04D } /* Generic.Traceback */
+[data-theme="light"] .codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+[data-theme="light"] .codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+[data-theme="light"] .codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+[data-theme="light"] .codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+[data-theme="light"] .codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+[data-theme="light"] .codehilite .kt { color: #902000 } /* Keyword.Type */
+[data-theme="light"] .codehilite .m { color: #40A070 } /* Literal.Number */
+[data-theme="light"] .codehilite .s { color: #4070A0 } /* Literal.String */
+[data-theme="light"] .codehilite .na { color: #4070A0 } /* Name.Attribute */
+[data-theme="light"] .codehilite .nb { color: #007020 } /* Name.Builtin */
+[data-theme="light"] .codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+[data-theme="light"] .codehilite .no { color: #60ADD5 } /* Name.Constant */
+[data-theme="light"] .codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+[data-theme="light"] .codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+[data-theme="light"] .codehilite .ne { color: #007020 } /* Name.Exception */
+[data-theme="light"] .codehilite .nf { color: #06287E } /* Name.Function */
+[data-theme="light"] .codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+[data-theme="light"] .codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+[data-theme="light"] .codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+[data-theme="light"] .codehilite .nv { color: #BB60D5 } /* Name.Variable */
+[data-theme="light"] .codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+[data-theme="light"] .codehilite .w { color: #BBB } /* Text.Whitespace */
+[data-theme="light"] .codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+[data-theme="light"] .codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+[data-theme="light"] .codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+[data-theme="light"] .codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+[data-theme="light"] .codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+[data-theme="light"] .codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+[data-theme="light"] .codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+[data-theme="light"] .codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+[data-theme="light"] .codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+[data-theme="light"] .codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+[data-theme="light"] .codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+[data-theme="light"] .codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+[data-theme="light"] .codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+[data-theme="light"] .codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+[data-theme="light"] .codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+[data-theme="light"] .codehilite .sr { color: #235388 } /* Literal.String.Regex */
+[data-theme="light"] .codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+[data-theme="light"] .codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+[data-theme="light"] .codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+[data-theme="light"] .codehilite .fm { color: #06287E } /* Name.Function.Magic */
+[data-theme="light"] .codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+[data-theme="light"] .codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+[data-theme="light"] .codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+[data-theme="light"] .codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+[data-theme="light"] .codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+[data-theme="dark"] .codehilite, [data-theme="dark"] .codehilite pre{background:transparent;}
+</style>
+</head>
+<body>
+<button id="themeBtn" title="切换深色 / 浅色">🌙</button>
+<div class="layout">
+<nav><div class="brand">C++ 入门课程</div>
+<a href="../../README.html">课程说明</a>
+<div class="group">附录</div>
+<a href="../../附录/术语表.html">术语表</a>
+<a href="../../附录/零基础起飞.html">零基础起飞</a>
+<div class="group">讲义</div>
+<a href="../../讲义/第01章-预备知识.html">第01章-预备知识</a>
+<a href="../../讲义/第02章-开始学习C++.html">第02章-开始学习C++</a>
+<a href="../../讲义/第03章-处理数据.html">第03章-处理数据</a>
+<a href="../../讲义/第04章A-数组与字符串.html">第04章A-数组与字符串</a>
+<a href="../../讲义/第04章B-结构共用体枚举.html">第04章B-结构共用体枚举</a>
+<div class="group">练习</div>
+<a href="../../练习/第01章-练习.html">第01章-练习</a>
+<a href="../../练习/第02章-练习.html">第02章-练习</a>
+<a href="../../练习/第03章-练习.html">第03章-练习</a>
+<a href="../../练习/第04章A-练习.html">第04章A-练习</a>
+<a href="../../练习/第04章B-练习.html">第04章B-练习</a>
+<div class="group">参考答案</div>
+<a href="../../参考答案/第01章/复习题答案.html">第01章 · 复习题答案</a>
+<a href="../../参考答案/第01章/错误分类实验-答案.html">第01章 · 错误分类实验-答案</a>
+<a href="../../参考答案/第01章/摸底测试/说明.html">第01章/摸底测试 · 说明</a>
+<a href="../../参考答案/第02章/复习题答案.html">第02章 · 复习题答案</a>
+<a href="../../参考答案/第03章/复习题答案.html">第03章 · 复习题答案</a>
+<a href="../../参考答案/第04章A/复习题答案.html" class="active">第04章A · 复习题答案</a>
+<a href="../../参考答案/第04章B/复习题答案.html">第04章B · 复习题答案</a>
+</nav>
+<main><article>
+<div class="toc-box"><strong>本页目录</strong><div class="toc">
+<ul>
+<li><a href="#一任务-2-的-5-个实验">一、任务 2 的 5 个实验</a><ul>
+<li><a href="#实验-a亲手制造一次越界">实验 A：亲手制造一次"越界"</a></li>
+<li><a href="#实验-bsizeof-vs-strlen">实验 B：sizeof vs strlen</a></li>
+<li><a href="#实验-c数组能不能整体赋值">实验 C：数组能不能整体赋值</a></li>
+<li><a href="#实验-d混合输入的陷阱">实验 D：混合输入的陷阱</a></li>
+<li><a href="#实验-ec-风格字符串的">实验 E：C 风格字符串的 ==</a></li>
+</ul>
+</li>
+<li><a href="#二任务-3复习题教材-p123">二、任务 3：复习题（教材 p123）</a><ul>
+<li><a href="#第-1-题如何声明下述数据">第 1 题：如何声明下述数据？</a></li>
+<li><a href="#第-3-题声明一个包含-5-个元素的-int-数组并将它初始化为前-5-个正奇数">第 3 题：声明一个包含 5 个元素的 int 数组，并将它初始化为前 5 个正奇数</a></li>
+<li><a href="#第-4-题把数组第一个元素和最后一个元素的和赋给-even">第 4 题：把数组第一个元素和最后一个元素的和赋给 even</a><ul>
+<li><a href="#专项下标差一这个错误一张表讲透">⭐ 专项：「下标差一」这个错误，一张表讲透</a></li>
+</ul>
+</li>
+<li><a href="#第-5-题显示-float-数组-ideas-中第-2-个元素的值">第 5 题：显示 float 数组 ideas 中第 2 个元素的值</a></li>
+<li><a href="#第-6-题声明一个-char-数组并初始化为字符串-cheeseburger">第 6 题：声明一个 char 数组，并初始化为字符串 "cheeseburger"</a></li>
+<li><a href="#第-7-题声明一个-string-对象并初始化为-waldorfsalad">第 7 题：声明一个 string 对象，并初始化为 "WaldorfSalad"</a></li>
+<li><a href="#第-16-题把-cingetlineaddress-80-换成-cin-address-会有什么影响">第 16 题：把 cin.getline(address, 80); 换成 cin &gt;&gt; address; 会有什么影响？</a></li>
+</ul>
+</li>
+<li><a href="#附本章要记住的四句">附：本章要记住的四句</a></li>
+</ul>
+</div>
+</div><h1 id="第-04-章-a-复习题-参考答案">第 04 章 A 复习题 · 参考答案</h1>
+<blockquote>
+<p><strong>教材附录 J（p933）有官方答案，建议先自己做完再对照。</strong></p>
+<p>下面每条都是「先给出参考答案，再保留一份原始作答记录，逐条核对」。
+凡是原作答有问题的地方，都在该条后面用一行小字标了 <strong>订正说明</strong>。
+拿不准的地方会明确写出「此处建议对照教材附录 J 核对」，不会硬改。</p>
+</blockquote>
+<p><strong>本文件覆盖</strong>：任务 2 的 5 个实验、任务 3 的 7 道复习题（教材 p123）。
+配套代码在 <a href="代码/"><code>代码/</code></a> 和 <a href="实验代码/"><code>实验代码/</code></a> 目录下。</p>
+<hr />
+<h2 id="一任务-2-的-5-个实验">一、任务 2 的 5 个实验</h2>
+<h3 id="实验-a亲手制造一次越界">实验 A：亲手制造一次"越界"</h3>
+<p><strong>参考答案</strong></p>
+<p>把 <code>01_array_basics.cpp</code> 里那个遍历循环从 <code>i &lt; 5</code> 改成 <code>i &lt;= 5</code> 之后：</p>
+<ul>
+<li><strong>编译没有任何报错，也没有警告</strong>（<code>-std=c++17 -Wall -Wextra</code> 实测）。</li>
+<li>运行输出会在原有的 5 个成绩后面多出一个值，也就是<strong>第 6 个输出</strong>：</li>
+</ul>
+<p><code>5 个成绩：90 85 78 92 88 0</code></p>
+<p>这个 <code>0</code> <strong>不是</strong>"数组的第 6 个元素"——<code>scores</code> 只有 5 个元素，
+  它根本不存在第 6 个。它是<strong>越界读到的那块内存里碰巧躺着的东西</strong>。
+- <strong>为什么编译器不管？</strong> 因为 <code>scores[i]</code> 在编译期被翻译成"起点地址 + i 格"的算术，
+  编译器<strong>不看 i 的值</strong>（而且 i 的值要到运行时才知道）。这不是编译器"偷懒"，
+  而是 C++ 刻意的设计选择：<strong>为了速度，不做检查</strong>（教材 p122 讲了这一点）。
+  它属于<strong>运行时</strong>的行为，标准把它归为<strong>未定义行为</strong>：
+  可能拿到垃圾值、可能算错、可能崩溃。</p>
+<blockquote>
+<p>📌 <strong>一个必须记住的细节</strong>：这次读出来的是 <code>0</code>，看起来"多一个 0 好像也没事"。
+<strong>千万别把"这次没事"当成"这样写没事"</strong>——那块内存里是什么，每次运行都可能不同。</p>
+</blockquote>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<ul>
+<li>编译有报错或警告吗：没有报错或者警告</li>
+<li>运行输出：<code>90 85 78 92 88 0</code>，多出来第六个元素，值为 0</li>
+<li>为什么编译器不管：因为这是运行时错误，cpp编译器不管越界</li>
+</ul>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>编译无报错无警告 ✅ 正确（实测确认）。</li>
+<li>输出数据 ✅ 正确。</li>
+<li>原因 ⚠️ <strong>方向对、说法要改</strong>（见订正说明）。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案说「这是<strong>运行时错误</strong>」，这个说法不准确。
+越界访问在 C++ 里<strong>不是</strong>"运行时错误（runtime error）"——
+运行时错误指的是"程序跑起来才发现的错误，而且一定能被发现（比如除以 0、数组越界在 Java 里会抛异常）"。
+越界访问在这里<strong>根本不会被发现</strong>，所以它属于<strong>未定义行为（undefined behavior）</strong>：
+标准没规定结果，编译器也不插检查，<strong>可能什么都没发生</strong>。
+准确表述应为：「<strong>这是未定义行为，编译器不做检查</strong>——
+因为 <code>scores[i]</code> 只是地址算术，编译器在翻译时不知道 <code>i</code> 会是多少；
+C++ 为了速度刻意不做边界检查」。区别在于：<strong>未定义行为不一定报错，这才是它危险的地方。</strong></p>
+</blockquote>
+<hr />
+<h3 id="实验-bsizeof-vs-strlen">实验 B：<code>sizeof</code> vs <code>strlen</code></h3>
+<p><strong>参考答案</strong></p>
+<div class="codehilite"><pre><span></span><code>8 7
+20 7
+</code></pre></div>
+
+<ul>
+<li><code>s1</code> 是用双引号初始化的数组，<strong>编译器按内容的长度自动决定大小</strong>：
+  <code>"bubbles"</code> 是 7 个字母 + 1 个 <code>'\0'</code> = <strong>8 字节</strong>，所以 <code>sizeof(s1) = 8</code>。</li>
+<li><code>s2</code> 是<strong>你自己写死了 20</strong> 的数组，<code>sizeof</code> 量的是"这排柜子总共多大"，
+  所以是 <strong>20</strong>，和里面装了几个字无关。</li>
+<li><code>strlen</code> 数的是"到 <code>'\0'</code> 之前有几个字符"，两个数组装的内容一样，所以都是 <strong>7</strong>。</li>
+</ul>
+<p><strong>一句话</strong>：<code>sizeof</code> 量<strong>柜子有多大</strong>（和装了什么无关），<code>strlen</code> 数<strong>装了几个字</strong>。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p><code>8 7</code>
+<code>20 7</code> 因为 s1 是编译器自动规划的数组大小，自动为字符数 +1；
+而 s2 为手动定义了 20 个大小的数组，所以占用的内存大小不一样</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>数据 ✅ 完全正确。</li>
+<li>原因 ✅ <strong>正确，保留。</strong></li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：这一条原答案<strong>是对的</strong>。只补两点更准确的说法：
+① <code>sizeof</code> 是<strong>运算符</strong>、在<strong>编译期</strong>就把结果算好了；<code>strlen</code> 是<strong>函数</strong>（<code>&lt;cstring&gt;</code> 里），
+要<strong>运行时</strong>一个字符一个字符地数——两者"什么时候算"不一样；
+② 对<strong>字符串</strong>来说两者<strong>永远差 1</strong>（<code>sizeof</code> 含结尾的 <code>'\0'</code>，<code>strlen</code> 不含）。
+这个"差 1"并不普遍成立：对 <code>int a[10]</code> 用 <code>strlen</code> 是无意义的（它不是字符串）。</p>
+</blockquote>
+<hr />
+<h3 id="实验-c数组能不能整体赋值">实验 C：数组能不能整体赋值</h3>
+<p><strong>参考答案</strong></p>
+<p>报错原文（g++ 8.1.0 / MinGW-w64 实测，<code>-std=c++17 -Wall -Wextra</code>）：</p>
+<div class="codehilite"><pre><span></span><code>error: invalid array assignment
+     b = a;
+         ^
+</code></pre></div>
+
+<p><strong>属于编译期错误。</strong></p>
+<p><strong>为什么？</strong> 因为 C++ 里<strong>数组不是一个"值"</strong>。<code>a</code> 这个名字在参与表达式时，
+会<strong>退化</strong>成"第一个元素的地址"（一个门牌号），而"给一排柜子赋值"在语法上没有意义，
+所以编译器在<strong>编译</strong>阶段就直接拒绝（不是链接期，也不是运行期）。</p>
+<p><strong>想复制内容，只能逐个元素复制</strong>：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</code></pre></div>
+
+<p>（或者用 <code>&lt;cstring&gt;</code> 里的 <code>memcpy</code>；再或者干脆用 <code>std::string</code> / <code>std::vector</code>，
+它们是可以整体赋值的。）</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<ul>
+<li>报错原文：<code>error: invalid array assignment</code>（含文件路径与行号）</li>
+<li>属于哪类错误：编译期</li>
+</ul>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>报错原文 ✅ 正确（关键那一行 <code>error: invalid array assignment</code> 抄对了）。</li>
+<li>分类 ✅ <strong>完全正确，保留。</strong></li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：这一条原答案<strong>是对的</strong>。只补一句"为什么"：
+报错发生在<strong>编译期</strong>而不是运行期，是因为<strong>编译器在语法层面就知道这件事不合法</strong>
+（数组名会退化成地址，而地址不能被赋给一串变量），
+它根本不需要等到程序跑起来。<strong>编译器能帮你拦住的错误都是好错误。</strong></p>
+</blockquote>
+<hr />
+<h3 id="实验-d混合输入的陷阱">实验 D：混合输入的陷阱</h3>
+<p><strong>参考答案</strong></p>
+<p>跑 <code>06_mixed_input_trap.cpp</code> 的"错误示范"部分：</p>
+<div class="codehilite"><pre><span></span><code>Enter the year: Enter the address:   year    = 2026
+  address = ""   &lt;- 空的！
+</code></pre></div>
+
+<ul>
+<li><strong><code>address</code> 读到的是一个空字符串</strong>（长度为 0）。</li>
+<li>原因：<code>cin &gt;&gt; year</code> 读到数字 <code>2026</code> 后，<strong>在遇到换行符时停下，但没有把换行符取走</strong>——
+  那个 <code>'\n'</code> 还留在输入缓冲区里。紧接着 <code>cin.getline(address, 80)</code> 去读，
+  看到的<strong>第一个字符就是换行符</strong>，于是它判定"这一行是空的"，读了个空串就返回了。</li>
+<li><strong>用解法 2 复现</strong>，关键那一行就是：</li>
+</ul>
+<p><code>cpp
+  (cin &gt;&gt; year).get();</code></p>
+<p>它的意思是"先读年份，然后在同一个 <code>cin</code> 对象上再调用 <code>get()</code> 把换行符取走"。
+  （<code>cin &gt;&gt; year</code> 的返回值就是 <code>cin</code> 本身，所以可以接着写 <code>.get()</code>。）</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>读到了 <code>\0</code>，因为用 cin 时候按下的回车不会被 cin 读取走，
+而停留在了输入队列中，导致 getline 读取到了换行，而直接结束了</p>
+<p>关键那一行：<code>(cin &gt;&gt; year).get();</code></p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>现象 ✅ 正确（<code>address</code> 确实读成了空的）。</li>
+<li>原因 ✅ <strong>正确，而且抓住了要点</strong>：「回车留在输入队列里，getline 读到换行就直接结束」。</li>
+<li>修法 ✅ 解法 2 抄对了。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：这一条原答案<strong>是对的</strong>，只改一处措辞：
+原答案说"读到了 <code>\0</code>"——严格说 <code>getline</code> 读到的<strong>不是 <code>'\0'</code> 这个字符</strong>，
+而是<strong>一个空字符串</strong>（字符串长度为 0）。<code>'\0'</code> 是<strong>结果</strong>：
+<code>getline</code> 发现第一个字符是换行、判定这是空行，
+于是它<strong>按规矩给数组的第 0 格写上 <code>'\0'</code></strong>（保证结果是个合法字符串），然后就返回了。
+所以"读到空串"和"数组第 0 格是 <code>'\0'</code>"两件事都对，但因果顺序是
+<strong>先遇到换行 → 才写入 <code>'\0'</code></strong>。</p>
+<p>补充一个第四种组合（原答案没提到）：
+<strong>如果下一个操作是 <code>cin &gt;&gt;</code>，就完全不会出问题</strong>，
+因为 <code>cin &gt;&gt;</code> 会自动跳过开头的空白符，把残留的换行当分隔符跳过去。
+<strong>"只读整行的操作（<code>getline</code> / <code>get</code>）才会被咬"</strong>——这正是本课最该记住的一句话。</p>
+</blockquote>
+<hr />
+<h3 id="实验-ec-风格字符串的">实验 E：C 风格字符串的 <code>==</code></h3>
+<p><strong>参考答案</strong></p>
+<div class="codehilite"><pre><span></span><code>0
+1
+</code></pre></div>
+
+<p>（<code>std::cout &lt;&lt; (a == b)</code> 输出 <code>0</code> 表示 false；<code>(strcmp(a, b) == 0)</code> 输出 <code>1</code> 表示 true。）</p>
+<ul>
+<li>第一个 <code>a == b</code> <strong>比的是两个数组的地址</strong>，不是它们装的内容。
+  <code>a</code> 和 <code>b</code> 是<strong>两块不同的内存</strong>，门牌号不一样，所以比较结果是"不相等"。
+  （这就是"数组名参与表达式时会退化成地址"的直接后果。）</li>
+<li>第二个 <code>strcmp(a, b) == 0</code> 才是<strong>比较内容</strong>：<code>strcmp</code> 会一个字符一个字符地比，
+  内容相同就返回 0。</li>
+</ul>
+<p><strong>注意这个约定的别扭之处</strong>：<code>strcmp</code> 用 <strong>0 表示"相等"</strong>，而 <code>0</code> 在 <code>if</code> 里是"假"。
+所以 <code>if (strcmp(a, b))</code>（没写 <code>== 0</code>）的意思<strong>正好相反</strong>——
+<strong>一定要把 <code>== 0</code> 写上。</strong></p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p><code>0</code>
+<code>1</code> 因为第一个是直接比较内存地址，地址肯定不一样，所以为 0</p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>两个输出 ✅ 正确。</li>
+<li>原因 ✅ <strong>完全正确，保留。</strong></li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：这一条原答案<strong>是对的</strong>。只补两句：
+① 既然 <code>a == b</code> 比的是地址，那<strong>它永远不可能用来判断内容是否相同</strong>，
+这不是"碰巧错"，而是<strong>语法层面就错了</strong>；
+② 与之对照，<code>std::string</code> 的 <code>==</code> 是<strong>被专门定义过</strong>的（重载），
+所以 <code>std::string a, b;</code> 时 <code>a == b</code> 比的才是内容——
+<strong>这也是 <code>std::string</code> 存在的理由之一</strong>。</p>
+</blockquote>
+<hr />
+<h2 id="二任务-3复习题教材-p123">二、任务 3：复习题（教材 p123）</h2>
+<blockquote>
+<p>⚠️ 本课只做与本节相关的 7 题（1、3、4、5、6、7、16）。
+复习题 2、8–15、17 涉及 <code>array</code>、结构、指针、<code>new</code>，属于第 4 章 B–D。</p>
+</blockquote>
+<h3 id="第-1-题如何声明下述数据">第 1 题：如何声明下述数据？</h3>
+<p><strong>参考答案</strong></p>
+<table>
+<thead>
+<tr>
+<th>小题</th>
+<th>要求</th>
+<th>答案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a</td>
+<td><code>actor</code> 是由 30 个 <code>char</code> 组成的数组</td>
+<td><code>char actor[30];</code></td>
+</tr>
+<tr>
+<td>b</td>
+<td><code>betsie</code> 是由 100 个 <code>short</code> 组成的数组</td>
+<td><code>short betsie[100];</code></td>
+</tr>
+<tr>
+<td>c</td>
+<td><code>chuck</code> 是由 13 个 <code>float</code> 组成的数组</td>
+<td><code>float chuck[13];</code></td>
+</tr>
+<tr>
+<td>d</td>
+<td><code>dipsea</code> 是由 64 个 <code>long double</code> 组成的数组</td>
+<td><code>long double dipsea[64];</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>语法模板</strong>：<code>类型 名字[元素个数];</code>
+方括号里写的是<strong>元素个数</strong>（不是"最后一个下标"），所以要 30 个就写 <code>[30]</code>。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>a. <code>char actor[30];</code>
+b. <code>short betsie[100];</code>
+c. <code>float chuck[13];</code>
+d. <code>long double dipsea[64];</code></p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>四小题 ✅ <strong>全部正确，保留。</strong></li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：这一条原答案<strong>完全正确</strong>，没有需要改的地方。
+唯一要提醒的是<strong>别把两种数字混起来</strong>：
+<code>[30]</code> 里的 30 是<strong>元素个数</strong>，而这 30 个元素的<strong>合法下标是 0～29</strong>。
+同一个"30"，一个表示个数、一个表示下标范围的上界，<strong>差 1 的那个坑就从这里来</strong>
+（见下面第 4、5 题的专项说明）。</p>
+</blockquote>
+<hr />
+<h3 id="第-3-题声明一个包含-5-个元素的-int-数组并将它初始化为前-5-个正奇数">第 3 题：声明一个包含 5 个元素的 <code>int</code> 数组，并将它初始化为前 5 个正奇数</h3>
+<p><strong>参考答案</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">};</span>
+</code></pre></div>
+
+<p>前 5 个正奇数是 1、3、5、7、9。
+用花括号列出来，编译器会按顺序填进去；<strong>写了 5 个值、数组也是 5 格，正好装满</strong>。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p><code>int x[5] = {1, 3, 5, 7, 9};</code></p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ <strong>完全正确，保留。</strong></li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：这一条原答案<strong>完全正确</strong>。
+顺便记两个容易混的变体：
+① 如果只写 <code>int x[5] = {1, 3};</code>，<strong>后面三格会自动补 0</strong>（不是垃圾值）；
+② 如果写 <code>int x[] = {1,3,5,7,9};</code>（不写大小），编译器会<strong>自己数</strong>出 5。
+本题写死 <code>[5]</code> 最清楚，也最贴合题意。</p>
+</blockquote>
+<hr />
+<h3 id="第-4-题把数组第一个元素和最后一个元素的和赋给-even">第 4 题：把数组第一个元素和最后一个元素的和赋给 <code>even</code></h3>
+<p><strong>参考答案</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">even</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+</code></pre></div>
+
+<p><strong>推导</strong>：第 3 题的数组是 <code>int x[5] = {1, 3, 5, 7, 9};</code></p>
+<ul>
+<li><strong>第一个元素</strong> → 下标 <strong>0</strong> → <code>x[0]</code>（值 1）</li>
+<li><strong>最后一个元素</strong>（一共 5 个）→ 下标 <strong>5 − 1 = 4</strong> → <code>x[4]</code>（值 9）</li>
+<li>所以 <code>x[0] + x[4] = 1 + 9 = 10</code></li>
+</ul>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>最初写的是 <code>int even = x[1] + x[-1];</code>
+后来改成了 <code>int even = x[0] + x[4];</code></p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>最终答案 ✅ 正确。</li>
+<li>但<strong>最初那一版两个下标都错了</strong>，而且错得很有代表性，见下面的专项说明。</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>订正说明（本课最重要的一条）</strong></p>
+<p>原答案最初写的是 <strong><code>int even = x[1] + x[-1];</code></strong>，这里同时犯了<strong>三类</strong>错误：</p>
+<ol>
+<li><strong>"差一"错误</strong>：第一个元素的下标是 <strong>0</strong>，不是 1。
+   （"第 1 个"和"下标 1"是两件事——下标是偏移量，第 1 个的偏移量是 0。）</li>
+<li><strong>"差一"错误</strong>：最后一个元素的下标是 <strong>4</strong>，不是 −1。
+   （<code>len − 1 = 5 − 1 = 4</code>。−1 是别的语言里"从末尾数"的写法，<strong>C++ 的数组下标不支持负数</strong>。）</li>
+<li><strong>越界</strong>：<code>x[-1]</code> 不只是"取错了元素"，它是<strong>访问数组前面那块不属于它的内存</strong>，
+   属于<strong>未定义行为</strong>——可能读到垃圾值，也可能直接让程序崩溃。
+   ⚠️ <strong>而且 <code>x[-1]</code> 通常连编译错误都不会有</strong>，编译器不会拦你，
+   这才是它比"差一"更危险的地方。</li>
+</ol>
+<p>正确的推理链只有一句话：
+<strong>第 n 个元素的下标 = n − 1；最后一个元素的下标 = 长度 − 1。</strong></p>
+</blockquote>
+<h4 id="专项下标差一这个错误一张表讲透">⭐ 专项：「下标差一」这个错误，一张表讲透</h4>
+<p>数组下标就是<strong>偏移量</strong>（"离起点走了几格"），所以"第几个"和"下标几"永远差 1：</p>
+<table>
+<thead>
+<tr>
+<th>你想要的东西</th>
+<th>偏移 / 下标</th>
+<th>一个 5 元素数组 <code>int x[5]</code> 里的实际写法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>第 1 个</strong>元素</td>
+<td>偏移 <strong>0</strong></td>
+<td><code>x[0]</code></td>
+</tr>
+<tr>
+<td><strong>第 2 个</strong>元素</td>
+<td>偏移 <strong>1</strong></td>
+<td><code>x[1]</code></td>
+</tr>
+<tr>
+<td><strong>第 3 个</strong>元素</td>
+<td>偏移 <strong>2</strong></td>
+<td><code>x[2]</code></td>
+</tr>
+<tr>
+<td><strong>第 n 个</strong>元素</td>
+<td>偏移 <strong>n − 1</strong></td>
+<td><code>x[n-1]</code></td>
+</tr>
+<tr>
+<td><strong>最后一个</strong>元素（长度 len）</td>
+<td>偏移 <strong>len − 1</strong></td>
+<td><code>x[len-1]</code>（本题 <code>x[4]</code>）</td>
+</tr>
+<tr>
+<td>❌ <strong>长度为 len 时写 <code>x[len]</code></strong></td>
+<td><strong>超出范围</strong></td>
+<td><code>x[5]</code> ✗ <strong>越界</strong></td>
+</tr>
+<tr>
+<td>❌ <strong>写 <code>x[-1]</code> 想"从末尾数"</strong></td>
+<td><strong>负偏移</strong></td>
+<td><code>x[-1]</code> ✗ <strong>越界</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>三条能防住这类错误的习惯：</strong></p>
+<ol>
+<li>问自己"我要的是<strong>第几个</strong>"，然后<strong>减 1</strong> 得到下标；</li>
+<li>循环遍历数组<strong>永远写 <code>i &lt; len</code></strong>，别写 <code>i &lt;= len</code>；</li>
+<li><strong>别写负数下标</strong>——C++ 数组不支持"从末尾数"（Python 那种 <code>x[-1]</code> 在 C++ 里是越界）。</li>
+</ol>
+<blockquote>
+<p>📌 <strong>复习题第 5 题考的是同一件事</strong>（"第 2 个元素"→ 下标 1）。
+这两题一起看，就能把"差一"这个错误彻底钉住。</p>
+</blockquote>
+<hr />
+<h3 id="第-5-题显示-float-数组-ideas-中第-2-个元素的值">第 5 题：显示 <code>float</code> 数组 <code>ideas</code> 中第 2 个元素的值</h3>
+<p><strong>参考答案</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ideas</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</code></pre></div>
+
+<p><strong>推导</strong>：题目要的是<strong>第 2 个</strong>元素，而下标是偏移量，所以要 <strong>2 − 1 = 1</strong>。
+即 <strong><code>ideas[1]</code></strong>（不是 <code>ideas[2]</code>）。</p>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p>最初写的是 <code>ideas[2]</code>，后来改成了 <code>cout &lt;&lt; ideas[1];</code></p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>最终答案 ✅ 正确。</li>
+<li>最初那一版 ❌ <strong>差一错误</strong>（见订正说明）。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：原答案最初写的是 <code>ideas[2]</code>，正确应为 <strong><code>ideas[1]</code></strong>，
+因为题目问的是「<strong>第 2 个</strong>元素」，而<strong>下标是偏移量</strong>：
+第 1 个的偏移是 0、第 2 个的偏移是 1、第 n 个的偏移是 n − 1。</p>
+<p>⚠️ <strong>和上一题不同的是</strong>：<code>ideas[2]</code> <strong>不越界</strong>（如果数组至少有 3 个元素），
+所以它<strong>不会报错、不会崩溃，只会安静地打印第 3 个元素</strong>——
+这种"结果合法但答非所问"的错误，比越界更难发现。
+<strong>做题时把"第几个"和"下标几"分开想，是唯一的防法</strong>（对照上一题那张表）。</p>
+<p>另外两个细节：教材附录 J 的官方答案就是 <code>cout &lt;&lt; ideas[1] &lt;&lt; endl;</code>；
+如果要按题目原样比较，加不加 <code>&lt;&lt; endl</code> 都不影响正确性。</p>
+</blockquote>
+<hr />
+<h3 id="第-6-题声明一个-char-数组并初始化为字符串-cheeseburger">第 6 题：声明一个 <code>char</code> 数组，并初始化为字符串 <code>"cheeseburger"</code></h3>
+<p><strong>参考答案</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">s</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"cheeseburger"</span><span class="p">;</span>
+</code></pre></div>
+
+<p><strong>要点</strong>：用<strong>双引号</strong>初始化时，编译器会<strong>自动</strong>在末尾补一个 <code>'\0'</code>，
+并且<strong>不写方括号里的数字</strong>时，它会按 <code>字符数 + 1</code> 自动算好大小
+（这里是 12 个字母 + 1 = <strong>13 字节</strong>）。</p>
+<p><strong>如果非要写死大小，最小合法值是 13</strong>：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"cheeseburger"</span><span class="p">;</span><span class="w">     </span><span class="c1">// ✅ 12 个字母 + '\0'</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"cheeseburger"</span><span class="p">;</span><span class="w">     </span><span class="c1">// ❌ 装不下 '\0'，编译器报错</span>
+</code></pre></div>
+
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p><code>char s[] = "cheeseburger";</code></p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ <strong>完全正确，保留。</strong></li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：这一条原答案<strong>完全正确</strong>，且用了最省心的写法（<code>[]</code> 让编译器自己数）。
+补充一句常见错法的报错原文，便于以后认出来：
+<code>char s[12] = "cheeseburger";</code> 会得到
+<code>error: initializer-string for array of chars is too long</code>——
+因为<strong>字符串字面量自带一个 <code>'\0'</code></strong>，所以数组大小必须是"字符数 + 1"。</p>
+</blockquote>
+<hr />
+<h3 id="第-7-题声明一个-string-对象并初始化为-waldorfsalad">第 7 题：声明一个 <code>string</code> 对象，并初始化为 <code>"WaldorfSalad"</code></h3>
+<p><strong>参考答案</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"WaldorfSalad"</span><span class="p">;</span>
+</code></pre></div>
+
+<p>（如果文件上方已经有 <code>using namespace std;</code>，也可以直接写 <code>string s = "WaldorfSalad";</code>。）</p>
+<p><strong>要点</strong>：</p>
+<ul>
+<li><strong><code>std::string</code> 是 C++ 标准库提供的字符串类型</strong>，要用它必须
+  <strong><code>#include &lt;string&gt;</code></strong>。</li>
+<li>它<strong>不用写大小</strong>（自己管内存），所以写法比 <code>char</code> 数组更简单。</li>
+<li>注意大小写：题目给的字符串是 <code>"WaldorfSalad"</code>（W 和 S 都是大写，中间没有空格），
+  不是 <code>"Waldorf Salad"</code>。</li>
+</ul>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<p><code>string s = "WaldorfSalad";</code></p>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ <strong>正确，保留。</strong></li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：这一条原答案<strong>是对的</strong>。只提醒两点：
+① 严格写全称是 <code>std::string</code>——原答案用了 <code>string</code>，
+这依赖文件里已经写了 <code>using namespace std;</code>（本课的其他代码都有这一行，所以没问题）；
+② 别忘了 <code>#include &lt;string&gt;</code>。<strong><code>&lt;iostream&gt;</code> 有时会"顺带"把 <code>string</code> 也拉进来，
+于是漏写头文件也能编过</strong>——但那是运气，不是规范，换一个标准库实现就编不过了。</p>
+</blockquote>
+<hr />
+<h3 id="第-16-题把-cingetlineaddress-80-换成-cin-address-会有什么影响">第 16 题：把 <code>cin.getline(address, 80);</code> 换成 <code>cin &gt;&gt; address;</code> 会有什么影响？</h3>
+<p><strong>参考答案</strong></p>
+<p>把读整行的 <code>cin.getline(address, 80);</code> 换成按单词读的 <code>cin &gt;&gt; address;</code>，
+会带来<strong>两个</strong>影响：</p>
+<ol>
+<li><strong>读不到空格，也读不到整行。</strong> <code>cin &gt;&gt;</code> 在遇到第一个空白符（空格 / Tab / 换行）时就停，
+   所以像 <code>"123 Main Street"</code> 这样的地址只会读到 <code>"123"</code>，后面全丢了。
+   （<code>getline</code> 不会这样，它会把整行连同空格一起读进来。）</li>
+<li><strong>换行符会留在输入队列里。</strong> <code>cin &gt;&gt;</code> 只取走它需要的字符，<strong>不取走</strong>后面那个换行符；
+   于是这个 <code>'\n'</code> 残留在缓冲区中，<strong>影响下一次读取</strong>——
+   如果下一个操作是 <code>cin.getline(...)</code> 或 <code>cin.get(...)</code>，
+   它会读到"空行"（看上去就像程序跳过了一次输入）。</li>
+</ol>
+<blockquote>
+<p>📌 <strong>一句话总结</strong>：<code>cin &gt;&gt; address</code> <strong>能读，但只读一个词，而且还留下一颗地雷
+（残留的换行符）给后面的读整行操作。</strong></p>
+</blockquote>
+<p><strong>原始作答记录</strong></p>
+<blockquote>
+<ol>
+<li>不能读取到空格，不能读取到整行，换行符会留在输入队列中</li>
+</ol>
+</blockquote>
+<p><strong>核对结果</strong></p>
+<ul>
+<li>✅ <strong>完全正确，保留。</strong> 三个要点（读不到空格、读不到整行、换行符残留）全说到了。</li>
+</ul>
+<blockquote>
+<p><strong>订正说明</strong>：这一条原答案<strong>是对的</strong>。只把第 3 点的因果说完整一点：
+<strong>"换行符留在输入队列里"这件事本身不是问题，问题是"谁会去读它"。</strong>
+如果下一个操作是 <code>cin &gt;&gt;</code>，它会自动跳过空白，<strong>你看不出任何异常</strong>；
+只有当<strong>下一个操作是 <code>getline</code> / <code>get</code>（要读整行）</strong>时，
+它才会读到空行、让你以为"程序吞了一次输入"。
+也就是说：<strong>同一段代码，换个读法就从"没事"变成"出事"</strong>——
+这一点在第 4 章 A 的讲义第 5.4 节有一张四种组合的对照表。</p>
+</blockquote>
+<hr />
+<h2 id="附本章要记住的四句">附：本章要记住的四句</h2>
+<ol>
+<li><strong>下标是偏移量，从 0 开始</strong>：第 1 个 → <code>[0]</code>，第 n 个 → <code>[n-1]</code>，最后一个 → <code>[len-1]</code>。
+   <strong>"差一"和"负数下标"是最高频的两个错误，而负数下标还是越界。</strong></li>
+<li><strong>C 风格字符串 = 以 <code>'\0'</code> 结尾的 <code>char</code> 数组</strong>。
+   <code>'\0'</code> 是"句号"；<code>sizeof</code> 含它、<code>strlen</code> 不含它，所以对字符串<strong>永远差 1</strong>。</li>
+<li><strong>换行符是上一个 <code>cin &gt;&gt;</code> 留下的</strong>：只要下一个操作是 <code>getline</code> / <code>get</code>，
+   就会读到空行。修法：<code>cin &gt;&gt; x;</code> 之后补 <code>cin.get();</code>。
+   <strong>下一个操作若是 <code>cin &gt;&gt;</code>，则看不出问题</strong>（它自己跳空白）。</li>
+<li><strong>C++ 不做数组边界检查</strong>：越界读拿到的是垃圾值，
+   越界写会破坏别的变量，<strong>而且两种都可能不报错、不崩溃</strong>——这属于未定义行为，
+   不是"运行时错误"。</li>
+</ol>
+<div class="pager"><a class="prev" href="../../参考答案/第03章/复习题答案.html">← 上一页：复习题答案</a><a class="next" href="../../参考答案/第04章B/复习题答案.html">下一页：复习题答案 →</a></div>
+<div class="footer"><a href="../../index.html">← 返回总目录</a></div>
+</article></main>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('themeBtn');
+  function sync(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    btn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    btn.title = (t === 'dark') ? '切换到浅色' : '切换到深色';
+  }
+  btn.addEventListener('click', function(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    t = (t === 'dark') ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    try{ localStorage.setItem('cppcourse-theme', t); }catch(e){}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>

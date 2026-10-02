@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第03章-练习</title>
+<script>
+/* 在页面渲染前先定好主题，避免"白屏闪一下" */
+(function(){
+  try{
+    var t = localStorage.getItem('cppcourse-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<style>
+/* ============ 颜色变量：默认深色 ============ */
+:root, [data-theme="dark"]{
+  --bg:#14171a; --bg2:#1b1f24; --bg3:#232a31;
+  --fg:#dfe3e8; --fg2:#b6bec8; --muted:#8b95a1;
+  --line:#2b3138; --accent:#58a6ff;
+  --code-bg:#0f1216; --quote-bg:#1b2027;
+}
+[data-theme="light"]{
+  --bg:#fbfbfa; --bg2:#ffffff; --bg3:#f1f5f9;
+  --fg:#22272e; --fg2:#3b434d; --muted:#6b7280;
+  --line:#e5e7eb; --accent:#1f6feb;
+  --code-bg:#f3f4f6; --quote-bg:#f8fafc;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",Roboto,sans-serif;
+  font-size:16.5px; line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ============ 主题切换按钮 ============ */
+#themeBtn{
+  position:fixed; top:14px; right:18px; z-index:50;
+  width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--line); background:var(--bg2); color:var(--fg);
+  font-size:19px; line-height:1; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, background .15s ease;
+}
+#themeBtn:hover{transform:scale(1.08); background:var(--bg3);}
+
+.layout{display:flex; min-height:100vh;}
+
+/* ============ 侧边导航 ============ */
+nav{
+  width:288px; flex:0 0 288px; background:var(--bg2);
+  border-right:1px solid var(--line); padding:22px 0 80px;
+  overflow-y:auto; position:sticky; top:0; height:100vh;
+}
+nav .brand{
+  padding:0 20px 15px; font-weight:700; font-size:15px;
+  border-bottom:1px solid var(--line); margin-bottom:12px; color:var(--fg);
+}
+nav .group{
+  padding:16px 20px 6px; font-size:11.5px; color:var(--muted);
+  letter-spacing:.1em; font-weight:600;
+}
+nav a{display:block; padding:6px 20px; font-size:14px; color:var(--fg2);
+  border-left:3px solid transparent;}
+nav a:hover{background:var(--bg3); text-decoration:none; color:var(--fg);}
+nav a.active{color:var(--accent); font-weight:600;
+  border-left-color:var(--accent); background:var(--bg3);}
+
+main{flex:1; min-width:0; padding:46px 60px 120px; max-width:1120px;}
+article{
+  background:var(--bg2); border:1px solid var(--line);
+  border-radius:12px; padding:40px 48px;
+  box-shadow:0 1px 3px rgba(0,0,0,.10);
+}
+
+/* ============ 正文排版 ============ */
+h1,h2,h3,h4{line-height:1.4; margin:1.7em 0 .7em; font-weight:700; scroll-margin-top:20px;}
+h1{font-size:1.9em; margin-top:0; padding-bottom:.4em; border-bottom:2px solid var(--line);}
+h2{font-size:1.42em; padding-bottom:.28em; border-bottom:1px solid var(--line);}
+h3{font-size:1.16em;}
+h4{font-size:1.03em; color:var(--fg2);}
+p{margin:.8em 0;}
+ul,ol{padding-left:1.65em;}
+li{margin:.35em 0;}
+strong{font-weight:700;}
+hr{border:0; border-top:1px solid var(--line); margin:2.2em 0;}
+img{max-width:100%;}
+
+blockquote{
+  margin:1.1em 0; padding:.85em 1.15em; background:var(--quote-bg);
+  border-left:4px solid var(--accent); color:var(--fg2);
+  border-radius:0 8px 8px 0;
+}
+blockquote p{margin:.4em 0;}
+blockquote strong{color:var(--fg);}
+
+/* ============ 表格 ============ */
+table{
+  border-collapse:collapse; width:100%; margin:1.2em 0;
+  font-size:14.8px; display:block; overflow-x:auto;
+}
+th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top;}
+th{background:var(--bg3); font-weight:600; white-space:nowrap;}
+tbody tr:nth-child(even) td{background:rgba(127,127,127,.05);}
+
+/* ============ 代码 ============ */
+code{
+  font-family:"Cascadia Code",Consolas,"SF Mono",Monaco,"Courier New","Microsoft YaHei",monospace;
+  font-size:.885em; background:var(--code-bg); padding:.16em .42em;
+  border-radius:4px; border:1px solid var(--line);
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--line); border-radius:9px;
+  padding:15px 17px; overflow-x:auto; margin:1.1em 0; line-height:1.6;
+}
+pre code{background:none; padding:0; border:0; font-size:13.8px;}
+.codehilite{background:var(--code-bg); border:1px solid var(--line);
+  border-radius:9px; margin:1.1em 0;}
+.codehilite pre{border:0; margin:0; background:none;}
+
+/* ============ 本页目录 / 卡片 / 翻页 ============ */
+.toc-box{
+  background:var(--quote-bg); border:1px solid var(--line);
+  border-radius:9px; padding:13px 22px; margin:1.3em 0;
+}
+.toc-box strong{display:block; margin-bottom:5px; color:var(--muted);
+  font-size:13px; letter-spacing:.05em;}
+.toc-box ul{margin:.35em 0; padding-left:1.3em;}
+.toc-box a{color:var(--fg2);}
+.toc-box a:hover{color:var(--accent);}
+
+/* ============ 讲义页顶部的"卡住了去哪查"横幅 ============ */
+.hintbar{
+  background:var(--bg3); border:1px solid var(--line); border-radius:8px;
+  padding:9px 15px; margin:0 0 1.5em; font-size:13.5px; color:var(--muted);
+}
+.hintbar a{font-weight:600;}
+
+/* 超长的"本页目录"（比如术语表有 100+ 词条）折叠起来，别把正文挤下去 */
+details.toc-box summary{
+  cursor:pointer; color:var(--muted); font-size:13.5px;
+  font-weight:600; letter-spacing:.03em; user-select:none;
+}
+details.toc-box summary:hover{color:var(--accent);}
+details.toc-box[open] summary{margin-bottom:.5em;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px; margin:24px 0;}
+.card{background:var(--bg2); border:1px solid var(--line); border-radius:11px;
+  padding:19px 21px; transition:transform .15s ease, border-color .15s ease;}
+.card:hover{transform:translateY(-2px); border-color:var(--accent);}
+.card h3{margin:0 0 8px; font-size:1.06em;}
+.card p{margin:0; color:var(--muted); font-size:14px; line-height:1.65;}
+
+.pager{display:flex; justify-content:space-between; gap:14px; margin-top:34px;
+  padding-top:20px; border-top:1px solid var(--line);}
+.pager a{flex:1; padding:11px 16px; background:var(--bg3); border:1px solid var(--line);
+  border-radius:9px; font-size:14px; color:var(--fg2);}
+.pager a:hover{border-color:var(--accent); color:var(--accent); text-decoration:none;}
+.pager a.next{text-align:right;}
+.pager a.disabled{opacity:.35; pointer-events:none;}
+
+.footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:13.5px;}
+
+/* ============ 移动端 ============ */
+@media (max-width:900px){
+  nav{display:none;}
+  main{padding:18px 12px 60px;}
+  article{padding:22px 17px; border-radius:8px;}
+  #themeBtn{top:10px; right:10px; width:38px; height:38px;}
+}
+
+/* ===== 代码高亮（按主题隔离） ===== */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="dark"] .codehilite .hll { background-color: #49483e }
+[data-theme="dark"] .codehilite { background: #272822; color: #F8F8F2 }
+[data-theme="dark"] .codehilite .c { color: #959077 } /* Comment */
+[data-theme="dark"] .codehilite .err { color: #ED007E; background-color: #1E0010 } /* Error */
+[data-theme="dark"] .codehilite .esc { color: #F8F8F2 } /* Escape */
+[data-theme="dark"] .codehilite .g { color: #F8F8F2 } /* Generic */
+[data-theme="dark"] .codehilite .k { color: #66D9EF } /* Keyword */
+[data-theme="dark"] .codehilite .l { color: #AE81FF } /* Literal */
+[data-theme="dark"] .codehilite .n { color: #F8F8F2 } /* Name */
+[data-theme="dark"] .codehilite .o { color: #FF4689 } /* Operator */
+[data-theme="dark"] .codehilite .x { color: #F8F8F2 } /* Other */
+[data-theme="dark"] .codehilite .p { color: #F8F8F2 } /* Punctuation */
+[data-theme="dark"] .codehilite .ch { color: #959077 } /* Comment.Hashbang */
+[data-theme="dark"] .codehilite .cm { color: #959077 } /* Comment.Multiline */
+[data-theme="dark"] .codehilite .cp { color: #959077 } /* Comment.Preproc */
+[data-theme="dark"] .codehilite .cpf { color: #959077 } /* Comment.PreprocFile */
+[data-theme="dark"] .codehilite .c1 { color: #959077 } /* Comment.Single */
+[data-theme="dark"] .codehilite .cs { color: #959077 } /* Comment.Special */
+[data-theme="dark"] .codehilite .gd { color: #FF4689 } /* Generic.Deleted */
+[data-theme="dark"] .codehilite .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+[data-theme="dark"] .codehilite .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="dark"] .codehilite .gr { color: #FF4689 } /* Generic.Error */
+[data-theme="dark"] .codehilite .gh { color: #F8F8F2 } /* Generic.Heading */
+[data-theme="dark"] .codehilite .gi { color: #A6E22E } /* Generic.Inserted */
+[data-theme="dark"] .codehilite .go { color: #66D9EF } /* Generic.Output */
+[data-theme="dark"] .codehilite .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+[data-theme="dark"] .codehilite .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+[data-theme="dark"] .codehilite .gu { color: #959077 } /* Generic.Subheading */
+[data-theme="dark"] .codehilite .gt { color: #66D9EF } /* Generic.Traceback */
+[data-theme="dark"] .codehilite .kc { color: #66D9EF } /* Keyword.Constant */
+[data-theme="dark"] .codehilite .kd { color: #66D9EF } /* Keyword.Declaration */
+[data-theme="dark"] .codehilite .kn { color: #FF4689 } /* Keyword.Namespace */
+[data-theme="dark"] .codehilite .kp { color: #66D9EF } /* Keyword.Pseudo */
+[data-theme="dark"] .codehilite .kr { color: #66D9EF } /* Keyword.Reserved */
+[data-theme="dark"] .codehilite .kt { color: #66D9EF } /* Keyword.Type */
+[data-theme="dark"] .codehilite .ld { color: #E6DB74 } /* Literal.Date */
+[data-theme="dark"] .codehilite .m { color: #AE81FF } /* Literal.Number */
+[data-theme="dark"] .codehilite .s { color: #E6DB74 } /* Literal.String */
+[data-theme="dark"] .codehilite .na { color: #A6E22E } /* Name.Attribute */
+[data-theme="dark"] .codehilite .nb { color: #A6E22E } /* Name.Builtin */
+[data-theme="dark"] .codehilite .nc { color: #A6E22E } /* Name.Class */
+[data-theme="dark"] .codehilite .no { color: #66D9EF } /* Name.Constant */
+[data-theme="dark"] .codehilite .nd { color: #A6E22E } /* Name.Decorator */
+[data-theme="dark"] .codehilite .ni { color: #F8F8F2 } /* Name.Entity */
+[data-theme="dark"] .codehilite .ne { color: #A6E22E } /* Name.Exception */
+[data-theme="dark"] .codehilite .nf { color: #A6E22E } /* Name.Function */
+[data-theme="dark"] .codehilite .nl { color: #F8F8F2 } /* Name.Label */
+[data-theme="dark"] .codehilite .nn { color: #F8F8F2 } /* Name.Namespace */
+[data-theme="dark"] .codehilite .nx { color: #A6E22E } /* Name.Other */
+[data-theme="dark"] .codehilite .py { color: #F8F8F2 } /* Name.Property */
+[data-theme="dark"] .codehilite .nt { color: #FF4689 } /* Name.Tag */
+[data-theme="dark"] .codehilite .nv { color: #F8F8F2 } /* Name.Variable */
+[data-theme="dark"] .codehilite .ow { color: #FF4689 } /* Operator.Word */
+[data-theme="dark"] .codehilite .pm { color: #F8F8F2 } /* Punctuation.Marker */
+[data-theme="dark"] .codehilite .w { color: #F8F8F2 } /* Text.Whitespace */
+[data-theme="dark"] .codehilite .mb { color: #AE81FF } /* Literal.Number.Bin */
+[data-theme="dark"] .codehilite .mf { color: #AE81FF } /* Literal.Number.Float */
+[data-theme="dark"] .codehilite .mh { color: #AE81FF } /* Literal.Number.Hex */
+[data-theme="dark"] .codehilite .mi { color: #AE81FF } /* Literal.Number.Integer */
+[data-theme="dark"] .codehilite .mo { color: #AE81FF } /* Literal.Number.Oct */
+[data-theme="dark"] .codehilite .sa { color: #E6DB74 } /* Literal.String.Affix */
+[data-theme="dark"] .codehilite .sb { color: #E6DB74 } /* Literal.String.Backtick */
+[data-theme="dark"] .codehilite .sc { color: #E6DB74 } /* Literal.String.Char */
+[data-theme="dark"] .codehilite .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+[data-theme="dark"] .codehilite .sd { color: #E6DB74 } /* Literal.String.Doc */
+[data-theme="dark"] .codehilite .s2 { color: #E6DB74 } /* Literal.String.Double */
+[data-theme="dark"] .codehilite .se { color: #AE81FF } /* Literal.String.Escape */
+[data-theme="dark"] .codehilite .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+[data-theme="dark"] .codehilite .si { color: #E6DB74 } /* Literal.String.Interpol */
+[data-theme="dark"] .codehilite .sx { color: #E6DB74 } /* Literal.String.Other */
+[data-theme="dark"] .codehilite .sr { color: #E6DB74 } /* Literal.String.Regex */
+[data-theme="dark"] .codehilite .s1 { color: #E6DB74 } /* Literal.String.Single */
+[data-theme="dark"] .codehilite .ss { color: #E6DB74 } /* Literal.String.Symbol */
+[data-theme="dark"] .codehilite .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+[data-theme="dark"] .codehilite .fm { color: #A6E22E } /* Name.Function.Magic */
+[data-theme="dark"] .codehilite .vc { color: #F8F8F2 } /* Name.Variable.Class */
+[data-theme="dark"] .codehilite .vg { color: #F8F8F2 } /* Name.Variable.Global */
+[data-theme="dark"] .codehilite .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+[data-theme="dark"] .codehilite .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+[data-theme="dark"] .codehilite .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="light"] .codehilite .hll { background-color: #ffffcc }
+[data-theme="light"] .codehilite { background: #f0f0f0; }
+[data-theme="light"] .codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+[data-theme="light"] .codehilite .err { border: 1px solid #F00 } /* Error */
+[data-theme="light"] .codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+[data-theme="light"] .codehilite .o { color: #666 } /* Operator */
+[data-theme="light"] .codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+[data-theme="light"] .codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+[data-theme="light"] .codehilite .cp { color: #007020 } /* Comment.Preproc */
+[data-theme="light"] .codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+[data-theme="light"] .codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+[data-theme="light"] .codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+[data-theme="light"] .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+[data-theme="light"] .codehilite .ge { font-style: italic } /* Generic.Emph */
+[data-theme="light"] .codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="light"] .codehilite .gr { color: #F00 } /* Generic.Error */
+[data-theme="light"] .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+[data-theme="light"] .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+[data-theme="light"] .codehilite .go { color: #888 } /* Generic.Output */
+[data-theme="light"] .codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+[data-theme="light"] .codehilite .gs { font-weight: bold } /* Generic.Strong */
+[data-theme="light"] .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+[data-theme="light"] .codehilite .gt { color: #04D } /* Generic.Traceback */
+[data-theme="light"] .codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+[data-theme="light"] .codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+[data-theme="light"] .codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+[data-theme="light"] .codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+[data-theme="light"] .codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+[data-theme="light"] .codehilite .kt { color: #902000 } /* Keyword.Type */
+[data-theme="light"] .codehilite .m { color: #40A070 } /* Literal.Number */
+[data-theme="light"] .codehilite .s { color: #4070A0 } /* Literal.String */
+[data-theme="light"] .codehilite .na { color: #4070A0 } /* Name.Attribute */
+[data-theme="light"] .codehilite .nb { color: #007020 } /* Name.Builtin */
+[data-theme="light"] .codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+[data-theme="light"] .codehilite .no { color: #60ADD5 } /* Name.Constant */
+[data-theme="light"] .codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+[data-theme="light"] .codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+[data-theme="light"] .codehilite .ne { color: #007020 } /* Name.Exception */
+[data-theme="light"] .codehilite .nf { color: #06287E } /* Name.Function */
+[data-theme="light"] .codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+[data-theme="light"] .codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+[data-theme="light"] .codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+[data-theme="light"] .codehilite .nv { color: #BB60D5 } /* Name.Variable */
+[data-theme="light"] .codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+[data-theme="light"] .codehilite .w { color: #BBB } /* Text.Whitespace */
+[data-theme="light"] .codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+[data-theme="light"] .codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+[data-theme="light"] .codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+[data-theme="light"] .codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+[data-theme="light"] .codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+[data-theme="light"] .codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+[data-theme="light"] .codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+[data-theme="light"] .codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+[data-theme="light"] .codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+[data-theme="light"] .codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+[data-theme="light"] .codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+[data-theme="light"] .codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+[data-theme="light"] .codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+[data-theme="light"] .codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+[data-theme="light"] .codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+[data-theme="light"] .codehilite .sr { color: #235388 } /* Literal.String.Regex */
+[data-theme="light"] .codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+[data-theme="light"] .codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+[data-theme="light"] .codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+[data-theme="light"] .codehilite .fm { color: #06287E } /* Name.Function.Magic */
+[data-theme="light"] .codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+[data-theme="light"] .codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+[data-theme="light"] .codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+[data-theme="light"] .codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+[data-theme="light"] .codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+[data-theme="dark"] .codehilite, [data-theme="dark"] .codehilite pre{background:transparent;}
+</style>
+</head>
+<body>
+<button id="themeBtn" title="切换深色 / 浅色">🌙</button>
+<div class="layout">
+<nav><div class="brand">C++ 入门课程</div>
+<a href="../README.html">课程说明</a>
+<div class="group">附录</div>
+<a href="../附录/术语表.html">术语表</a>
+<a href="../附录/零基础起飞.html">零基础起飞</a>
+<div class="group">讲义</div>
+<a href="../讲义/第01章-预备知识.html">第01章-预备知识</a>
+<a href="../讲义/第02章-开始学习C++.html">第02章-开始学习C++</a>
+<a href="../讲义/第03章-处理数据.html">第03章-处理数据</a>
+<a href="../讲义/第04章A-数组与字符串.html">第04章A-数组与字符串</a>
+<a href="../讲义/第04章B-结构共用体枚举.html">第04章B-结构共用体枚举</a>
+<div class="group">练习</div>
+<a href="../练习/第01章-练习.html">第01章-练习</a>
+<a href="../练习/第02章-练习.html">第02章-练习</a>
+<a href="../练习/第03章-练习.html" class="active">第03章-练习</a>
+<a href="../练习/第04章A-练习.html">第04章A-练习</a>
+<a href="../练习/第04章B-练习.html">第04章B-练习</a>
+<div class="group">参考答案</div>
+<a href="../参考答案/第01章/复习题答案.html">第01章 · 复习题答案</a>
+<a href="../参考答案/第01章/错误分类实验-答案.html">第01章 · 错误分类实验-答案</a>
+<a href="../参考答案/第01章/摸底测试/说明.html">第01章/摸底测试 · 说明</a>
+<a href="../参考答案/第02章/复习题答案.html">第02章 · 复习题答案</a>
+<a href="../参考答案/第03章/复习题答案.html">第03章 · 复习题答案</a>
+<a href="../参考答案/第04章A/复习题答案.html">第04章A · 复习题答案</a>
+<a href="../参考答案/第04章B/复习题答案.html">第04章B · 复习题答案</a>
+</nav>
+<main><article>
+<div class="toc-box"><strong>本页目录</strong><div class="toc">
+<ul>
+<li><a href="#任务-1读教材约-60-分钟">✅ 任务 1：读教材（约 60 分钟）</a></li>
+<li><a href="#任务-2跑示例-4-个实验约-50-分钟">✅ 任务 2：跑示例 + 4 个实验（约 50 分钟）</a><ul>
+<li><a href="#实验-a亲眼看到整数除法的顺序陷阱">🔬 实验 A：亲眼看到整数除法的"顺序陷阱"</a></li>
+<li><a href="#实验-b-用在浮点数上">🔬 实验 B：% 用在浮点数上</a></li>
+<li><a href="#实验-c浮点数能不能用-比">🔬 实验 C：浮点数能不能用 == 比</a></li>
+<li><a href="#实验-dunsigned-的陷阱-反直觉">🔬 实验 D：unsigned 的陷阱 ★ 反直觉</a></li>
+</ul>
+</li>
+<li><a href="#任务-3复习题教材-p8486-原文10-题">✅ 任务 3：复习题（教材 p84–86 原文，10 题）</a></li>
+<li><a href="#任务-4编程练习教材-p8687-原文7-题-本章重点">✅ 任务 4：编程练习（教材 p86–87 原文，7 题）⭐ 本章重点</a><ul>
+<li><a href="#教材-p87-这里印错了一个数字">⚠️ 教材 p87 这里印错了一个数字</a></li>
+<li><a href="#但比这道题更重要的是这个方法论">📌 但比这道题更重要的是这个方法论</a></li>
+</ul>
+</li>
+<li><a href="#任务-5过关自测">✅ 任务 5：过关自测</a></li>
+<li><a href="#完成情况自查">📤 完成情况自查</a></li>
+</ul>
+</div>
+</div><h1 id="第-3-章-处理数据-练习">第 3 章 处理数据 · 练习</h1>
+<blockquote>
+<p>建议先自己做完再看 <code>参考答案/第03章/</code>。做不出来很正常，<strong>先写下你的思路</strong>，比写对答案更有价值。</p>
+<p><strong>怎么做</strong>：答案填在这个文件里，代码放在 <code>示例代码/03_处理数据/</code> 之外的自己新建的目录下，
+文件名 <code>ex1.cpp</code>…<code>ex7.cpp</code>。
+<strong>卡住就写"不会"</strong>——把自己卡在哪一步写清楚，不要编。</p>
+</blockquote>
+<hr />
+<h2 id="任务-1读教材约-60-分钟">✅ 任务 1：读教材（约 60 分钟）</h2>
+<p>读 <strong>p54–p84</strong>。重点：</p>
+<ul>
+<li>[ ] <strong>3.4.2 除法分支（p77）</strong> 精读 3 遍 ⭐</li>
+<li>[ ] <strong>3.4.3 求模运算符（p78）</strong> 精读 3 遍 ⭐</li>
+<li>[ ] <strong>3.4.4 类型转换（p79–83）</strong> 精读 3 遍 ⭐</li>
+<li>[ ] 3.1.4 无符号类型（p60）—— 注意它的陷阱</li>
+<li>[ ] 3.4.5 <code>auto</code>（p83–85）—— 教材 p85 专门警告了</li>
+<li>[ ] 3.3 浮点数（p72–75）</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>我不懂的地方 / 想问的：
+1.
+2.
+3.
+</code></pre></div>
+
+<hr />
+<h2 id="任务-2跑示例-4-个实验约-50-分钟">✅ 任务 2：跑示例 + 4 个实验（约 50 分钟）</h2>
+<p>6 个示例在 <a href="../示例代码/03_处理数据/"><code>示例代码/03_处理数据/</code></a> 目录下，<strong>全部跑一遍</strong>。</p>
+<p>然后做这 4 个实验：</p>
+<h3 id="实验-a亲眼看到整数除法的顺序陷阱">🔬 实验 A：亲眼看到整数除法的"顺序陷阱"</h3>
+<p>打开 <code>示例代码/03_处理数据/02_division_and_modulo.cpp</code>，在 <code>main</code> 里加这三行，<strong>先猜结果再运行</strong>：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endl</span><span class="p">;</span><span class="w">      </span><span class="c1">// 你猜: _______   实际: _______</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endl</span><span class="p">;</span><span class="w">      </span><span class="c1">// 你猜: _______   实际: _______</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endl</span><span class="p">;</span><span class="w">    </span><span class="c1">// 你猜: _______   实际: _______</span>
+</code></pre></div>
+
+<ul>
+<li>第 1 个为什么不是 5？</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<h3 id="实验-b-用在浮点数上">🔬 实验 B：<code>%</code> 用在浮点数上</h3>
+<p>把 <code>02_division_and_modulo.cpp</code> 里那行被注释掉的 <code>// cout &lt;&lt; 15.0 % 4;</code> 取消注释，编译。</p>
+<ul>
+<li>报错原文（从第一行抄）：</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<ul>
+<li>属于哪类错误？（编译期/链接期/运行期）</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<h3 id="实验-c浮点数能不能用-比">🔬 实验 C：浮点数能不能用 <code>==</code> 比</h3>
+<p>在 <code>示例代码/03_处理数据/04_float_precision.cpp</code> 里加：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">double</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.2</span><span class="p">;</span>
+<span class="kt">double</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.3</span><span class="p">;</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"a == b  的结果: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endl</span><span class="p">;</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"相差多少: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endl</span><span class="p">;</span>
+</code></pre></div>
+
+<ul>
+<li>结果是什么？为什么？</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<h3 id="实验-dunsigned-的陷阱-反直觉">🔬 实验 D：<code>unsigned</code> 的陷阱 ★ 反直觉</h3>
+<p>新建一个文件试这段（<strong>先猜 <code>if</code> 会不会成立</strong>）：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"5u - 10u = "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"居然进来了！"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<ul>
+<li><code>u - v</code> 输出多少？<strong>你的猜测</strong>：<strong>______</strong></li>
+</ul>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<ul>
+<li>为什么 5 减 10 会得到那么大一个数？</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<hr />
+<h2 id="任务-3复习题教材-p8486-原文10-题">✅ 任务 3：复习题（教材 p84–86 原文，10 题）</h2>
+<blockquote>
+<p>⚠️ 答案在<strong>附录 J（p933）</strong>。<strong>做完再看。</strong></p>
+</blockquote>
+<p><strong>1.</strong> 为什么 C++ 有多种整型？</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>2.</strong> 声明与下述描述相符的变量。</p>
+<p><strong>a.</strong> <code>short</code> 整数，值为 80</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>b.</strong> <code>unsigned int</code> 整数，值为 42110</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>c.</strong> 值为 3000000000 的整数</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>3.</strong> C++ 提供了什么措施来防止超出整型的范围？</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>4.</strong> <code>33L</code> 与 <code>33</code> 之间有什么区别？</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>5.</strong> 下面两条 C++ 语句是否等价？</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">grade</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">65</span><span class="p">;</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">grade</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'A'</span><span class="p">;</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>6.</strong> 如何使用 C++ 来找出编码 88 表示的字符？指出<strong>至少两种</strong>方法。</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>7.</strong> 将 <code>long</code> 值赋给 <code>float</code> 变量会导致舍入误差，将 <code>long</code> 值赋给 <code>double</code> 变量呢？将 <code>long long</code> 值赋给 <code>double</code> 变量呢？</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>8.</strong> 下列 C++ 表达式的结果分别是多少？（<strong>先全部猜一遍，再跑代码验证</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>你的答案</th>
+<th>实测</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a. <code>8 * 9 + 2</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>b. <code>6 * 3 / 4</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>c. <code>3 / 4 * 6</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>d. <code>6.0 * 3 / 4</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>e. <code>15 % 4</code></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>b 和 c 数字一样，为什么结果不同？</strong></p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>9.</strong> 假设 <code>x1</code> 和 <code>x2</code> 是两个 <code>double</code> 变量，您要将它们<strong>作为整数相加</strong>，再将结果赋给一个整型变量。请编写一条完成这项任务的 C++ 语句。如果要将它们<strong>作为 double 值相加并转换为 int</strong> 呢？</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>10.</strong> 下面每条语句声明的变量都是什么类型？（用 <code>typeid().name()</code> 验证）</p>
+<div class="codehilite"><pre><span></span><code><span class="n">a</span><span class="p">.</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">cars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">15</span><span class="p">;</span>
+<span class="n">b</span><span class="p">.</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">iou</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">150.37f</span><span class="p">;</span>
+<span class="n">c</span><span class="p">.</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'B'</span><span class="p">;</span>
+<span class="n">d</span><span class="p">.</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">crat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">U</span><span class="err">'</span><span class="n">\U00002155</span><span class="err">'</span><span class="p">;</span>
+<span class="n">e</span><span class="p">.</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">fract</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">8.25f</span><span class="o">/</span><span class="mf">2.5</span><span class="p">;</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>小题</th>
+<th>你的答案</th>
+<th>实测</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>b</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>c</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>d</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>e</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="任务-4编程练习教材-p8687-原文7-题-本章重点">✅ 任务 4：编程练习（教材 p86–87 原文，7 题）⭐ 本章重点</h2>
+<blockquote>
+<p><strong>要求</strong>：手敲；文件名 <code>ex1.cpp</code>…<code>ex7.cpp</code>；
+每题都要用 <strong><code>const</code> 符号常量</strong>表示转换因子（这是教材明确要求的）；
+编译警告要认真看。</p>
+</blockquote>
+<hr />
+<p><strong>练习 1.</strong> 编写一个小程序，要求用户使用一个整数指出自己的身高（单位为英寸），然后将身高转换为<strong>英尺和英寸</strong>。该程序使用<strong>下划线字符</strong>来指示输入位置。另外，使用一个 <code>const</code> 符号常量来表示转换因子。</p>
+<blockquote>
+<p>💡 1 英尺 = 12 英寸。
+<code>170</code> 英寸 → <code>14 英尺 2 英寸</code>（因为 <code>170 / 12 = 14</code>，<code>170 % 12 = 2</code>）。
+<strong>这题又是 <code>/</code> 和 <code>%</code> 配对的套路。</strong></p>
+<p>「用下划线指示输入位置」是个小技巧：先输出一排下划线，再用 <code>\b</code>（退格）把光标退回，
+用户就在下划线上打字了：</p>
+<p><code>cpp
+cout &lt;&lt; "Enter your height in inches: ________\b\b\b\b\b\b\b\b";</code></p>
+</blockquote>
+<hr />
+<p><strong>练习 2.</strong> 编写一个小程序，要求以<strong>几英尺几英寸</strong>的方式输入其身高，并以<strong>磅</strong>为单位输入其体重（使用 <strong>3 个变量</strong>存储这些信息）。该程序报告其 <strong>BMI</strong>（Body Mass Index，体重指数）。</p>
+<p>为了计算 BMI，该程序以英寸的方式指出用户的身高（<strong>1 英尺为 12 英寸</strong>），并将以英寸为单位的身高转换为以米为单位的身高（<strong>1 英寸 = 0.0254 米</strong>）。然后，将以磅为单位的体重转换为以千克为单位的体重（<strong>1 千克 = 2.2 磅</strong>）。最后，计算相应的 BMI —— <strong>体重（千克）除以身高（米）的平方</strong>。用符号常量表示各种转换因子。</p>
+<blockquote>
+<p>💡 <strong>这题是本章综合题</strong>，把 <code>const</code>、隐式转换、浮点运算全用上。</p>
+<p>⚠️ <strong>一个陷阱</strong>：<code>pounds / 2.2</code> 和 <code>meters * meters</code> 都没问题，
+但如果你把身高写成 <code>int</code>，<code>meters</code> 算出来的小数会被砍掉。
+<strong>身高、体重、BMI 全部用 <code>double</code>。</strong></p>
+<p>参考：1.75 米、70 千克 → BMI ≈ 22.86</p>
+</blockquote>
+<hr />
+<p><strong>练习 3.</strong> 编写一个程序，要求用户以<strong>度、分、秒</strong>的方式输入一个纬度，然后以<strong>度</strong>为单位显示该纬度。<strong>1 度为 60 分，1 分等于 60 秒</strong>，请以符号常量的方式表示这些值。对于每个输入值，应使用一个独立的变量存储它。</p>
+<p>下面是该程序运行时的情况：</p>
+<div class="codehilite"><pre><span></span><code>Enter a latitude in degrees, minutes, and seconds:
+First, enter the degrees: 37
+Next, enter the minutes of arc: 51
+Finally, enter the seconds of arc: 19
+37 degrees, 51 minutes, 19 seconds = 37.8553 degrees
+</code></pre></div>
+
+<blockquote>
+<p>💡 <strong>知识点</strong>：<code>37.8553</code> 是怎么来的？
+<code>37 + 51/60 + 19/3600 = 37.85527777...</code>
+<strong>关键</strong>：<code>51/60</code> 如果两个都是 <code>int</code>，会得到 <strong>0</strong>！必须写 <code>51.0/60</code> 或把变量声明为 <code>double</code>。
+输出用 <code>fixed &lt;&lt; setprecision(4)</code>（要 <code>#include &lt;iomanip&gt;</code>）。</p>
+</blockquote>
+<hr />
+<p><strong>练习 4.</strong> ⭐⭐ 编写一个程序，要求用户以整数方式输入<strong>秒数</strong>（使用 <code>long</code> 或 <code>long long</code> 变量存储），然后以<strong>天、小时、分钟和秒</strong>的方式显示这段时间。使用符号常量来表示每天有多少小时、每小时有多少分钟以及每分钟有多少秒。该程序的输出应与下面类似：</p>
+<div class="codehilite"><pre><span></span><code>Enter the number of seconds: 31600000
+31600000 seconds = 365 days, 17 hours, 46 minutes, 40 seconds
+</code></pre></div>
+
+<blockquote>
+<p>💡 <strong>这题是本章最核心的一题，必做。</strong> 纯靠 <code>/</code> 和 <code>%</code>。</p>
+<p><strong>思路</strong>（自己先想，想不出来再看）：</p>
+<p><code>总秒数
+  days    = 总秒数 / 86400
+  剩下    = 总秒数 % 86400
+  hours   = 剩下 / 3600
+  剩下    = 剩下 % 3600
+  minutes = 剩下 / 60
+  seconds = 剩下 % 60</code></p>
+<p><strong>每一层都是"先除得商，再取模得余数"</strong>——这就是 <code>/%</code> 配对的经典模式。
+用 <code>const</code> 定义 <code>86400</code>、<code>3600</code>、<code>60</code>。
+<strong>验证</strong>：<code>365*86400 + 17*3600 + 46*60 + 40 = 31600000</code> ✓</p>
+</blockquote>
+<hr />
+<p><strong>练习 5.</strong> 编写一个程序，要求用户输入全球当前的人口和美国当前的人口（或其他国家的人口）。将这些信息存储在 <code>long long</code> 变量中，并让程序显示美国（或其他国家）的人口占全球人口的百分比。该程序的输出应与下面类似：</p>
+<div class="codehilite"><pre><span></span><code>Enter the world's population: 6898758899
+Enter the population of the US: 310783781
+The population of the US is 4.50492% of the world population.
+</code></pre></div>
+
+<blockquote>
+<p>💡 ⚠️ <strong>这题藏着一个大坑</strong>：</p>
+<p><code>cpp
+double pct = us / world * 100;            // ❌ 整数除法！结果永远是 0
+double pct = us / (double)world * 100;    // ✅ 强制转成 double
+double pct = (double)us / world * 100;    // ✅ 也行</code></p>
+<p>因为 <code>us</code> 和 <code>world</code> 都是整数，<code>us / world</code> 先按整数算 → 得 0。
+<strong>这就是复习题第 9 题讲的东西，用上了。</strong></p>
+<p>输出格式用 <code>setprecision(6)</code>（默认）就能得到 <code>4.50492</code>。</p>
+</blockquote>
+<hr />
+<p><strong>练习 6.</strong> 编写一个程序，要求用户输入<strong>驱车里程（英里）</strong>和<strong>使用汽油量（加仑）</strong>，然后指出汽车耗油量为<strong>一加仑的里程</strong>。如果愿意，也可以让程序要求用户以<strong>公里</strong>为单位输入距离，并以<strong>升</strong>为单位输入汽油量，然后指出欧洲风格的结果——即<strong>每 100 公里的耗油量（升）</strong>。</p>
+<blockquote>
+<p>💡 美国风格 = 距离 / 燃料（每加仑跑多少英里）
+欧洲风格 = 燃料 / 距离 × 100（每 100 公里烧多少升）
+<strong>注意两者是倒数关系</strong>——这正是下一题的重点。</p>
+</blockquote>
+<hr />
+<p><strong>练习 7.</strong> 编写一个程序，要求用户按<strong>欧洲风格</strong>输入汽车的耗油量（每 100 公里消耗的汽油量（升）），然后将其转换为<strong>美国风格</strong>的耗油量——每加仑多少英里。</p>
+<p>注意，除了使用不同的单位计量外，<strong>美国方法（距离/燃料）与欧洲方法（燃料/距离）相反</strong>。<strong>100 公里等于 62.14 英里，1 加仑等于 3.875 升</strong>。因此，<code>19 mpg</code> 大约合 <code>12.4 l/100km</code>，<code>27 mpg</code> 大约合 <code>8.7 l/100km</code>。</p>
+<blockquote>
+<p>💡 推导（自己推一遍再写代码）：</p>
+<p><code>设欧洲油耗 = E 升/100公里
+100 公里 = 62.14 英里
+E 升 = E / 3.785 加仑            ← 注意是 3.785，不是教材印的 3.875（见下）
+所以每加仑跑 = 62.14 / (E / 3.785) = 62.14 * 3.785 / E = 235.2 / E
+即：mpg = 235.2 / E</code></p>
+<h3 id="教材-p87-这里印错了一个数字">⚠️ 教材 p87 这里印错了一个数字</h3>
+<p>教材印的是「<strong>1 加仑 = 3.875 升</strong>」，但这个数字<strong>和教材自己给的例子对不上</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>用哪个因子</th>
+<th><code>19 mpg</code> 算出来</th>
+<th>教材说</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>62.14 × 3.875</code>（教材印的）</td>
+<td><strong>12.67</strong></td>
+<td>约 12.4 ❌</td>
+</tr>
+<tr>
+<td><code>62.14 × 3.785</code>（美国加仑真值）</td>
+<td><strong>12.38</strong></td>
+<td>约 12.4 ✅</td>
+</tr>
+</tbody>
+</table>
+<p><code>27 mpg</code> 同样：<code>3.875</code> → 8.92（教材说 8.7）；<code>3.785</code> → <strong>8.71</strong> ✅</p>
+<p>从教材的例子反推因子：<code>12.4 × 19 = 235.6</code>、<code>8.7 × 27 = 234.9</code>，
+都指向 <strong>235.2 = 62.14 × 3.785</strong>。<strong>所以是 3.875 印错了，应为 3.785。</strong></p>
+<p>这是<strong>题目前提的订正</strong>，不是答案——请按 <strong>3.785</strong> 做题。</p>
+<h3 id="但比这道题更重要的是这个方法论">📌 但比这道题更重要的是这个方法论</h3>
+<p><strong>教材给的「输入 → 输出」例子，就是你的验证标准。</strong>
+把公式代进去算一遍，对不上就先怀疑公式或教材——<strong>不要怀疑自己</strong>。
+这次就是靠这个方法发现印错的。</p>
+<p>写出代码后，用题目给的这两组数做验证。</p>
+</blockquote>
+<hr />
+<h2 id="任务-5过关自测">✅ 任务 5：过关自测</h2>
+<p><strong>5.1</strong> 不看资料，写出 <code>6*3/4</code> 和 <code>3/4*6</code> 的结果，并解释为什么不同。</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>5.2</strong> 给你一个总秒数，写出转成"天/时/分/秒"的代码（只写核心几行）：</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>5.3</strong> 为什么 <code>0.1 + 0.2 == 0.3</code> 是 <code>false</code>？该怎么比较两个浮点数？</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>5.4</strong> <code>(int)x1 + (int)x2</code> 和 <code>(int)(x1 + x2)</code> 有什么区别？</p>
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<hr />
+<h2 id="完成情况自查">📤 完成情况自查</h2>
+<ul>
+<li>[ ] 任务 1：教材 p54–p84 读完</li>
+<li>[ ] 任务 2：6 个示例跑完 + 4 个实验做完</li>
+<li>[ ] 任务 3：10 道复习题答完</li>
+<li>[ ] 任务 4：<strong>7 道编程练习全部写完</strong>（每题都用了 <code>const</code>）</li>
+<li>[ ] 任务 5：过关自测 4 题答完</li>
+</ul>
+<p><strong>自测重点</strong>：<strong>练习 4（秒转换）和练习 5（百分比）</strong>——
+这两题直接检验有没有真正掌握 <code>/</code>、<code>%</code> 和类型转换。</p>
+<div class="pager"><a class="prev" href="../练习/第02章-练习.html">← 上一页：第02章-练习</a><a class="next" href="../练习/第04章A-练习.html">下一页：第04章A-练习 →</a></div>
+<div class="footer"><a href="../index.html">← 返回总目录</a></div>
+</article></main>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('themeBtn');
+  function sync(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    btn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    btn.title = (t === 'dark') ? '切换到浅色' : '切换到深色';
+  }
+  btn.addEventListener('click', function(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    t = (t === 'dark') ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    try{ localStorage.setItem('cppcourse-theme', t); }catch(e){}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>

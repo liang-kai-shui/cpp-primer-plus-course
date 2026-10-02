@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第04章B-结构共用体枚举</title>
+<script>
+/* 在页面渲染前先定好主题，避免"白屏闪一下" */
+(function(){
+  try{
+    var t = localStorage.getItem('cppcourse-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<style>
+/* ============ 颜色变量：默认深色 ============ */
+:root, [data-theme="dark"]{
+  --bg:#14171a; --bg2:#1b1f24; --bg3:#232a31;
+  --fg:#dfe3e8; --fg2:#b6bec8; --muted:#8b95a1;
+  --line:#2b3138; --accent:#58a6ff;
+  --code-bg:#0f1216; --quote-bg:#1b2027;
+}
+[data-theme="light"]{
+  --bg:#fbfbfa; --bg2:#ffffff; --bg3:#f1f5f9;
+  --fg:#22272e; --fg2:#3b434d; --muted:#6b7280;
+  --line:#e5e7eb; --accent:#1f6feb;
+  --code-bg:#f3f4f6; --quote-bg:#f8fafc;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",Roboto,sans-serif;
+  font-size:16.5px; line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ============ 主题切换按钮 ============ */
+#themeBtn{
+  position:fixed; top:14px; right:18px; z-index:50;
+  width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--line); background:var(--bg2); color:var(--fg);
+  font-size:19px; line-height:1; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, background .15s ease;
+}
+#themeBtn:hover{transform:scale(1.08); background:var(--bg3);}
+
+.layout{display:flex; min-height:100vh;}
+
+/* ============ 侧边导航 ============ */
+nav{
+  width:288px; flex:0 0 288px; background:var(--bg2);
+  border-right:1px solid var(--line); padding:22px 0 80px;
+  overflow-y:auto; position:sticky; top:0; height:100vh;
+}
+nav .brand{
+  padding:0 20px 15px; font-weight:700; font-size:15px;
+  border-bottom:1px solid var(--line); margin-bottom:12px; color:var(--fg);
+}
+nav .group{
+  padding:16px 20px 6px; font-size:11.5px; color:var(--muted);
+  letter-spacing:.1em; font-weight:600;
+}
+nav a{display:block; padding:6px 20px; font-size:14px; color:var(--fg2);
+  border-left:3px solid transparent;}
+nav a:hover{background:var(--bg3); text-decoration:none; color:var(--fg);}
+nav a.active{color:var(--accent); font-weight:600;
+  border-left-color:var(--accent); background:var(--bg3);}
+
+main{flex:1; min-width:0; padding:46px 60px 120px; max-width:1120px;}
+article{
+  background:var(--bg2); border:1px solid var(--line);
+  border-radius:12px; padding:40px 48px;
+  box-shadow:0 1px 3px rgba(0,0,0,.10);
+}
+
+/* ============ 正文排版 ============ */
+h1,h2,h3,h4{line-height:1.4; margin:1.7em 0 .7em; font-weight:700; scroll-margin-top:20px;}
+h1{font-size:1.9em; margin-top:0; padding-bottom:.4em; border-bottom:2px solid var(--line);}
+h2{font-size:1.42em; padding-bottom:.28em; border-bottom:1px solid var(--line);}
+h3{font-size:1.16em;}
+h4{font-size:1.03em; color:var(--fg2);}
+p{margin:.8em 0;}
+ul,ol{padding-left:1.65em;}
+li{margin:.35em 0;}
+strong{font-weight:700;}
+hr{border:0; border-top:1px solid var(--line); margin:2.2em 0;}
+img{max-width:100%;}
+
+blockquote{
+  margin:1.1em 0; padding:.85em 1.15em; background:var(--quote-bg);
+  border-left:4px solid var(--accent); color:var(--fg2);
+  border-radius:0 8px 8px 0;
+}
+blockquote p{margin:.4em 0;}
+blockquote strong{color:var(--fg);}
+
+/* ============ 表格 ============ */
+table{
+  border-collapse:collapse; width:100%; margin:1.2em 0;
+  font-size:14.8px; display:block; overflow-x:auto;
+}
+th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top;}
+th{background:var(--bg3); font-weight:600; white-space:nowrap;}
+tbody tr:nth-child(even) td{background:rgba(127,127,127,.05);}
+
+/* ============ 代码 ============ */
+code{
+  font-family:"Cascadia Code",Consolas,"SF Mono",Monaco,"Courier New","Microsoft YaHei",monospace;
+  font-size:.885em; background:var(--code-bg); padding:.16em .42em;
+  border-radius:4px; border:1px solid var(--line);
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--line); border-radius:9px;
+  padding:15px 17px; overflow-x:auto; margin:1.1em 0; line-height:1.6;
+}
+pre code{background:none; padding:0; border:0; font-size:13.8px;}
+.codehilite{background:var(--code-bg); border:1px solid var(--line);
+  border-radius:9px; margin:1.1em 0;}
+.codehilite pre{border:0; margin:0; background:none;}
+
+/* ============ 本页目录 / 卡片 / 翻页 ============ */
+.toc-box{
+  background:var(--quote-bg); border:1px solid var(--line);
+  border-radius:9px; padding:13px 22px; margin:1.3em 0;
+}
+.toc-box strong{display:block; margin-bottom:5px; color:var(--muted);
+  font-size:13px; letter-spacing:.05em;}
+.toc-box ul{margin:.35em 0; padding-left:1.3em;}
+.toc-box a{color:var(--fg2);}
+.toc-box a:hover{color:var(--accent);}
+
+/* ============ 讲义页顶部的"卡住了去哪查"横幅 ============ */
+.hintbar{
+  background:var(--bg3); border:1px solid var(--line); border-radius:8px;
+  padding:9px 15px; margin:0 0 1.5em; font-size:13.5px; color:var(--muted);
+}
+.hintbar a{font-weight:600;}
+
+/* 超长的"本页目录"（比如术语表有 100+ 词条）折叠起来，别把正文挤下去 */
+details.toc-box summary{
+  cursor:pointer; color:var(--muted); font-size:13.5px;
+  font-weight:600; letter-spacing:.03em; user-select:none;
+}
+details.toc-box summary:hover{color:var(--accent);}
+details.toc-box[open] summary{margin-bottom:.5em;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px; margin:24px 0;}
+.card{background:var(--bg2); border:1px solid var(--line); border-radius:11px;
+  padding:19px 21px; transition:transform .15s ease, border-color .15s ease;}
+.card:hover{transform:translateY(-2px); border-color:var(--accent);}
+.card h3{margin:0 0 8px; font-size:1.06em;}
+.card p{margin:0; color:var(--muted); font-size:14px; line-height:1.65;}
+
+.pager{display:flex; justify-content:space-between; gap:14px; margin-top:34px;
+  padding-top:20px; border-top:1px solid var(--line);}
+.pager a{flex:1; padding:11px 16px; background:var(--bg3); border:1px solid var(--line);
+  border-radius:9px; font-size:14px; color:var(--fg2);}
+.pager a:hover{border-color:var(--accent); color:var(--accent); text-decoration:none;}
+.pager a.next{text-align:right;}
+.pager a.disabled{opacity:.35; pointer-events:none;}
+
+.footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:13.5px;}
+
+/* ============ 移动端 ============ */
+@media (max-width:900px){
+  nav{display:none;}
+  main{padding:18px 12px 60px;}
+  article{padding:22px 17px; border-radius:8px;}
+  #themeBtn{top:10px; right:10px; width:38px; height:38px;}
+}
+
+/* ===== 代码高亮（按主题隔离） ===== */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="dark"] .codehilite .hll { background-color: #49483e }
+[data-theme="dark"] .codehilite { background: #272822; color: #F8F8F2 }
+[data-theme="dark"] .codehilite .c { color: #959077 } /* Comment */
+[data-theme="dark"] .codehilite .err { color: #ED007E; background-color: #1E0010 } /* Error */
+[data-theme="dark"] .codehilite .esc { color: #F8F8F2 } /* Escape */
+[data-theme="dark"] .codehilite .g { color: #F8F8F2 } /* Generic */
+[data-theme="dark"] .codehilite .k { color: #66D9EF } /* Keyword */
+[data-theme="dark"] .codehilite .l { color: #AE81FF } /* Literal */
+[data-theme="dark"] .codehilite .n { color: #F8F8F2 } /* Name */
+[data-theme="dark"] .codehilite .o { color: #FF4689 } /* Operator */
+[data-theme="dark"] .codehilite .x { color: #F8F8F2 } /* Other */
+[data-theme="dark"] .codehilite .p { color: #F8F8F2 } /* Punctuation */
+[data-theme="dark"] .codehilite .ch { color: #959077 } /* Comment.Hashbang */
+[data-theme="dark"] .codehilite .cm { color: #959077 } /* Comment.Multiline */
+[data-theme="dark"] .codehilite .cp { color: #959077 } /* Comment.Preproc */
+[data-theme="dark"] .codehilite .cpf { color: #959077 } /* Comment.PreprocFile */
+[data-theme="dark"] .codehilite .c1 { color: #959077 } /* Comment.Single */
+[data-theme="dark"] .codehilite .cs { color: #959077 } /* Comment.Special */
+[data-theme="dark"] .codehilite .gd { color: #FF4689 } /* Generic.Deleted */
+[data-theme="dark"] .codehilite .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+[data-theme="dark"] .codehilite .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="dark"] .codehilite .gr { color: #FF4689 } /* Generic.Error */
+[data-theme="dark"] .codehilite .gh { color: #F8F8F2 } /* Generic.Heading */
+[data-theme="dark"] .codehilite .gi { color: #A6E22E } /* Generic.Inserted */
+[data-theme="dark"] .codehilite .go { color: #66D9EF } /* Generic.Output */
+[data-theme="dark"] .codehilite .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+[data-theme="dark"] .codehilite .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+[data-theme="dark"] .codehilite .gu { color: #959077 } /* Generic.Subheading */
+[data-theme="dark"] .codehilite .gt { color: #66D9EF } /* Generic.Traceback */
+[data-theme="dark"] .codehilite .kc { color: #66D9EF } /* Keyword.Constant */
+[data-theme="dark"] .codehilite .kd { color: #66D9EF } /* Keyword.Declaration */
+[data-theme="dark"] .codehilite .kn { color: #FF4689 } /* Keyword.Namespace */
+[data-theme="dark"] .codehilite .kp { color: #66D9EF } /* Keyword.Pseudo */
+[data-theme="dark"] .codehilite .kr { color: #66D9EF } /* Keyword.Reserved */
+[data-theme="dark"] .codehilite .kt { color: #66D9EF } /* Keyword.Type */
+[data-theme="dark"] .codehilite .ld { color: #E6DB74 } /* Literal.Date */
+[data-theme="dark"] .codehilite .m { color: #AE81FF } /* Literal.Number */
+[data-theme="dark"] .codehilite .s { color: #E6DB74 } /* Literal.String */
+[data-theme="dark"] .codehilite .na { color: #A6E22E } /* Name.Attribute */
+[data-theme="dark"] .codehilite .nb { color: #A6E22E } /* Name.Builtin */
+[data-theme="dark"] .codehilite .nc { color: #A6E22E } /* Name.Class */
+[data-theme="dark"] .codehilite .no { color: #66D9EF } /* Name.Constant */
+[data-theme="dark"] .codehilite .nd { color: #A6E22E } /* Name.Decorator */
+[data-theme="dark"] .codehilite .ni { color: #F8F8F2 } /* Name.Entity */
+[data-theme="dark"] .codehilite .ne { color: #A6E22E } /* Name.Exception */
+[data-theme="dark"] .codehilite .nf { color: #A6E22E } /* Name.Function */
+[data-theme="dark"] .codehilite .nl { color: #F8F8F2 } /* Name.Label */
+[data-theme="dark"] .codehilite .nn { color: #F8F8F2 } /* Name.Namespace */
+[data-theme="dark"] .codehilite .nx { color: #A6E22E } /* Name.Other */
+[data-theme="dark"] .codehilite .py { color: #F8F8F2 } /* Name.Property */
+[data-theme="dark"] .codehilite .nt { color: #FF4689 } /* Name.Tag */
+[data-theme="dark"] .codehilite .nv { color: #F8F8F2 } /* Name.Variable */
+[data-theme="dark"] .codehilite .ow { color: #FF4689 } /* Operator.Word */
+[data-theme="dark"] .codehilite .pm { color: #F8F8F2 } /* Punctuation.Marker */
+[data-theme="dark"] .codehilite .w { color: #F8F8F2 } /* Text.Whitespace */
+[data-theme="dark"] .codehilite .mb { color: #AE81FF } /* Literal.Number.Bin */
+[data-theme="dark"] .codehilite .mf { color: #AE81FF } /* Literal.Number.Float */
+[data-theme="dark"] .codehilite .mh { color: #AE81FF } /* Literal.Number.Hex */
+[data-theme="dark"] .codehilite .mi { color: #AE81FF } /* Literal.Number.Integer */
+[data-theme="dark"] .codehilite .mo { color: #AE81FF } /* Literal.Number.Oct */
+[data-theme="dark"] .codehilite .sa { color: #E6DB74 } /* Literal.String.Affix */
+[data-theme="dark"] .codehilite .sb { color: #E6DB74 } /* Literal.String.Backtick */
+[data-theme="dark"] .codehilite .sc { color: #E6DB74 } /* Literal.String.Char */
+[data-theme="dark"] .codehilite .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+[data-theme="dark"] .codehilite .sd { color: #E6DB74 } /* Literal.String.Doc */
+[data-theme="dark"] .codehilite .s2 { color: #E6DB74 } /* Literal.String.Double */
+[data-theme="dark"] .codehilite .se { color: #AE81FF } /* Literal.String.Escape */
+[data-theme="dark"] .codehilite .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+[data-theme="dark"] .codehilite .si { color: #E6DB74 } /* Literal.String.Interpol */
+[data-theme="dark"] .codehilite .sx { color: #E6DB74 } /* Literal.String.Other */
+[data-theme="dark"] .codehilite .sr { color: #E6DB74 } /* Literal.String.Regex */
+[data-theme="dark"] .codehilite .s1 { color: #E6DB74 } /* Literal.String.Single */
+[data-theme="dark"] .codehilite .ss { color: #E6DB74 } /* Literal.String.Symbol */
+[data-theme="dark"] .codehilite .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+[data-theme="dark"] .codehilite .fm { color: #A6E22E } /* Name.Function.Magic */
+[data-theme="dark"] .codehilite .vc { color: #F8F8F2 } /* Name.Variable.Class */
+[data-theme="dark"] .codehilite .vg { color: #F8F8F2 } /* Name.Variable.Global */
+[data-theme="dark"] .codehilite .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+[data-theme="dark"] .codehilite .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+[data-theme="dark"] .codehilite .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="light"] .codehilite .hll { background-color: #ffffcc }
+[data-theme="light"] .codehilite { background: #f0f0f0; }
+[data-theme="light"] .codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+[data-theme="light"] .codehilite .err { border: 1px solid #F00 } /* Error */
+[data-theme="light"] .codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+[data-theme="light"] .codehilite .o { color: #666 } /* Operator */
+[data-theme="light"] .codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+[data-theme="light"] .codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+[data-theme="light"] .codehilite .cp { color: #007020 } /* Comment.Preproc */
+[data-theme="light"] .codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+[data-theme="light"] .codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+[data-theme="light"] .codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+[data-theme="light"] .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+[data-theme="light"] .codehilite .ge { font-style: italic } /* Generic.Emph */
+[data-theme="light"] .codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="light"] .codehilite .gr { color: #F00 } /* Generic.Error */
+[data-theme="light"] .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+[data-theme="light"] .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+[data-theme="light"] .codehilite .go { color: #888 } /* Generic.Output */
+[data-theme="light"] .codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+[data-theme="light"] .codehilite .gs { font-weight: bold } /* Generic.Strong */
+[data-theme="light"] .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+[data-theme="light"] .codehilite .gt { color: #04D } /* Generic.Traceback */
+[data-theme="light"] .codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+[data-theme="light"] .codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+[data-theme="light"] .codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+[data-theme="light"] .codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+[data-theme="light"] .codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+[data-theme="light"] .codehilite .kt { color: #902000 } /* Keyword.Type */
+[data-theme="light"] .codehilite .m { color: #40A070 } /* Literal.Number */
+[data-theme="light"] .codehilite .s { color: #4070A0 } /* Literal.String */
+[data-theme="light"] .codehilite .na { color: #4070A0 } /* Name.Attribute */
+[data-theme="light"] .codehilite .nb { color: #007020 } /* Name.Builtin */
+[data-theme="light"] .codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+[data-theme="light"] .codehilite .no { color: #60ADD5 } /* Name.Constant */
+[data-theme="light"] .codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+[data-theme="light"] .codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+[data-theme="light"] .codehilite .ne { color: #007020 } /* Name.Exception */
+[data-theme="light"] .codehilite .nf { color: #06287E } /* Name.Function */
+[data-theme="light"] .codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+[data-theme="light"] .codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+[data-theme="light"] .codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+[data-theme="light"] .codehilite .nv { color: #BB60D5 } /* Name.Variable */
+[data-theme="light"] .codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+[data-theme="light"] .codehilite .w { color: #BBB } /* Text.Whitespace */
+[data-theme="light"] .codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+[data-theme="light"] .codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+[data-theme="light"] .codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+[data-theme="light"] .codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+[data-theme="light"] .codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+[data-theme="light"] .codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+[data-theme="light"] .codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+[data-theme="light"] .codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+[data-theme="light"] .codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+[data-theme="light"] .codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+[data-theme="light"] .codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+[data-theme="light"] .codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+[data-theme="light"] .codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+[data-theme="light"] .codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+[data-theme="light"] .codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+[data-theme="light"] .codehilite .sr { color: #235388 } /* Literal.String.Regex */
+[data-theme="light"] .codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+[data-theme="light"] .codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+[data-theme="light"] .codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+[data-theme="light"] .codehilite .fm { color: #06287E } /* Name.Function.Magic */
+[data-theme="light"] .codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+[data-theme="light"] .codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+[data-theme="light"] .codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+[data-theme="light"] .codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+[data-theme="light"] .codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+[data-theme="dark"] .codehilite, [data-theme="dark"] .codehilite pre{background:transparent;}
+</style>
+</head>
+<body>
+<button id="themeBtn" title="切换深色 / 浅色">🌙</button>
+<div class="layout">
+<nav><div class="brand">C++ 入门课程</div>
+<a href="../README.html">课程说明</a>
+<div class="group">附录</div>
+<a href="../附录/术语表.html">术语表</a>
+<a href="../附录/零基础起飞.html">零基础起飞</a>
+<div class="group">讲义</div>
+<a href="../讲义/第01章-预备知识.html">第01章-预备知识</a>
+<a href="../讲义/第02章-开始学习C++.html">第02章-开始学习C++</a>
+<a href="../讲义/第03章-处理数据.html">第03章-处理数据</a>
+<a href="../讲义/第04章A-数组与字符串.html">第04章A-数组与字符串</a>
+<a href="../讲义/第04章B-结构共用体枚举.html" class="active">第04章B-结构共用体枚举</a>
+<div class="group">练习</div>
+<a href="../练习/第01章-练习.html">第01章-练习</a>
+<a href="../练习/第02章-练习.html">第02章-练习</a>
+<a href="../练习/第03章-练习.html">第03章-练习</a>
+<a href="../练习/第04章A-练习.html">第04章A-练习</a>
+<a href="../练习/第04章B-练习.html">第04章B-练习</a>
+<div class="group">参考答案</div>
+<a href="../参考答案/第01章/复习题答案.html">第01章 · 复习题答案</a>
+<a href="../参考答案/第01章/错误分类实验-答案.html">第01章 · 错误分类实验-答案</a>
+<a href="../参考答案/第01章/摸底测试/说明.html">第01章/摸底测试 · 说明</a>
+<a href="../参考答案/第02章/复习题答案.html">第02章 · 复习题答案</a>
+<a href="../参考答案/第03章/复习题答案.html">第03章 · 复习题答案</a>
+<a href="../参考答案/第04章A/复习题答案.html">第04章A · 复习题答案</a>
+<a href="../参考答案/第04章B/复习题答案.html">第04章B · 复习题答案</a>
+</nav>
+<main><article>
+<details class="toc-box"><summary>本页目录（49 项，点击展开）</summary><div class="toc">
+<ul>
+<li><a href="#本课目标">本课目标</a></li>
+<li><a href="#阅读指南教材页码-精读-略读">阅读指南（教材页码 + 精读 / 略读）</a></li>
+<li><a href="#1-五个你必须先认识的词">1. 五个你必须先认识的词</a><ul>
+<li><a href="#11-内存比特字节">1.1 内存、比特、字节</a></li>
+<li><a href="#12-变量类型值">1.2 变量、类型、值</a></li>
+<li><a href="#13-声明定义初始化赋值这四个词是本课的关键">1.3 声明、定义、初始化、赋值——这四个词是本课的关键</a></li>
+<li><a href="#14-作用域">1.4 作用域</a></li>
+<li><a href="#15-本讲义约定示例代码在哪">1.5 本讲义约定：示例代码在哪</a></li>
+</ul>
+</li>
+<li><a href="#21-先看问题怎么描述一个学生">2.1 先看问题：怎么描述一个学生？</a></li>
+<li><a href="#22-一个笨办法开三个数组">2.2 一个笨办法：开三个数组</a></li>
+<li><a href="#23-结构把三样东西打包成一个整体">2.3 结构：把三样东西打包成一个整体</a></li>
+<li><a href="#24-结构里的每个格子叫成员">2.4 结构里的每个格子叫「成员」</a></li>
+<li><a href="#31-写一个结构要分两步">3.1 写一个结构要分两步</a></li>
+<li><a href="#32-关键点声明不分配任何内存">3.2 ⭐ 关键点：声明不分配任何内存</a></li>
+<li><a href="#33-为什么这个概念这么重要">3.3 为什么这个概念这么重要？</a></li>
+<li><a href="#41-什么叫初始化">4.1 什么叫「初始化」</a></li>
+<li><a href="#42-三种写法">4.2 三种写法</a></li>
+<li><a href="#43-顺序必须和声明一致">4.3 ⚠️ 顺序必须和声明一致</a></li>
+<li><a href="#44-赋值和初始化不一样别混">4.4 赋值和初始化不一样，别混</a></li>
+<li><a href="#51-先看对比数组不行结构行">5.1 先看对比：数组不行，结构行</a></li>
+<li><a href="#52-为什么数组不行结构行">5.2 ⭐ 为什么数组不行、结构行？</a></li>
+<li><a href="#53-值语义是个好东西">5.3 「值语义」是个好东西</a></li>
+<li><a href="#61-教材专门回答的那个问题能放-string-吗">6.1 教材专门回答的那个问题：能放 string 吗？</a></li>
+<li><a href="#62-成员几乎可以是任何类型">6.2 成员几乎可以是任何类型</a></li>
+<li><a href="#71-结构和数组叠加起来">7.1 结构和数组叠加起来</a></li>
+<li><a href="#72-访问方式先下标再点">7.2 访问方式：先下标，再点</a></li>
+<li><a href="#73-遍历找最高分经典套路值得背下来">7.3 遍历找最高分（经典套路，值得背下来）</a></li>
+<li><a href="#81-什么是位字段">8.1 什么是位字段</a></li>
+<li><a href="#82-位字段有三个坑">8.2 位字段有三个坑</a></li>
+<li><a href="#83-一个有意思的实测发现位字段溢出会报警告">8.3 ⭐ 一个有意思的实测发现：位字段溢出会报警告</a></li>
+<li><a href="#84-和数组越界对比一个会警告一个连警告都没有">8.4 ⭐ 和「数组越界」对比：一个会警告，一个连警告都没有</a></li>
+<li><a href="#85-要不要用位字段">8.5 要不要用位字段？</a></li>
+<li><a href="#91-一句话说明">9.1 一句话说明</a></li>
+<li><a href="#92-实测大小等于最大的那个成员">9.2 实测：大小等于最大的那个成员</a></li>
+<li><a href="#93-struct-和-union-的内存差别必须看懂的图">9.3 ⭐ struct 和 union 的内存差别（必须看懂的图）</a></li>
+<li><a href="#94-什么是内存对齐">9.4 什么是「内存对齐」</a></li>
+<li><a href="#95-共用体的核心特点写一个覆盖其他">9.5 共用体的核心特点：写一个，覆盖其他</a></li>
+<li><a href="#96-共用体不记录现在存的是哪个类型">9.6 ⚠️ 共用体不记录「现在存的是哪个类型」</a></li>
+<li><a href="#97-常见用法union-一个标签">9.7 常见用法：union + 一个标签</a></li>
+<li><a href="#98-要不要学-union">9.8 要不要学 union？</a></li>
+<li><a href="#101-为什么需要枚举">10.1 为什么需要枚举</a></li>
+<li><a href="#102-基本用法">10.2 基本用法</a></li>
+<li><a href="#103-自己指定值教材-461p113">10.3 自己指定值（教材 4.6.1，p113）</a></li>
+<li><a href="#104-枚举量就是整数">10.4 枚举量就是整数</a></li>
+<li><a href="#105-枚举的取值范围与底层类型教材-462p113114">10.5 枚举的取值范围与「底层类型」（教材 4.6.2，p113–114）</a><ul>
+<li><a href="#先说什么叫底层类型">先说什么叫「底层类型」</a></li>
+<li><a href="#取值范围规则">取值范围规则</a></li>
+</ul>
+</li>
+<li><a href="#106-一个要注意的地方名字污染">10.6 ⚠️ 一个要注意的地方：名字污染</a></li>
+<li><a href="#107-c11-的解法enum-class">10.7 C++11 的解法：enum class</a></li>
+</ul>
+</div>
+</details><div class="hintbar">遇到看不懂的专有名词？→ <a href="../附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="../附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-4-章-b-结构共用体枚举-零基础详细版">第 4 章 B 结构、共用体、枚举 · 零基础详细版</h1>
+<blockquote>
+<p><strong>这份讲义面向</strong>：从没写过任何程序、或者刚开始学 C++ 的读者。
+<strong>难度</strong>：★★★☆☆（语法不难，但<strong>概念很关键</strong>）
+目标是把《C++ Primer Plus（第 6 版）》第 4 章里「结构、共用体、枚举」这几节讲透。</p>
+<p><strong>教材页码</strong>：PDF <strong>p105 – p114</strong>
+文中所有「教材 pXX」都指这本 PDF 的<strong>页号</strong>（封面算第 1 页），不是书页脚印的页码。
+如果你手上的 PDF 书签完整，直接用书签跳转最快。</p>
+<p><strong>配套代码</strong>：<code>示例代码/04_结构共用体枚举/01_struct_basics.cpp</code> ～ <code>06_enum.cpp</code>（共 6 个文件）
+<strong>配套练习</strong>：<code>练习/第04章B-练习.md</code>　<strong>参考答案</strong>：<code>参考答案/第04章B/</code></p>
+<p><strong>⚠️ 请先读这一条</strong>：这份讲义<strong>不需要</strong>你事先读过第 4 章的前半部分（数组与字符串）。
+凡是需要用到前面知识的地方，这里都会<strong>就地把那件事讲一遍</strong>。
+所以你可以跳着看，遇到不认识的词也不用慌——第一次出现的专有名词都会有解释。</p>
+</blockquote>
+<hr />
+<h2 id="本课目标">本课目标</h2>
+<p>学完这一课，你要能做到下面 6 件事：</p>
+<ol>
+<li><strong>说清楚「结构声明」和「结构变量」的区别</strong>——哪一个会真正分配内存。
+   这是本课<strong>最重要</strong>的一个概念，也是以后学「类」的地基。</li>
+<li>知道<strong>结构</strong>是什么、为什么需要它，能自己写一个含 3 个不同类型成员的结构并打印出来。</li>
+<li>说清楚<strong>结构和数组的两个关键差别</strong>：成员是不是同类型；能不能整体赋值。</li>
+<li>说清楚 <strong><code>struct</code> 和 <code>union</code> 在内存上的根本区别</strong>（各占一块 vs 共用一块）。</li>
+<li>认识<strong>位字段</strong>这种写法，知道它装不下时会发生什么、编译器会不会提醒你。</li>
+<li>会用 <strong><code>enum</code></strong> 给一串数字起名字，知道 <code>enum class</code> 为什么更值得推荐。</li>
+</ol>
+<p>这一章表面上在讲三种「打包数据的方式」，实际上讲的是<strong>「内存里的东西怎么摆放、一个名字代表多少内存」</strong>。
+把这一课吃透，后面学指针、学类都会轻松很多。</p>
+<hr />
+<h2 id="阅读指南教材页码-精读-略读">阅读指南（教材页码 + 精读 / 略读）</h2>
+<p><strong>建议先读本讲义，再回去读教材对应小节。</strong> 讲义负责把「为什么」讲清楚，教材负责把「完整细节」补全。</p>
+<table>
+<thead>
+<tr>
+<th>小节</th>
+<th>页码</th>
+<th>怎么读</th>
+<th>本讲义对应</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>4.4 结构简介</strong></td>
+<td>p105–108</td>
+<td><strong>精读 3 遍</strong> ⭐</td>
+<td>第 2–4 节</td>
+</tr>
+<tr>
+<td>4.4.1–4.4.2 结构初始化 / C++11 初始化</td>
+<td>p106–108</td>
+<td>精读</td>
+<td>第 4 节</td>
+</tr>
+<tr>
+<td>4.4.3 结构可以将 <code>string</code> 类作为成员吗</td>
+<td>p108</td>
+<td>精读（书上专门回答了这个问题）</td>
+<td>第 5 节</td>
+</tr>
+<tr>
+<td><strong>4.4.4 其他结构属性</strong></td>
+<td>p108–110</td>
+<td><strong>精读</strong> ⭐ 讲「结构能像普通变量一样赋值 / 传参」</td>
+<td>第 6 节</td>
+</tr>
+<tr>
+<td>4.4.5 结构数组</td>
+<td>p110–111</td>
+<td>精读</td>
+<td>第 7 节</td>
+</tr>
+<tr>
+<td>4.4.6 结构中的位字段</td>
+<td>p111</td>
+<td><strong>略读</strong>（知道有这回事即可）</td>
+<td>第 8 节</td>
+</tr>
+<tr>
+<td>4.5 共用体</td>
+<td>p111–112</td>
+<td>认真读，重点理解「共享内存」</td>
+<td>第 9 节</td>
+</tr>
+<tr>
+<td><strong>4.6 枚举</strong></td>
+<td><strong>p112–114</strong></td>
+<td><strong>精读</strong> ⭐</td>
+<td>第 10 节</td>
+</tr>
+<tr>
+<td>4.6.1 设置枚举量的值</td>
+<td>p113</td>
+<td>精读</td>
+<td>第 10.3 节</td>
+</tr>
+<tr>
+<td>4.6.2 枚举的取值范围</td>
+<td>p113–114</td>
+<td>读一遍，理解规则即可</td>
+<td>第 10.5 节</td>
+</tr>
+<tr>
+<td>4.7 复习题 / 4.8 编程练习</td>
+<td>p123–124</td>
+<td>做练习</td>
+<td>见 <code>练习/</code> 和 <code>参考答案/</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<hr />
+<h1 id="第-0-部分-零基础补白先把几个词说清楚">第 0 部分 · 零基础补白：先把几个词说清楚</h1>
+<blockquote>
+<p><strong>这一部分（第 1 节）是给零基础读者的地基。</strong>
+如果你已经知道「内存」「变量」「类型」「初始化」大概是怎么回事，可以快速翻过，直接看<strong>第 2 节</strong>。</p>
+</blockquote>
+<h2 id="1-五个你必须先认识的词">1. 五个你必须先认识的词</h2>
+<h3 id="11-内存比特字节">1.1 内存、比特、字节</h3>
+<p><strong>内存（memory）</strong>：可以把内存想象成<strong>一长排极小的储物格</strong>，每个格子只有两种状态——「开着」或「关着」。</p>
+<ul>
+<li><strong>比特（bit，也叫「位」）</strong>：就是<strong>一个这样的格子</strong>。它的内容只能是 <code>0</code> 或 <code>1</code>（关 / 开）。
+  单独一个比特能表达的信息极少，所以实际操作时都是好几个一起用。</li>
+<li><strong>字节（byte）</strong>：<strong>8 个比特捆成一组</strong>，约定叫 1 个字节。
+  可以想成「一排 8 个开关」，一共能表示 2⁸ = 256 种不同的组合。</li>
+</ul>
+<blockquote>
+<p>💡 <strong>为什么老要数字节？</strong>
+因为<strong>内存是有价格的</strong>——格子就那么多。
+写程序时说的「这个东西占几字节」，意思就是「它占用几个储物格」。
+本课讲的 <code>struct</code> / <code>union</code> / 位字段，本质上都在讨论<strong>占用几个格子、格子怎么分</strong>。</p>
+</blockquote>
+<h3 id="12-变量类型值">1.2 变量、类型、值</h3>
+<ul>
+<li><strong>变量（variable）</strong>：你给某个（或某几个）储物格<strong>起的名字</strong>。
+  真正的数据存在内存里，<code>name</code> 这样的名字只是一张标签。</li>
+<li><strong>类型（data type）</strong>：<strong>告诉编译器「这个格子里的 0/1 该怎么解读、要占几个格子」的说明书</strong>。
+  <code>int</code> 和 <code>double</code> 的区别就在这里：占的格子数不同，解读方式也不同。</li>
+<li><strong>值（value）</strong>：格子里面真正存着的东西。比如 <code>int age = 19;</code> 里，<code>19</code> 就是值。</li>
+</ul>
+<h3 id="13-声明定义初始化赋值这四个词是本课的关键">1.3 声明、定义、初始化、赋值——这四个词是本课的关键</h3>
+<p>这四个词在第 4 章里反复出现，而且<strong>意思不能混</strong>。先用一张表分清：</p>
+<table>
+<thead>
+<tr>
+<th>词</th>
+<th>一句话解释</th>
+<th>生活化的例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>声明（declaration）</strong></td>
+<td>告诉编译器「有这么个东西，它叫什么、长什么样」</td>
+<td>在纸上<strong>画好一张表格的模板</strong>（表头写上"姓名 / 年龄 / 成绩"）</td>
+</tr>
+<tr>
+<td><strong>定义（definition）</strong></td>
+<td>真的<strong>把这块地方留出来、造出来</strong></td>
+<td><strong>印出一张空白表格</strong>，随时可以填</td>
+</tr>
+<tr>
+<td><strong>初始化（initialization）</strong></td>
+<td><strong>一边造出来、一边就把第一个值写上</strong></td>
+<td>表格印出来的同时，第一行已经填好了</td>
+</tr>
+<tr>
+<td><strong>赋值（assignment）</strong></td>
+<td>东西<strong>已经存在</strong>了，现在<strong>擦掉旧内容、写上新的</strong></td>
+<td>表格已经在这了，把某一格的内容改掉</td>
+</tr>
+</tbody>
+</table>
+<p>⚠️ <strong>本课会反复用到这组词的区别</strong>，尤其是「声明」和「定义」。
+下面第 3 节会用结构来把这件事讲得非常具体。</p>
+<blockquote>
+<p>📌 <strong>一个提醒</strong>：C++ 里「声明」和「定义」的界线，<strong>对变量和对类型是不一样的</strong>。
+- 对<strong>变量</strong>：<code>int a;</code> 既声明了 <code>a</code>、也定义了 <code>a</code>（真的留出了格子）。
+  所以日常说「声明一个变量」，通常就是指「定义」。
+- 对<strong>类型</strong>：<code>struct Student { ... };</code> 定义了一个<strong>类型</strong>，
+  但一个<strong>变量</strong>都没有造出来。<strong>这就是本课的坑所在。</strong></p>
+<p>本课说的「结构声明」用的是「声明一个类型」这层意思：
+它<strong>确实定义了一种类型</strong>（所以 <code>sizeof(Student)</code> 合法），
+但它<strong>没有分配任何装数据的格子</strong>（所以里面一个值也没有）。
+关键要记住的是最后一件事：<strong>结构类型定义好了 ≠ 有变量了 ≠ 占内存了。</strong></p>
+</blockquote>
+<h3 id="14-作用域">1.4 作用域</h3>
+<p><strong>作用域（scope）</strong>：<strong>一个名字「在哪些地方还认得出来」的范围</strong>。
+出了这个范围，编译器就不认识这个名字了。</p>
+<p>打个比方：你在自己家里喊「妈」，你妈会答应；出了门在街上喊「妈」，别人不知道你喊谁。
+「妈」这个称呼的<strong>作用域</strong>就是你家里。</p>
+<p>本课讲枚举的时候会大量提到作用域：普通 <code>enum</code> 的成员名作用域很大（跑到外面去了），
+所以容易撞名；<code>enum class</code> 的成员名老老实实待在自己里面，所以更安全。</p>
+<h3 id="15-本讲义约定示例代码在哪">1.5 本讲义约定：示例代码在哪</h3>
+<p>本讲义引用的可运行示例统一放在 <code>示例代码/04_结构共用体枚举/</code> 目录下：</p>
+<div class="codehilite"><pre><span></span><code>示例代码/04_结构共用体枚举/01_struct_basics.cpp
+示例代码/04_结构共用体枚举/02_struct_assign.cpp
+示例代码/04_结构共用体枚举/03_struct_array.cpp
+示例代码/04_结构共用体枚举/04_struct_string_bitfield.cpp
+示例代码/04_结构共用体枚举/05_union.cpp
+示例代码/04_结构共用体枚举/06_enum.cpp
+</code></pre></div>
+
+<p>编译命令（本书所有示例都用这条，<strong>警告一定要看</strong>）：</p>
+<div class="codehilite"><pre><span></span><code>g++<span class="w"> </span>-std<span class="o">=</span>c++17<span class="w"> </span>-Wall<span class="w"> </span>-Wextra<span class="w"> </span>文件名.cpp<span class="w"> </span>-o<span class="w"> </span>文件名
+</code></pre></div>
+
+<hr />
+<hr />
+<h1 id="2-为什么需要结构从一个具体问题出发教材-44p105108">2. 为什么需要「结构」：从一个具体问题出发（教材 4.4，p105–108）</h1>
+<h2 id="21-先看问题怎么描述一个学生">2.1 先看问题：怎么描述一个学生？</h2>
+<p>要描述<strong>一个学生</strong>，至少需要三样信息：</p>
+<div class="codehilite"><pre><span></span><code>姓名（一串文字） + 年龄（整数） + 成绩（小数）
+</code></pre></div>
+
+<p><strong>麻烦来了：这三种是不同类型的数据。</strong></p>
+<p>如果你之前学过数组，会知道数组有个硬性规定——<strong>所有元素必须是同一种类型</strong>。
+<code>int</code> 数组只能装 <code>int</code>，装不了「一会儿文字、一会儿整数、一会儿小数」。
+所以<strong>数组装不下这三样东西</strong>。</p>
+<h2 id="22-一个笨办法开三个数组">2.2 一个笨办法：开三个数组</h2>
+<p>有人会想：「那我就开三个数组嘛——一个存姓名、一个存年龄、一个存成绩，
+用同一个下标表示同一个人。」</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 三个数组「平行」存储</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">names</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">"Li Ming"</span><span class="p">,</span><span class="w"> </span><span class="s">"Wang Fang"</span><span class="p">,</span><span class="w"> </span><span class="s">"Zhang Wei"</span><span class="p">};</span>
+<span class="kt">int</span><span class="w">         </span><span class="n">ages</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">19</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">};</span>
+<span class="kt">double</span><span class="w">      </span><span class="n">scores</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mf">92.5</span><span class="p">,</span><span class="w"> </span><span class="mf">88.0</span><span class="p">,</span><span class="w"> </span><span class="mf">95.5</span><span class="p">};</span>
+
+<span class="c1">// 想给王芳加分，你必须自己记住「她都在下标 1」</span>
+<span class="n">names</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span><span class="w">    </span><span class="c1">// 万一哪天删了一个人，下面三行的下标全要改</span>
+<span class="n">ages</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+<span class="n">scores</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</code></pre></div>
+
+<p><strong>能跑，但很脆弱。问题在于：三个数组之间没有任何机制保证它们对齐。</strong>
+你一旦改了某一个数组的顺序，另外两个就跟人错位了——改错了还<strong>不会报错</strong>，只是数据悄悄乱掉。</p>
+<h2 id="23-结构把三样东西打包成一个整体">2.3 结构：把三样东西打包成一个整体</h2>
+<p><strong>结构（structure，关键字 <code>struct</code>）就是解决这个问题的</strong>：它允许你把<strong>几个不同类型的数据</strong>
+捆在一起，当成<strong>一个整体</strong>来使用。</p>
+<blockquote>
+<p>💡 <strong>生活化的比方：结构 = 一张学生信息卡</strong>
+设想学校给每个学生发一张卡片：卡片上有三个格子，分别印着「姓名」「年龄」「成绩」。
+这张卡片是<strong>一个整体</strong>——你拿着它，就等于同时拿到了这个人的三项信息。
+你不可能只把卡片上的「成绩」那半张撕下来交给别人，要交就是整张交。
+<strong>这就是结构：几样不同的信息，装在一个盒子里，一起搬、一起用。</strong></p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code>        一个「学生」结构
+   ┌──────────────────────┐
+   │  name  : "Li Ming"   │
+   │  age   : 19          │
+   │  score : 92.5        │
+   └──────────────────────┘
+   一个变量，三个成员，永远绑在一起
+</code></pre></div>
+
+<h2 id="24-结构里的每个格子叫成员">2.4 结构里的每个格子叫「成员」</h2>
+<p><strong>成员（member）</strong>：结构里面每一个被命名的格子，就叫这个结构的一个<strong>成员</strong>。
+上面那张卡片有 3 个成员：<code>name</code>、<code>age</code>、<code>score</code>。</p>
+<blockquote>
+<p>💡 如果你熟悉表格：<strong>结构就像一张表的「列定义」，每个成员就是一列。</strong></p>
+</blockquote>
+<p><strong>访问成员</strong>用的是「点」，叫<strong>成员运算符</strong>，写作 <code>.</code>：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">s1</span><span class="p">.</span><span class="n">name</span><span class="w">     </span><span class="c1">// 取 s1 这个结构的 name 成员</span>
+<span class="n">s1</span><span class="p">.</span><span class="n">age</span><span class="w">      </span><span class="c1">// 取 age 成员</span>
+</code></pre></div>
+
+<p>读作「s1 的 name」。这一点和「学生的姓名」是一个道理，很自然。</p>
+<blockquote>
+<p>💡 <strong>一句话记住它和数组的区别</strong>：
+<strong>数组是「同类型的东西横着排成一排」，结构是「不同类型的东西竖着打包成一包」。</strong>
+而且这两者可以叠加——<strong>结构数组</strong>（每个元素都是一个结构）就是它们叠在一起，见第 7 节。</p>
+</blockquote>
+<hr />
+<hr />
+<h1 id="3-本课最重要的一节结构声明-结构变量">3. ⭐⭐ 本课最重要的一节：结构「声明」≠ 结构「变量」</h1>
+<h2 id="31-写一个结构要分两步">3.1 写一个结构要分两步</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// ---------- 第一步：声明一个「结构模板」 ----------</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">Student</span><span class="w">          </span><span class="c1">// struct 是关键字，Student 是这个新类型【名字】</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w">   </span><span class="c1">// 成员 1</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">         </span><span class="n">age</span><span class="p">;</span><span class="w">    </span><span class="c1">// 成员 2</span>
+<span class="w">    </span><span class="kt">double</span><span class="w">      </span><span class="n">score</span><span class="p">;</span><span class="w">  </span><span class="c1">// 成员 3</span>
+<span class="p">};</span><span class="w">                      </span><span class="c1">// ⚠️ 这个分号不能少！</span>
+
+<span class="c1">// ---------- 第二步：用这个类型定义变量 ----------</span>
+<span class="n">Student</span><span class="w"> </span><span class="n">s1</span><span class="p">;</span><span class="w">             </span><span class="c1">// 现在才真正分配内存</span>
+</code></pre></div>
+
+<p><strong>第一步那一整段，叫「结构声明」（structure declaration）。第二步那一行，叫「定义结构变量」。</strong></p>
+<h2 id="32-关键点声明不分配任何内存">3.2 ⭐ 关键点：声明<strong>不分配任何内存</strong></h2>
+<p>这是本课最要命、也最爱被考的一点：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">Student</span><span class="w">          </span><span class="c1">// ← 这一整段【不占用一个字节的内存】</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">         </span><span class="n">age</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">double</span><span class="w">      </span><span class="n">score</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p><strong>它只是告诉编译器一句话</strong>：</p>
+<blockquote>
+<p>「以后我说到 <code>Student</code>，指的就是<strong>长这样的一种数据</strong>：先是名字，再是年龄，再是成绩。」</p>
+</blockquote>
+<p>它<strong>没有造出任何真实的数据</strong>，所以<strong>不占内存</strong>。</p>
+<blockquote>
+<p>💡 <strong>生活化的比方：表格模板 vs 填好的一行数据</strong>
+- <code>struct Student { ... };</code> 就是<strong>一张空白表格的模板</strong>——
+  上面印好了表头「姓名 / 年龄 / 成绩」，但<strong>一张纸都没印出来</strong>，当然不占地方。
+- <code>Student s1;</code> 才是<strong>照着模板真印出一张空白表</strong>，
+  从此你就有了一张自己的表（<strong>这时候才真的占地方</strong>）。
+- <code>Student s2;</code> 再印一张，<strong>又占一份</strong>。</p>
+<p><strong>模板本身永远不占地方，占地方的是照模板印出来的每一份。</strong></p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code><span class="n">Student</span><span class="w"> </span><span class="n">s1</span><span class="p">;</span><span class="w">             </span><span class="c1">// ← 这一行才真正分配内存</span>
+<span class="n">Student</span><span class="w"> </span><span class="n">s2</span><span class="p">;</span><span class="w">             </span><span class="c1">// ← 又分配一份，和 s1 完全独立</span>
+</code></pre></div>
+
+<p>实测（<code>示例代码/04_结构共用体枚举/01_struct_basics.cpp</code>）：
+<code>sizeof(Student)</code> 在本机是 <strong>48 字节</strong>，<code>s1</code> 和 <code>s2</code> <strong>各占一份</strong>。</p>
+<blockquote>
+<p>📌 <strong>为什么 <code>sizeof(Student)</code> 是合法的？</strong>
+因为 <code>Student</code> 是<strong>类型名</strong>，问「这种类型占多少字节」是正当的问题。
+但如果你写 <code>Student = 5;</code>，编译器就会报错——<strong>因为 <code>Student</code> 是类型，不是变量</strong>，
+类型不能拿来当左值装东西。这个对比能帮你一眼分清「类型」和「变量」。</p>
+</blockquote>
+<h2 id="33-为什么这个概念这么重要">3.3 为什么这个概念这么重要？</h2>
+<p>因为<strong>以后学「类」的时候，一模一样的事情会再来一遍</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>本课</th>
+<th>以后（第 10 章起）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>struct Student { ... };</code> 结构声明</td>
+<td><code>class Student { ... };</code> 类定义</td>
+</tr>
+<tr>
+<td><code>Student s1;</code> 结构变量</td>
+<td><code>Student s1;</code> 对象（实例）</td>
+</tr>
+<tr>
+<td>模板不占内存</td>
+<td>类不占内存</td>
+</tr>
+<tr>
+<td><code>s1</code> 占一份内存</td>
+<td>对象占一份内存</td>
+</tr>
+</tbody>
+</table>
+<p><strong>「模板 vs 实例」这个思想就是面向对象编程的地基。</strong> 现在把这一层想通了，后面会省很多力气。</p>
+<blockquote>
+<p>⚠️ <strong>报错时会看得更清楚</strong>：如果你忘了结构声明后面那个分号，GCC 会明确告诉你
+<code>text
+error: expected ';' after struct definition</code>
+而且它还会用箭头指出<strong>该在哪里加</strong>，甚至把 <code>;</code> 给你画出来。<strong>照着改就行，不用怕。</strong></p>
+</blockquote>
+<hr />
+<hr />
+<h1 id="4-结构变量的初始化教材-441442p106108">4. 结构变量的初始化（教材 4.4.1–4.4.2，p106–108）</h1>
+<h2 id="41-什么叫初始化">4.1 什么叫「初始化」</h2>
+<p>上面第 1.3 节说过：<strong>初始化 = 一边把变量造出来、一边就把第一个值写上</strong>。
+对结构来说，写法就是<strong>用一对大括号 <code>{ }</code> 把各个成员的值按顺序排好</strong>。</p>
+<h2 id="42-三种写法">4.2 三种写法</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1">// ① C++98 老写法：可以带等号</span>
+<span class="n">Student</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">"Wang Fang"</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mf">88.0</span><span class="p">};</span>
+
+<span class="c1">// ② C++11 新写法：可以省略等号（和数组一样）</span>
+<span class="n">Student</span><span class="w"> </span><span class="n">s3</span><span class="p">{</span><span class="s">"Zhang Wei"</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="mf">95.5</span><span class="p">};</span>
+
+<span class="c1">// ③ 只初始化一部分 → 剩下的自动补 0 / 空</span>
+<span class="n">Student</span><span class="w"> </span><span class="n">s4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">"Only Name"</span><span class="p">};</span><span class="w">        </span><span class="c1">// age = 0，score = 0（string 补成空字符串）</span>
+</code></pre></div>
+
+<p>这三种都是<strong>初始化</strong>，因为它们都发生在「变量刚被造出来」的那一刻。</p>
+<h2 id="43-顺序必须和声明一致">4.3 ⚠️ 顺序必须和声明一致</h2>
+<p>大括号里的值，<strong>是按成员在结构里出现的先后顺序一个个对上去的</strong>：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">Student</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w">    </span><span class="c1">// 第 1 个 → 大括号里第 1 个值</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">         </span><span class="n">age</span><span class="p">;</span><span class="w">     </span><span class="c1">// 第 2 个 → 大括号里第 2 个值</span>
+<span class="w">    </span><span class="kt">double</span><span class="w">      </span><span class="n">score</span><span class="p">;</span><span class="w">   </span><span class="c1">// 第 3 个 → 大括号里第 3 个值</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p>所以 <code>Student s = {"Wang Fang", 20, 88.0};</code> 是正确的；
+如果把顺序写成 <code>{20, "Wang Fang", 88.0}</code>，<strong>编译器会直接报错</strong>——
+因为 <code>20</code> 塞不进 <code>std::string</code>。<strong>这是好事</strong>：类型不一样，编译器就替你挡下来了。</p>
+<blockquote>
+<p>⚠️ <strong>真正危险的是另一种情况：几个成员的类型完全相同。</strong>
+```cpp
+struct Point3 { int x; int y; int z; };</p>
+<p>Point3 p = {100, 3, 4};   // 本意是 (3, 4, 100)，手滑写反了
+<code>``
+这一行**编译器一声不吭**（实测 0 错误 0 警告），</code>p<code>的值就变成了</code>x=100, y=3, z=4`——<strong>数据悄悄错了，程序照常跑。</strong>
+这正是「顺序必须和声明一致」这条规矩真正的分量所在。</p>
+<p>💡 <strong>记法：大括号里的值，是照结构里「从上往下」的顺序发的号码牌。</strong>
+<strong>别靠记，靠看</strong>——写初始化的时候，眼睛盯着结构声明从上往下对一遍。</p>
+<p>💡 <strong>顺便一个好消息</strong>：如果你只写了一部分（比如 <code>Student s4 = {"Only Name"};</code>），
+用 <code>-Wall -Wextra</code> 编译时，GCC 会给出
+<code>warning: missing initializer for member 'Student::age' [-Wmissing-field-initializers]</code>
+——<strong>它会提醒你"还有格子没填"</strong>。
+这就是为什么编译时一定要带上 <code>-Wall -Wextra</code>：<strong>能自动提醒你的错误，就别靠人眼去查。</strong></p>
+</blockquote>
+<h2 id="44-赋值和初始化不一样别混">4.4 赋值和初始化不一样，别混</h2>
+<div class="codehilite"><pre><span></span><code><span class="n">Student</span><span class="w"> </span><span class="n">s1</span><span class="p">;</span><span class="w">                    </span><span class="c1">// 定义（造出来）</span>
+<span class="n">s1</span><span class="p">.</span><span class="n">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">"Li Ming"</span><span class="p">;</span><span class="w">          </span><span class="c1">// ← 这是【赋值】：格子已经在了，往里写</span>
+<span class="n">s1</span><span class="p">.</span><span class="n">age</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">19</span><span class="p">;</span>
+<span class="n">s1</span><span class="p">.</span><span class="n">score</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">92.5</span><span class="p">;</span>
+</code></pre></div>
+
+<p>上面这四行<strong>完全合法</strong>，效果和「声明时直接初始化」差不多。
+但注意区别：<strong>先把变量造出来、再一个个往里写，那是赋值，不是初始化。</strong>
+题目如果说「要求<strong>在声明时初始化</strong>」，那就是要你写成
+<code>Student s1 = {"Li Ming", 19, 92.5};</code> 这种<strong>一行搞定</strong>的样子。</p>
+<blockquote>
+<p>⚠️ <strong>有一类数据必须先初始化、不能等后面赋值</strong>，例如 <code>const</code> 成员和引用成员
+（这些以后会学到）。所以「初始化」和「赋值」的区别不只是措辞问题。</p>
+</blockquote>
+<hr />
+<hr />
+<h1 id="5-结构可以整体赋值和数组对比教材-444p108110">5. ⭐ 结构<strong>可以</strong>整体赋值——和数组对比（教材 4.4.4，p108–110）</h1>
+<p>这一节是本课第二个重点，也是最能体现「结构是个完整的值」的地方。</p>
+<h2 id="51-先看对比数组不行结构行">5.1 先看对比：数组不行，结构行</h2>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">};</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w">              </span><span class="c1">// ❌ 编译错误！</span>
+</code></pre></div>
+
+<p>实测报错原文（GCC 8.1.0）：</p>
+<div class="codehilite"><pre><span></span><code>error: invalid array assignment
+</code></pre></div>
+
+<p>而结构：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Point</span><span class="w"> </span><span class="n">p1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">};</span>
+<span class="n">Point</span><span class="w"> </span><span class="n">p2</span><span class="p">;</span>
+<span class="n">p2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p1</span><span class="p">;</span><span class="w">            </span><span class="c1">// ✅ 完全合法！逐成员复制一份</span>
+</code></pre></div>
+
+<p>跑 <code>示例代码/04_结构共用体枚举/02_struct_assign.cpp</code>，实测输出：</p>
+<div class="codehilite"><pre><span></span><code>p1 = (3, 4)
+p2 = (3, 4)   &lt;- 从 p1 复制来的
+
+把 p2.x 改成 100 之后：
+  p1.x = 3   &lt;- 没变
+  p2.x = 100
+  ^ 是「各有一份」，不是「指向同一份」
+</code></pre></div>
+
+<blockquote>
+<p>⚠️ <strong>注意区分「复制」和「共享」</strong>：
+<code>p2 = p1</code> 是<strong>复制</strong>——之后改 <code>p2</code> 不影响 <code>p1</code>。
+两个变量<strong>各占一块自己的内存</strong>，只是内容一开始相同。
+（「共享」是另一个东西，本课第 9 节的 <code>union</code> 才是真共享。）</p>
+</blockquote>
+<h2 id="52-为什么数组不行结构行">5.2 ⭐ 为什么数组不行、结构行？</h2>
+<p>这一句解释要记牢：</p>
+<blockquote>
+<p><strong>数组名在多数场合会「退化成地址」，而地址不能当值赋给另一个数组；
+结构是一个完整的值，所以能整体复制。</strong></p>
+</blockquote>
+<p>拆开来说：</p>
+<ul>
+<li><strong>数组</strong>：<code>int a[3];</code> 里的 <code>a</code>，在大多数用到它的地方，编译器会把它<strong>当成"第一个元素的地址"来用</strong>，
+  而不是当成"装着 3 个整数的那个盒子"。
+  地址是个位置编号，你没法把「一个位置」整个塞进「另一个位置」里，
+  所以 <code>b = a;</code> 编译器直接拒绝。</li>
+<li><strong>结构</strong>：<code>Point p1;</code> 里的 <code>p1</code> <strong>不是地址</strong>，它是一个实实在在的盒子，
+  里面装着 <code>x</code> 和 <code>y</code>。盒子可以整个搬走，所以 <code>p2 = p1;</code> 合法，
+  编译器会<strong>逐个成员</strong>帮你复制过去。</li>
+</ul>
+<blockquote>
+<p>📌 <strong>地址这件事，是第 4 章 C「指针与自由存储空间」要讲透的核心内容。</strong>
+现在只需要记住这个结论：<strong>数组名 ≈ 地址，结构名 = 一整个值</strong>。
+到了那一课你会彻底明白为什么。</p>
+</blockquote>
+<h2 id="53-值语义是个好东西">5.3 「值语义」是个好东西</h2>
+<p>「结构是完整的值」带来一串好处，这就是教材 4.4.4 想说的：
+<strong>结构变量用起来和普通变量几乎一样。</strong></p>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>普通变量 <code>int</code></th>
+<th>结构变量 <code>Point</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>定义</td>
+<td><code>int a;</code></td>
+<td><code>Point a;</code></td>
+</tr>
+<tr>
+<td>赋值</td>
+<td><code>a = b;</code></td>
+<td><code>a = b;</code> ✅</td>
+</tr>
+<tr>
+<td>当函数参数</td>
+<td><code>f(a)</code></td>
+<td><code>f(a)</code> ✅（<strong>按值传递，会复制一份</strong>）</td>
+</tr>
+<tr>
+<td>当函数返回值</td>
+<td><code>int f()</code></td>
+<td><code>Point f()</code> ✅</td>
+</tr>
+<tr>
+<td>放进数组</td>
+<td><code>int arr[3]</code></td>
+<td><code>Point arr[3]</code> ✅</td>
+</tr>
+<tr>
+<td>放进另一个结构</td>
+<td>—</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>当 <code>union</code> 的成员</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 <strong>「按值传递」值得先记住</strong>：把结构传给函数时，默认是<strong>把整个结构复制一份</strong>给函数。
+结构大的时候这样很浪费（比如 48 字节的结构，每次调用都复制 48 字节）。
+所以第 7、8 章会教「传引用」来避免复制。
+<strong>现在知道"默认是复制一份"就够了。</strong></p>
+</blockquote>
+<hr />
+<hr />
+<h1 id="6-结构里能放什么教材-443p108">6. 结构里能放什么（教材 4.4.3，p108）</h1>
+<h2 id="61-教材专门回答的那个问题能放-string-吗">6.1 教材专门回答的那个问题：能放 <code>string</code> 吗？</h2>
+<p>教材 p108 专门用一小节回答：「<strong>结构可以将 <code>string</code> 类作为成员吗？</strong>」</p>
+<p><strong>答案：可以。</strong> 而且 C++11 起还能直接用 <code>{...}</code> 初始化：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">Person</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w">      </span><span class="c1">// ✅ 完全可以</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">city</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">         </span><span class="n">age</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">Person</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">"Li Ming"</span><span class="p">,</span><span class="w"> </span><span class="s">"Zhengzhou"</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">};</span><span class="w">   </span><span class="c1">// ✅ C++11</span>
+</code></pre></div>
+
+<blockquote>
+<p>💡 <strong><code>std::string</code> 是什么？</strong> 它是 C++ 标准库提供的一种<strong>能装一串文字的变量类型</strong>。
+相比老式的 <code>char</code> 数组，它的好处是：<strong>自己知道怎么复制、怎么增长、怎么释放内存</strong>，
+长度也不必提前写死。所以拿它当结构成员特别省心。</p>
+</blockquote>
+<p>跑 <code>示例代码/04_结构共用体枚举/04_struct_string_bitfield.cpp</code>，还能看到整体复制也正常：</p>
+<div class="codehilite"><pre><span></span><code>Person q = p; 再改 q.name 之后：p.name = Li Ming, q.name = Wang Fang   &lt;- 各有一份
+</code></pre></div>
+
+<h2 id="62-成员几乎可以是任何类型">6.2 成员几乎可以是任何类型</h2>
+<p><strong>结构成员几乎可以是任何类型</strong>：基本类型、数组、<code>string</code>、<strong>另一个结构</strong>、指针……</p>
+<div class="codehilite"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">Date</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">Student</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Date</span><span class="w">        </span><span class="n">birthday</span><span class="p">;</span><span class="w">      </span><span class="c1">// ← 结构里嵌结构，完全合法</span>
+<span class="p">};</span>
+
+<span class="c1">// 访问时一层层点下去：</span>
+<span class="n">s</span><span class="p">.</span><span class="n">birthday</span><span class="p">.</span><span class="n">y</span><span class="w">                   </span><span class="c1">// s 的生日 的 年</span>
+</code></pre></div>
+
+<blockquote>
+<p>💡 <strong>生活化的比方</strong>：学生信息卡上有一栏叫「出生日期」，
+而这一栏本身又是一张小卡片，上面分了「年 / 月 / 日」三格。
+想拿到年份，就要<strong>先打开大卡片找到"出生日期"，再打开小卡片找"年"</strong>——
+这就是 <code>s.birthday.y</code> 里那两个点的意思。</p>
+</blockquote>
+<hr />
+<hr />
+<h1 id="7-结构数组天然的一张表格教材-445p110111">7. 结构数组：天然的一张表格（教材 4.4.5，p110–111）</h1>
+<h2 id="71-结构和数组叠加起来">7.1 结构和数组叠加起来</h2>
+<p><strong>结构和数组可以叠加</strong>：<strong>每个数组元素本身就是一个结构</strong> → 天然的「表格」。</p>
+<p>跑 <code>示例代码/04_结构共用体枚举/03_struct_array.cpp</code>：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Student</span><span class="w"> </span><span class="n">group</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">{</span><span class="s">"Li Ming"</span><span class="p">,</span><span class="w">   </span><span class="mi">19</span><span class="p">,</span><span class="w"> </span><span class="mf">92.5</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s">"Wang Fang"</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mf">88.0</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s">"Zhang Wei"</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="mf">95.5</span><span class="p">},</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p>注意初始化用了<strong>两层大括号</strong>：外面那层是<strong>数组</strong>（3 个元素），
+里面每个大括号是一个<strong>结构</strong>（一个学生的三项信息）。</p>
+<blockquote>
+<p>💡 <strong>这就等于一张表格</strong>：
+- 外面那层数组 = <strong>有几行</strong>
+- 结构里的成员 = <strong>有几列</strong></p>
+<p><code>group[1]</code> 就是「表格的第 2 行」，<code>group[1].name</code> 就是「第 2 行、姓名那一列」。</p>
+</blockquote>
+<h2 id="72-访问方式先下标再点">7.2 访问方式：先下标，再点</h2>
+<div class="codehilite"><pre><span></span><code><span class="n">group</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="w">      </span><span class="c1">// 先取第 i 个元素（是个结构），再取它的 name 成员</span>
+</code></pre></div>
+
+<p>实测输出：</p>
+<div class="codehilite"><pre><span></span><code>姓名            年龄    成绩
+--------------------------------
+Li Ming         19      92.5
+Wang Fang       20      88
+Zhang Wei       18      95.5
+  ^ group[i] 是第 i 个结构，再 .name 取它的成员 —— 「先下标，再点」
+
+平均分: 92
+最高分: Zhang Wei (95.5)
+</code></pre></div>
+
+<blockquote>
+<p>⚠️ <strong>读法要记牢</strong>：<strong>先算 <code>group[i]</code>，再算 <code>.name</code></strong>。
+写 <code>(group[i]).name</code> 和 <code>group[i].name</code> 完全等价。
+但<strong>不能</strong>写成 <code>group[i.name]</code>——那是拿 <code>i</code> 的 <code>name</code> 成员当下标，完全不是一回事。
+<strong>口诀：先下标，后点。</strong></p>
+</blockquote>
+<h2 id="73-遍历找最高分经典套路值得背下来">7.3 遍历找最高分（经典套路，值得背下来）</h2>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">                                  </span><span class="c1">// 先假设第 0 个最高</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">score</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">group</span><span class="p">[</span><span class="n">best</span><span class="p">].</span><span class="n">score</span><span class="p">)</span>
+<span class="w">        </span><span class="n">best</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w">                              </span><span class="c1">// 发现更高的就把记住的编号换掉</span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">group</span><span class="p">[</span><span class="n">best</span><span class="p">].</span><span class="n">name</span><span class="p">;</span>
+</code></pre></div>
+
+<p><strong>思路</strong>：手里先拿一个「目前最高的人」的编号，然后一个一个比过去，
+谁更高就把编号换成谁。比完一遍，手里的编号就是最高的那个。
+（这叫「打擂台」，以后找最大 / 最小值都用这一招。）</p>
+<hr />
+<hr />
+<h1 id="8-位字段让一个成员只占几个比特教材-446p111">8. 位字段：让一个成员只占几个比特（教材 4.4.6，p111）</h1>
+<blockquote>
+<p>这一节教材标的是「略读」——<strong>你只需要认识这种写法，能读懂别人的代码就够了</strong>。
+但里面有个对比特别有教学价值，所以这里还是讲一讲。</p>
+</blockquote>
+<h2 id="81-什么是位字段">8.1 什么是位字段</h2>
+<p><strong>位字段（bit field）</strong>：<strong>规定某个成员"只占几个比特"，用来省内存</strong>。</p>
+<p>先复习一下第 1.1 节：<strong>1 字节 = 8 比特</strong>（8 个开关）。
+所以「占几个比特」= 「用几个开关来存这个数」。</p>
+<p>假设你要存「日期」，用三个普通 <code>int</code> 存年月日，要 12 字节。
+可实际上：</p>
+<ul>
+<li><strong>日</strong>最大 31 → 5 个比特就够（2⁵ − 1 = 31）</li>
+<li><strong>月</strong>最大 12 → 4 个比特就够（2⁴ − 1 = 15）</li>
+<li><strong>年</strong>到 4095 都用得上 → 12 个比特够（2¹² − 1 = 4095）</li>
+</ul>
+<p>用位字段写出来就是：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">Date</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">day</span><span class="w">   </span><span class="o">:</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w">    </span><span class="c1">// 5 位 -&gt; 0..31，够表示日期</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">month</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w">    </span><span class="c1">// 4 位 -&gt; 0..15，够表示月份</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">year</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="mi">12</span><span class="p">;</span><span class="w">   </span><span class="c1">// 12 位 -&gt; 0..4095，够表示年份</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p>语法就是：<strong><code>类型 成员名 : 位数;</code></strong></p>
+<p>实测（<code>示例代码/04_结构共用体枚举/04_struct_string_bitfield.cpp</code>）：</p>
+<div class="codehilite"><pre><span></span><code>sizeof(Date) = 4 字节
+  若用三个普通 int 存，要 12 字节
+</code></pre></div>
+
+<p>5 + 4 + 12 = 21 比特，一个 4 字节（32 比特）的 <code>unsigned int</code> 就装得下，所以是 4 字节。</p>
+<blockquote>
+<p>💡 <strong>生活化的比方</strong>：位字段就像<strong>一份表格里留出"几格"给某一项</strong>。
+明明只需要填「0～31」这么小的数，你却给它留了一整页纸，是浪费；
+位字段就是「按需留格子」。</p>
+</blockquote>
+<h2 id="82-位字段有三个坑">8.2 位字段有三个坑</h2>
+<table>
+<thead>
+<tr>
+<th>坑</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>不能取地址</strong></td>
+<td><code>&amp;d.day</code> 是错的（因为它不是一个完整的内存格子，没法给出地址）</td>
+</tr>
+<tr>
+<td><strong>布局依赖编译器</strong></td>
+<td>同样的代码换个编译器，比特怎么排可能不同 → 可移植性差</td>
+</tr>
+<tr>
+<td><strong>装不下会截断</strong></td>
+<td>见下一节</td>
+</tr>
+</tbody>
+</table>
+<h2 id="83-一个有意思的实测发现位字段溢出会报警告">8.3 ⭐ 一个有意思的实测发现：位字段溢出<strong>会</strong>报警告</h2>
+<p>我们本来以为位字段溢出是「静默截断」（就是悄悄给你改掉、什么都不说）。
+<strong>实测：编译器会警告。</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">Date</span><span class="w"> </span><span class="n">d2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">};</span>
+<span class="n">d2</span><span class="p">.</span><span class="n">day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40</span><span class="p">;</span><span class="w">              </span><span class="c1">// 5 位最大只能到 31</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>warning: conversion from 'unsigned int' to 'unsigned char:5'
+         changes value from '40' to '8' [-Woverflow]
+</code></pre></div>
+
+<p>值被截断成 <code>8</code>（40 − 32），<strong>而且编译器提前提醒了你</strong>。</p>
+<blockquote>
+<p>💡 <strong>这条警告怎么读？</strong> 三句话：
+1. <code>conversion from 'unsigned int' to 'unsigned char:5'</code>
+   ——「你往一个只有 5 比特的格子里塞一个 <code>unsigned int</code>」；
+2. <code>changes value from '40' to '8'</code>
+   ——「这个值会被从 40 改成 8」；
+3. <code>[-Woverflow]</code> ——「这属于 overflow（溢出）这一类警告」，
+   以后想单独关掉或打开它，就用这个名字。</p>
+</blockquote>
+<h2 id="84-和数组越界对比一个会警告一个连警告都没有">8.4 ⭐ 和「数组越界」对比：一个会警告，一个连警告都没有</h2>
+<p>这个对比很有教学价值：</p>
+<table>
+<thead>
+<tr>
+<th>情形</th>
+<th>编译器会不会提醒</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>位字段装不下</strong></td>
+<td><strong>会</strong>，给出 <code>-Woverflow</code> 警告，还告诉你值会变成多少</td>
+</tr>
+<tr>
+<td><strong>数组越界</strong></td>
+<td><strong>不会</strong>（连警告都没有 —— 这才是最危险的）</td>
+</tr>
+</tbody>
+</table>
+<p>实测：<code>int a[3]; a[7] = 100;</code> 用 <code>-Wall -Wextra</code> 编译，<strong>一条警告都没有</strong>，
+程序照常跑，结果只是数据悄悄坏掉。</p>
+<blockquote>
+<p>📌 <strong>结论</strong>：<strong>警告不是噪音，是编译器在帮你。</strong>
+而且注意——<code>-Woverflow</code> 这一类警告<strong>就算你不加 <code>-Wall</code> 也照样会出现</strong>，
+因为它是 GCC 默认就开的基本警告。
+所以你看到警告时，<strong>先别急着忽略，读一读它说了什么</strong>。</p>
+</blockquote>
+<h2 id="85-要不要用位字段">8.5 要不要用位字段？</h2>
+<p><strong>日常几乎用不到。</strong> 你只需要<strong>认识这种写法</strong>，能读懂别人的代码就够了。
+真正需要精确控制「每个字节怎么用」的场合（比如网络协议、嵌入式）才会用到它。</p>
+<hr />
+<hr />
+<h1 id="9-共用体-union几个成员共用一块内存教材-45p111112">9. 共用体 <code>union</code>：几个成员共用一块内存（教材 4.5，p111–112）</h1>
+<h2 id="91-一句话说明">9.1 一句话说明</h2>
+<p><strong>共用体（union）是一种「多个成员共享同一块内存」的结构。</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">union</span><span class="w"> </span><span class="nc">Value</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">    </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">long</span><span class="w">   </span><span class="n">l</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">d</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w">   </span><span class="n">bytes</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p>写法<strong>和 <code>struct</code> 长得一模一样</strong>，只是关键字换成了 <code>union</code>。</p>
+<blockquote>
+<p>💡 <strong>生活化的比方：共用体 = 一个柜子，几个人轮流用</strong>
+一个柜子只有那么大，单位里几个人<strong>共用</strong>它：今天张三放东西，明天李四放。
+柜子的大小取决于<strong>东西最大的那个人</strong>（能放下最大的那件就行），
+而不是「张三的东西 + 李四的东西 + 王五的东西」加起来的面积。
+而且<strong>一次只能有一个人的东西在里面</strong>——张三的东西放进去，李四的东西就没地方了（或者被覆盖）。
+<strong>这就是 <code>union</code>：位置只有一块，谁用谁占。</strong></p>
+</blockquote>
+<h2 id="92-实测大小等于最大的那个成员">9.2 实测：大小等于最大的那个成员</h2>
+<p>跑 <code>示例代码/04_结构共用体枚举/05_union.cpp</code>，实测：</p>
+<div class="codehilite"><pre><span></span><code>sizeof(int)         = 4
+sizeof(double)      = 8
+sizeof(char[8])     = 8
+--------------------------------
+sizeof(union Value) = 8
+  ^ 等于【最大那个成员】的大小，而不是各成员之和！     ← 这就是和 struct 的根本区别
+</code></pre></div>
+
+<h2 id="93-struct-和-union-的内存差别必须看懂的图">9.3 ⭐ <code>struct</code> 和 <code>union</code> 的内存差别（必须看懂的图）</h2>
+<p>同一批成员，用 <code>struct</code> 和用 <code>union</code> 装，内存长得完全不一样：</p>
+<div class="codehilite"><pre><span></span><code>struct S { int i; double d; char c[16]; }        union U { int i; double d; char c[16]; }
+大小 = 4 + 8 + 16 = 28，对齐后 = 32               大小 = max(4, 8, 16) = 16
+
+  ┌──────────────┐ 偏移 0                          ┌──────────────┐ 偏移 0
+  │  int  i      │  4 字节                         │              │
+  ├──────────────┤                                 │              │
+  │  （填充 4）  │  ← 对齐用的空隙                  │  int i  ────┐│
+  ├──────────────┤ 偏移 8                          │  double d ──┤│ ← 三个成员
+  │  double d    │  8 字节                         │  char c[16]─┘│   起始地址相同
+  ├──────────────┤ 偏移 16                         │              │
+  │  char c[16]  │  16 字节                        │              │
+  └──────────────┘                                 └──────────────┘
+  各成员【各占一块】                                 各成员【共用一块】
+  总大小 = 32 字节                                   总大小 = 16 字节
+</code></pre></div>
+
+<p><strong>实测数据</strong>（本机 GCC 8.1.0）：</p>
+<table>
+<thead>
+<tr>
+<th>定义</th>
+<th><code>sizeof</code></th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>struct S { int i; double d; char c[16]; };</code></td>
+<td><strong>32</strong></td>
+<td>4 + 8 + 16 = 28，<strong>再加 4 字节对齐空隙</strong></td>
+</tr>
+<tr>
+<td><code>union  U { int i; double d; char c[16]; };</code></td>
+<td><strong>16</strong></td>
+<td>等于<strong>最大成员</strong> <code>char[16]</code> 的 16 字节</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 <strong>「内存布局」是什么？</strong>
+指<strong>各个成员分别放在内存的哪个位置、从第几字节开始、占几个字节</strong>。
+上面那两张图就是「内存布局图」——把看不见的内存画出来，一眼看清谁在哪。
+写 C++ 的时候，<strong>能画出内存布局图，就说明你真懂了</strong>。</p>
+</blockquote>
+<h2 id="94-什么是内存对齐">9.4 什么是「内存对齐」</h2>
+<p>你在上面看到了「填充 4 字节」和「28 变成 32」——这多出来的空隙就是<strong>内存对齐</strong>造成的。</p>
+<p><strong>内存对齐（memory alignment）</strong>：编译器会<strong>故意在成员之间插入一些空字节</strong>，
+让每个成员从这个数据类型"习惯的"整数倍位置开始。</p>
+<blockquote>
+<p>💡 <strong>生活化的比方</strong>：停车场的车位是划好的。
+一辆小车不一定要停在车位正中间，但<strong>必须停在自己的车位线以内</strong>，
+这样进出才快。内存也一样——让数据从整齐的位置开始，
+CPU 取数据的速度更快。<strong>代价就是会浪费一点空隙。</strong></p>
+</blockquote>
+<p>所以：</p>
+<blockquote>
+<p>⚠️ <strong><code>sizeof(结构)</code> 不一定等于各成员大小之和。</strong>
+比如 <code>sizeof(Student)</code> 是 <strong>48 字节</strong>（这是本机实测值，<code>std::string</code> 本身占 32 字节），
+里面除了三个成员，还包括对齐留下的空隙。
+<strong>换一个编译器、换一个平台，这个数字可能不同</strong>，
+所以不要拿结构的大小去写死数字。</p>
+</blockquote>
+<h2 id="95-共用体的核心特点写一个覆盖其他">9.5 共用体的核心特点：写一个，覆盖其他</h2>
+<div class="codehilite"><pre><span></span><code>union 的内存布局（sizeof = 8）：
+
+   ┌────────────────────────────┐
+   │  i / l / d / bytes 全在这里  │   ← 所有成员的【起始地址相同】
+   └────────────────────────────┘
+</code></pre></div>
+
+<p>实测证明了这一点：</p>
+<div class="codehilite"><pre><span></span><code>v.i = 65   （写入 int）
+  读 v.i = 65
+  读 v.d = 3.21143e-322   &lt;- 垃圾值（同一块内存被当成 double 解释）
+
+v.d = 3.14159   （写入 double，覆盖了刚才的 i）
+  读 v.d = 3.14159
+  读 v.i = -266631570   &lt;- 已经不是 65 了
+
+&amp;v.i = 0x61fe48
+&amp;v.d = 0x61fe48
+  ^ 地址完全相同 —— 这就是「共用」的含义
+</code></pre></div>
+
+<blockquote>
+<p>💡 <strong>「垃圾值」不是随机的，是"同一块内存被换了种读法"</strong>。
+你写进去的是 65 的二进制，却让程序按 <code>double</code> 的规则去解读它，
+得到的当然是一个莫名其妙的小数——<strong>那块内存没变，变的是"说明书"</strong>。
+（<code>0x61fe48</code> 这种写法是<strong>十六进制</strong>的地址，你可以先把它当成"格子的门牌号"。）</p>
+</blockquote>
+<h2 id="96-共用体不记录现在存的是哪个类型">9.6 ⚠️ 共用体不记录「现在存的是哪个类型」</h2>
+<div class="codehilite"><pre><span></span><code>union 不记录「当前哪个成员是有效的」。
+你读一个不是最后写入的成员，它【不会报错】，只会给你垃圾值。
+所以正确用法是：自己用一个额外的变量记住「现在存的是什么类型」。
+</code></pre></div>
+
+<blockquote>
+<p>⚠️ <strong>这是 <code>union</code> 最危险的地方</strong>：读错了成员，<strong>编译器不会拦你，程序也不会崩</strong>，
+只是给你一个看着像数、其实是垃圾的结果。<strong>这种错最难查。</strong></p>
+</blockquote>
+<h2 id="97-常见用法union-一个标签">9.7 常见用法：<code>union</code> + 一个标签</h2>
+<div class="codehilite"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">Variant</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">tag</span><span class="p">;</span><span class="w">                      </span><span class="c1">// 标签：'i' 表示存的是 int，'d' 表示存的是 double</span>
+<span class="w">    </span><span class="k">union</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="p">};</span><span class="w">    </span><span class="c1">// 匿名共用体，成员直接叫 .i / .d</span>
+<span class="p">};</span>
+
+<span class="n">Variant</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w">  </span><span class="n">a</span><span class="p">.</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'i'</span><span class="p">;</span><span class="w">  </span><span class="n">a</span><span class="p">.</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span>
+<span class="n">Variant</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w">  </span><span class="n">b</span><span class="p">.</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'d'</span><span class="p">;</span><span class="w">  </span><span class="n">b</span><span class="p">.</span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.718</span><span class="p">;</span>
+</code></pre></div>
+
+<p>这种写法叫「<strong>带标签的联合</strong>」——<strong>多花一个字节存个小标签，用来记住是哪一种</strong>。
+在<strong>文件格式解析、网络协议、脚本引擎</strong>里很常见。</p>
+<blockquote>
+<p>💡 <strong>生活化的比方</strong>：柜子里现在放着谁的东西，<strong>柜门上贴一张纸条</strong>写着"张三"。
+纸条（<code>tag</code>）不能告诉你里面是什么，但能告诉你<strong>该按谁的规矩去拿</strong>。</p>
+</blockquote>
+<h2 id="98-要不要学-union">9.8 要不要学 <code>union</code>？</h2>
+<p><strong>学习阶段几乎用不到。</strong> 它的价值是「省内存」和「看同一块内存的不同解释」。
+现代 C++ 里很多场景被 <code>std::variant</code> 替代了。
+<strong>现在只需要认识它、知道它和 <code>struct</code> 的区别就够了。</strong></p>
+<blockquote>
+<p>📌 <strong>本课要背下来的一句话</strong>：
+<strong><code>struct</code> 的成员各占一块内存（大小 = 各成员之和 + 对齐空隙）；</strong>
+<strong><code>union</code> 的成员共用一块内存（大小 = 最大成员）。</strong></p>
+</blockquote>
+<hr />
+<hr />
+<h1 id="10-枚举-enum给一串数字起好记的名字教材-46p112114">10. 枚举 <code>enum</code>：给一串数字起好记的名字（教材 4.6，p112–114）</h1>
+<h2 id="101-为什么需要枚举">10.1 为什么需要枚举</h2>
+<p>先对比两段代码：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w">  </span><span class="n">today</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w">            </span><span class="c1">// 3 是星期几？读代码的人得去查文档</span>
+<span class="n">Week</span><span class="w"> </span><span class="n">today</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Wed</span><span class="p">;</span><span class="w">          </span><span class="c1">// 一眼就懂</span>
+</code></pre></div>
+
+<p><strong>枚举（enumeration，关键字 <code>enum</code>）就是给一组整数起"有意义的名字"。</strong></p>
+<blockquote>
+<p>💡 <strong>生活化的比方：枚举 = 给遥控器的按键贴标签</strong>
+遥控器里面，每个键其实就是一个编号。
+如果说明书上写「按 7 号键」，你每次都要翻说明书；
+但按键上贴着「音量 +」，你就一眼就懂。
+<strong>枚举就是给那些编号贴上名字。</strong>
+注意：<strong>按下去，机器收到的还是 7 号</strong>——名字只是给人看的。</p>
+</blockquote>
+<h2 id="102-基本用法">10.2 基本用法</h2>
+<div class="codehilite"><pre><span></span><code><span class="k">enum</span><span class="w"> </span><span class="nc">Color</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">red</span><span class="p">,</span><span class="w"> </span><span class="n">green</span><span class="p">,</span><span class="w"> </span><span class="n">blue</span><span class="w"> </span><span class="p">};</span><span class="w">                    </span><span class="c1">// red=0, green=1, blue=2</span>
+</code></pre></div>
+
+<p>拆开看这句话：</p>
+<ul>
+<li><code>enum</code> —— 关键字，表示「我要定义一个枚举」。</li>
+<li><code>Color</code> —— 这个枚举<strong>类型的名字</strong>。</li>
+<li><code>red, green, blue</code> —— 三个<strong>枚举量（enumerator）</strong>，也就是「贴上标签的那几个编号」。</li>
+</ul>
+<p><strong>枚举量默认从 0 开始，依次 +1。</strong></p>
+<blockquote>
+<p>💡 <strong>「枚举量」是什么？</strong>
+就是枚举里列出来的<strong>每一个名字</strong>（<code>red</code>、<code>green</code>、<code>blue</code>）。
+每个枚举量对应一个整数，它不是变量——<strong>你不能给 <code>red</code> 重新赋值</strong>。</p>
+</blockquote>
+<p>跑 <code>示例代码/04_结构共用体枚举/06_enum.cpp</code>，实测：</p>
+<div class="codehilite"><pre><span></span><code>red=0 green=1 blue=2
+Mon=1 Wed=3 Sun=7
+none=0 low=1 high=10 extra=11   &lt;- extra 是 high+1
+</code></pre></div>
+
+<h2 id="103-自己指定值教材-461p113">10.3 自己指定值（教材 4.6.1，p113）</h2>
+<div class="codehilite"><pre><span></span><code><span class="k">enum</span><span class="w"> </span><span class="nc">Week</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Mon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">Tue</span><span class="p">,</span><span class="w"> </span><span class="n">Wed</span><span class="p">,</span><span class="w"> </span><span class="n">Thu</span><span class="p">,</span><span class="w"> </span><span class="n">Fri</span><span class="p">,</span><span class="w"> </span><span class="n">Sat</span><span class="p">,</span><span class="w"> </span><span class="n">Sun</span><span class="w"> </span><span class="p">};</span><span class="w">   </span><span class="c1">// Mon=1 .. Sun=7</span>
+<span class="w">                       </span><span class="err">↑</span><span class="w"> </span><span class="n">后面的自动接着</span><span class="w"> </span><span class="o">+</span><span class="mi">1</span>
+
+<span class="k">enum</span><span class="w"> </span><span class="nc">Level</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">none</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">low</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">high</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">extra</span><span class="w"> </span><span class="p">};</span><span class="w">    </span><span class="c1">// extra = 11</span>
+<span class="w">                                    </span><span class="err">↑</span><span class="w"> </span><span class="n">只指定一部分也行</span>
+</code></pre></div>
+
+<p><strong>规则很简单</strong>：你给了值就用你给的；没给的，就<strong>接着前一个 +1</strong>。</p>
+<blockquote>
+<p>💡 <strong>为什么要自己指定？</strong> 举个真实场景：
+如果这套编号要和别的东西对表（比如某个文件格式规定「1 表示星期一」），
+那就必须显式写出来，不能靠默认从 0 开始。</p>
+</blockquote>
+<h2 id="104-枚举量就是整数">10.4 枚举量就是整数</h2>
+<p>实测：</p>
+<div class="codehilite"><pre><span></span><code>Week today = Wed;
+  打印 today 出来是: 3   &lt;- 枚举量打印出来是【数字】，不是名字
+  if (today == Wed) 成立
+  today + 1 = 4   （Wed 是 3，加 1 得 4）
+</code></pre></div>
+
+<p><strong>三个要点</strong>：</p>
+<ol>
+<li>打印枚举变量，输出的是<strong>数字</strong>，不是名字（因为计算机里存的就是数字，
+   名字在编译完以后就"没了"）；</li>
+<li>可以比较（<code>today == Wed</code>）；</li>
+<li>参与运算时<strong>会退化成 <code>int</code></strong>（就是"变回普通整数"的意思）。</li>
+</ol>
+<h2 id="105-枚举的取值范围与底层类型教材-462p113114">10.5 枚举的取值范围与「底层类型」（教材 4.6.2，p113–114）</h2>
+<h3 id="先说什么叫底层类型">先说什么叫「底层类型」</h3>
+<p><strong>枚举本身是个类型，但它内部是用某个整数类型来存值的</strong>，
+这个「内部真正用来存值的整数类型」就叫<strong>底层类型（underlying type）</strong>。</p>
+<blockquote>
+<p>💡 <strong>比方</strong>：遥控器的按键上贴了「音量 +」的标签（枚举量名），
+但按键底下接的还是第 7 号线路（底层类型）。
+标签是给你看的，<strong>线路是机器真正用的</strong>。</p>
+</blockquote>
+<h3 id="取值范围规则">取值范围规则</h3>
+<p><strong>规则</strong>（教材讲的）：</p>
+<div class="codehilite"><pre><span></span><code>上限 = 「大于最大枚举量的最小 2 的幂」减 1
+       例：最大是 7   →  2³-1 = 7
+           最大是 10  →  2⁴-1 = 15
+下限 = 若最小枚举量 ≥ 0，则是 0；否则是 -(2ⁿ - 1)
+</code></pre></div>
+
+<p><strong>这条规则算出来的「取值范围」，决定了编译器最少要用多大的整数才装得下这些枚举值。</strong>
+换句话说：<strong>枚举的大小是由"取值范围"倒推出来的，不是由"有几个成员"决定的。</strong>
+（注意：规则只规定"必须装得下"，并<strong>不要求</strong>编译器非得选最小的那个类型。
+所以下面实测里，取值范围只要 1 的枚举照样占 4 字节。）</p>
+<p>实测：</p>
+<div class="codehilite"><pre><span></span><code>sizeof(Color) = 4 字节
+sizeof(Week)  = 4 字节
+</code></pre></div>
+
+<blockquote>
+<p>⚠️ <strong>别假设枚举一定是 4 字节。</strong> 同样的枚举换个编译器 / 平台可能不一样。
+<strong>要精确控制大小，C++11 可以显式写出底层类型</strong>：</p>
+<p><code>cpp
+enum class Priority : unsigned char { low, mid, high };   // 底层类型定为 1 字节</code></p>
+<p><code>: unsigned char</code> 这一段就是在说「内部请用一个 <code>unsigned char</code> 来存」。</p>
+</blockquote>
+<h2 id="106-一个要注意的地方名字污染">10.6 ⚠️ 一个要注意的地方：名字污染</h2>
+<div class="codehilite"><pre><span></span><code><span class="k">enum</span><span class="w"> </span><span class="nc">Color</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">red</span><span class="p">,</span><span class="w"> </span><span class="n">green</span><span class="p">,</span><span class="w"> </span><span class="n">blue</span><span class="w"> </span><span class="p">};</span>
+<span class="k">enum</span><span class="w"> </span><span class="nc">Other</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">red</span><span class="p">,</span><span class="w"> </span><span class="n">yellow</span><span class="w"> </span><span class="p">};</span><span class="w">        </span><span class="c1">// ❌ 报错！red 重定义了</span>
+</code></pre></div>
+
+<p>实测报错原文（GCC 8.1.0）：</p>
+<div class="codehilite"><pre><span></span><code>error: 'red' conflicts with a previous declaration
+note: previous declaration 'Color red'
+</code></pre></div>
+
+<p><strong>原因</strong>：普通 <code>enum</code> 的成员名会跑到<strong>外层作用域</strong>里
+（相当于在全局定义了三个名字 <code>red</code>、<code>green</code>、<code>blue</code>）。
+<strong>不同枚举想用同一个名字就冲突了。</strong></p>
+<blockquote>
+<p>💡 <strong>回到第 1.4 节「作用域」</strong>：
+普通 <code>enum</code> 的成员名是「跑到大街上喊的名字」，
+所以别的地方再喊一次「red」就撞车了。</p>
+<p>⚠️ 顺带说一个容易误导的说法：<strong>枚举量名冲突不是"值冲突"</strong>。
+<code>Color::red</code> 和 <code>Other::red</code> 的值都是 0，值一样完全没关系，
+<strong>真正冲突的是"名字"</strong>——编译器不认识两个同名的东西。这一点别记混。</p>
+</blockquote>
+<h2 id="107-c11-的解法enum-class">10.7 C++11 的解法：<code>enum class</code></h2>
+<div class="codehilite"><pre><span></span><code><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Direction</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">north</span><span class="p">,</span><span class="w"> </span><span class="n">south</span><span class="p">,</span><span class="w"> </span><span class="n">east</span><span class="p">,</span><span class="w"> </span><span class="n">west</span><span class="w"> </span><span class="p">};</span>
+<span class="n">Direction</span><span class="w"> </span><span class="n">dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Direction</span><span class="o">::</span><span class="n">north</span><span class="p">;</span><span class="w">      </span><span class="c1">// ⚠️ 必须写 Direction::</span>
+</code></pre></div>
+
+<p><code>Direction::north</code> 里的 <code>::</code> 读作「<strong>的</strong>」——「Direction 的 north」。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>普通 <code>enum</code></th>
+<th><code>enum class</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>名字作用域</td>
+<td>跑到外层（会冲突）</td>
+<td>关在自己里面</td>
+</tr>
+<tr>
+<td>转成 <code>int</code></td>
+<td>自动</td>
+<td><strong>必须显式</strong> <code>static_cast&lt;int&gt;(dir)</code></td>
+</tr>
+<tr>
+<td>能和 <code>int</code> 直接比较吗</td>
+<td>能</td>
+<td><strong>不能</strong>，要显式转换</td>
+</tr>
+<tr>
+<td>打印</td>
+<td>直接 <code>cout &lt;&lt; today</code></td>
+<td><strong>不能</strong>直接打印，要转型</td>
+</tr>
+</tbody>
+</table>
+<p>实测：</p>
+<div class="codehilite"><pre><span></span><code>Direction dir = Direction::north;   &lt;- 必须带前缀
+  好处 1：名字不冲突（Color::red 和 Other::red 可以共存）
+  好处 2：不会隐式转换成 int，更安全
+  代价 1：不能直接打印，要转型：
+          cout &lt;&lt; static_cast&lt;int&gt;(dir) = 0
+</code></pre></div>
+
+<blockquote>
+<p>💡 <strong><code>static_cast&lt;int&gt;(dir)</code> 是什么？</strong>
+就是「<strong>请把 <code>dir</code> 这个值当成 <code>int</code> 来用</strong>」——一次<strong>显式</strong>的类型转换。
+因为 <code>enum class</code> 故意不允许自动转换（那正是它更安全的原因），
+所以你想要数字时，必须<strong>自己开口要</strong>。</p>
+<p>实测：<code>enum class Color { red, ... };</code> 和 <code>enum class Other { red, ... };</code> 同时存在
+<strong>完全可以编译通过</strong>，两者各是各的 <code>red</code>。</p>
+<p>📌 <strong>推荐：新代码用 <code>enum class</code>。</strong>
+普通 <code>enum</code> 只在「要和 C 语言的老代码对接」或「教材里的旧写法」时用。
+（第 10 章「类作用域」会再讲一次。）</p>
+</blockquote>
+<hr />
+<hr />
+<h1 id="11-本课常见坑汇总">11. 本课常见坑汇总</h1>
+<p>每条都有实测证据（GCC 8.1.0 / MinGW-w64）：</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>坑</th>
+<th>后果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>结构声明后忘了分号</strong></td>
+<td><code>error: expected ';' after struct definition</code>。GCC 还会把该加的 <code>;</code> 画出来。<strong>是一条清晰的错误，不会级联出一堆</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>以为「声明结构」就分配了内存</td>
+<td>不分配。<code>Student</code> 是类型，<code>Student s1;</code> 才是变量</td>
+</tr>
+<tr>
+<td>3</td>
+<td>初始化时成员顺序写反</td>
+<td><strong>成员类型各不相同时</strong>：编译报错（编译器替你挡住了）。<strong>成员类型完全相同时</strong>：编译器一声不吭，数据悄悄错（最危险）</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>student.name</code> 写成了 <code>student-&gt;name</code></td>
+<td><code>-&gt;</code> 是给<strong>指针</strong>用的（第 4 章 C 讲），现在用不上</td>
+</tr>
+<tr>
+<td>5</td>
+<td>以为结构不能整体赋值</td>
+<td><strong>可以</strong>。<code>p2 = p1;</code> 合法（数组不行，<code>invalid array assignment</code>）</td>
+</tr>
+<tr>
+<td>6</td>
+<td>写成 <code>group[i.score]</code></td>
+<td>错。应该是 <code>group[i].score</code>（<strong>先下标，后点</strong>）</td>
+</tr>
+<tr>
+<td>7</td>
+<td>位字段溢出没注意</td>
+<td>有 <code>-Woverflow</code> 警告，值被截断（40 → 8）</td>
+</tr>
+<tr>
+<td>8</td>
+<td>对位字段成员取地址 <code>&amp;d.day</code></td>
+<td>编译错误</td>
+</tr>
+<tr>
+<td>9</td>
+<td>读 <code>union</code> 里「不是最后写入」的成员</td>
+<td><strong>不报错</strong>，但给你垃圾值</td>
+</tr>
+<tr>
+<td>10</td>
+<td>两个 <code>enum</code> 用了同名成员</td>
+<td><code>error: 'red' conflicts with a previous declaration</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>用 <code>enum class</code> 却忘了写前缀</td>
+<td><code>north</code> 未定义，必须写 <code>Direction::north</code></td>
+</tr>
+<tr>
+<td>12</td>
+<td>直接 <code>cout &lt;&lt;</code> 一个 <code>enum class</code> 变量</td>
+<td>编译错误，要先 <code>static_cast&lt;int&gt;</code></td>
+</tr>
+<tr>
+<td>13</td>
+<td>拿 <code>sizeof(结构)</code> 当固定值用</td>
+<td>里面有<strong>对齐空隙</strong>，换个编译器 / 平台会变</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="12-本课作业">12. 本课作业</h1>
+<p>见 <code>练习/第04章B-练习.md</code>：</p>
+<ul>
+<li><strong>第一部分</strong>：教材 p123 复习题中与本课相关的 <strong>3 题</strong>（第 8、9、10 题）</li>
+<li>复习题第 2 题（<code>array</code>）、第 15 题（<code>new</code>）属于第 4 章 C / 第 4 章 D，本课不做</li>
+<li><strong>第二部分</strong>：教材 p124 编程练习 <strong>第 5、6、7 题</strong>（全部关于结构）</li>
+<li>练习 8、9（<code>new</code>）属于第 4 章 C；练习 10（<code>array</code>）属于第 4 章 D</li>
+</ul>
+<hr />
+<h1 id="13-过关标准">13. 过关标准</h1>
+<p>全部能做到，就算过关：</p>
+<ol>
+<li><strong>说清楚</strong>「结构声明」和「结构变量定义」的区别（谁分配内存？）。</li>
+<li>说出结构和数组的<strong>两个</strong>关键差别（同类型 / 不同类型；能不能整体赋值）。</li>
+<li><strong>不看资料</strong>写出一个结构，包含 3 个不同类型的成员，并打印它们。</li>
+<li>说出 <code>struct</code> 和 <code>union</code> 在内存上的根本区别（各占一块 vs 共用一块）。</li>
+<li><strong>不看资料</strong>写一个 <code>enum</code>，把某个枚举量显式设为 3，并说出后面那个是几。</li>
+<li>说出普通 <code>enum</code> 和 <code>enum class</code> 的两个区别。</li>
+</ol>
+<blockquote>
+<p><strong>下一课</strong>：第 4 章 C —— <strong>指针与自由存储空间</strong>（教材 p114–p123）。
+这一课要讲透本课反复提到的那个「地址」到底是什么。
+<strong>这是全书公认最难的部分</strong>，也是 C++ 区别于其他语言的核心。做好心理准备，我们慢慢来。</p>
+</blockquote>
+<hr />
+<p>📖 <strong>延伸阅读（可选）</strong></p>
+<ul>
+<li>教材 4.4.4 其他结构属性（p108–110）—— 结构传参那一段，第 7 章会展开</li>
+<li>教材 4.4.6 位字段（p111）—— 想深入了解再回去看</li>
+<li>教材 4.6.2 枚举的取值范围（p113–114）—— 本讲义第 10.5 节的完整版</li>
+<li>附录 E.4 <code>noexcept</code>（p878）—— 现在不用看</li>
+</ul>
+<div class="pager"><a class="prev" href="../讲义/第04章A-数组与字符串.html">← 上一页：第04章A-数组与字符串</a><a class="next" href="../练习/第01章-练习.html">下一页：第01章-练习 →</a></div>
+<div class="footer"><a href="../index.html">← 返回总目录</a></div>
+</article></main>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('themeBtn');
+  function sync(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    btn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    btn.title = (t === 'dark') ? '切换到浅色' : '切换到深色';
+  }
+  btn.addEventListener('click', function(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    t = (t === 'dark') ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    try{ localStorage.setItem('cppcourse-theme', t); }catch(e){}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>

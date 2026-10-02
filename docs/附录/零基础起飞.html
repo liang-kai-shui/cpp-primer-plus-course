@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>零基础起飞</title>
+<script>
+/* 在页面渲染前先定好主题，避免"白屏闪一下" */
+(function(){
+  try{
+    var t = localStorage.getItem('cppcourse-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<style>
+/* ============ 颜色变量：默认深色 ============ */
+:root, [data-theme="dark"]{
+  --bg:#14171a; --bg2:#1b1f24; --bg3:#232a31;
+  --fg:#dfe3e8; --fg2:#b6bec8; --muted:#8b95a1;
+  --line:#2b3138; --accent:#58a6ff;
+  --code-bg:#0f1216; --quote-bg:#1b2027;
+}
+[data-theme="light"]{
+  --bg:#fbfbfa; --bg2:#ffffff; --bg3:#f1f5f9;
+  --fg:#22272e; --fg2:#3b434d; --muted:#6b7280;
+  --line:#e5e7eb; --accent:#1f6feb;
+  --code-bg:#f3f4f6; --quote-bg:#f8fafc;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",Roboto,sans-serif;
+  font-size:16.5px; line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ============ 主题切换按钮 ============ */
+#themeBtn{
+  position:fixed; top:14px; right:18px; z-index:50;
+  width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--line); background:var(--bg2); color:var(--fg);
+  font-size:19px; line-height:1; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, background .15s ease;
+}
+#themeBtn:hover{transform:scale(1.08); background:var(--bg3);}
+
+.layout{display:flex; min-height:100vh;}
+
+/* ============ 侧边导航 ============ */
+nav{
+  width:288px; flex:0 0 288px; background:var(--bg2);
+  border-right:1px solid var(--line); padding:22px 0 80px;
+  overflow-y:auto; position:sticky; top:0; height:100vh;
+}
+nav .brand{
+  padding:0 20px 15px; font-weight:700; font-size:15px;
+  border-bottom:1px solid var(--line); margin-bottom:12px; color:var(--fg);
+}
+nav .group{
+  padding:16px 20px 6px; font-size:11.5px; color:var(--muted);
+  letter-spacing:.1em; font-weight:600;
+}
+nav a{display:block; padding:6px 20px; font-size:14px; color:var(--fg2);
+  border-left:3px solid transparent;}
+nav a:hover{background:var(--bg3); text-decoration:none; color:var(--fg);}
+nav a.active{color:var(--accent); font-weight:600;
+  border-left-color:var(--accent); background:var(--bg3);}
+
+main{flex:1; min-width:0; padding:46px 60px 120px; max-width:1120px;}
+article{
+  background:var(--bg2); border:1px solid var(--line);
+  border-radius:12px; padding:40px 48px;
+  box-shadow:0 1px 3px rgba(0,0,0,.10);
+}
+
+/* ============ 正文排版 ============ */
+h1,h2,h3,h4{line-height:1.4; margin:1.7em 0 .7em; font-weight:700; scroll-margin-top:20px;}
+h1{font-size:1.9em; margin-top:0; padding-bottom:.4em; border-bottom:2px solid var(--line);}
+h2{font-size:1.42em; padding-bottom:.28em; border-bottom:1px solid var(--line);}
+h3{font-size:1.16em;}
+h4{font-size:1.03em; color:var(--fg2);}
+p{margin:.8em 0;}
+ul,ol{padding-left:1.65em;}
+li{margin:.35em 0;}
+strong{font-weight:700;}
+hr{border:0; border-top:1px solid var(--line); margin:2.2em 0;}
+img{max-width:100%;}
+
+blockquote{
+  margin:1.1em 0; padding:.85em 1.15em; background:var(--quote-bg);
+  border-left:4px solid var(--accent); color:var(--fg2);
+  border-radius:0 8px 8px 0;
+}
+blockquote p{margin:.4em 0;}
+blockquote strong{color:var(--fg);}
+
+/* ============ 表格 ============ */
+table{
+  border-collapse:collapse; width:100%; margin:1.2em 0;
+  font-size:14.8px; display:block; overflow-x:auto;
+}
+th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top;}
+th{background:var(--bg3); font-weight:600; white-space:nowrap;}
+tbody tr:nth-child(even) td{background:rgba(127,127,127,.05);}
+
+/* ============ 代码 ============ */
+code{
+  font-family:"Cascadia Code",Consolas,"SF Mono",Monaco,"Courier New","Microsoft YaHei",monospace;
+  font-size:.885em; background:var(--code-bg); padding:.16em .42em;
+  border-radius:4px; border:1px solid var(--line);
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--line); border-radius:9px;
+  padding:15px 17px; overflow-x:auto; margin:1.1em 0; line-height:1.6;
+}
+pre code{background:none; padding:0; border:0; font-size:13.8px;}
+.codehilite{background:var(--code-bg); border:1px solid var(--line);
+  border-radius:9px; margin:1.1em 0;}
+.codehilite pre{border:0; margin:0; background:none;}
+
+/* ============ 本页目录 / 卡片 / 翻页 ============ */
+.toc-box{
+  background:var(--quote-bg); border:1px solid var(--line);
+  border-radius:9px; padding:13px 22px; margin:1.3em 0;
+}
+.toc-box strong{display:block; margin-bottom:5px; color:var(--muted);
+  font-size:13px; letter-spacing:.05em;}
+.toc-box ul{margin:.35em 0; padding-left:1.3em;}
+.toc-box a{color:var(--fg2);}
+.toc-box a:hover{color:var(--accent);}
+
+/* ============ 讲义页顶部的"卡住了去哪查"横幅 ============ */
+.hintbar{
+  background:var(--bg3); border:1px solid var(--line); border-radius:8px;
+  padding:9px 15px; margin:0 0 1.5em; font-size:13.5px; color:var(--muted);
+}
+.hintbar a{font-weight:600;}
+
+/* 超长的"本页目录"（比如术语表有 100+ 词条）折叠起来，别把正文挤下去 */
+details.toc-box summary{
+  cursor:pointer; color:var(--muted); font-size:13.5px;
+  font-weight:600; letter-spacing:.03em; user-select:none;
+}
+details.toc-box summary:hover{color:var(--accent);}
+details.toc-box[open] summary{margin-bottom:.5em;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px; margin:24px 0;}
+.card{background:var(--bg2); border:1px solid var(--line); border-radius:11px;
+  padding:19px 21px; transition:transform .15s ease, border-color .15s ease;}
+.card:hover{transform:translateY(-2px); border-color:var(--accent);}
+.card h3{margin:0 0 8px; font-size:1.06em;}
+.card p{margin:0; color:var(--muted); font-size:14px; line-height:1.65;}
+
+.pager{display:flex; justify-content:space-between; gap:14px; margin-top:34px;
+  padding-top:20px; border-top:1px solid var(--line);}
+.pager a{flex:1; padding:11px 16px; background:var(--bg3); border:1px solid var(--line);
+  border-radius:9px; font-size:14px; color:var(--fg2);}
+.pager a:hover{border-color:var(--accent); color:var(--accent); text-decoration:none;}
+.pager a.next{text-align:right;}
+.pager a.disabled{opacity:.35; pointer-events:none;}
+
+.footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:13.5px;}
+
+/* ============ 移动端 ============ */
+@media (max-width:900px){
+  nav{display:none;}
+  main{padding:18px 12px 60px;}
+  article{padding:22px 17px; border-radius:8px;}
+  #themeBtn{top:10px; right:10px; width:38px; height:38px;}
+}
+
+/* ===== 代码高亮（按主题隔离） ===== */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="dark"] .codehilite .hll { background-color: #49483e }
+[data-theme="dark"] .codehilite { background: #272822; color: #F8F8F2 }
+[data-theme="dark"] .codehilite .c { color: #959077 } /* Comment */
+[data-theme="dark"] .codehilite .err { color: #ED007E; background-color: #1E0010 } /* Error */
+[data-theme="dark"] .codehilite .esc { color: #F8F8F2 } /* Escape */
+[data-theme="dark"] .codehilite .g { color: #F8F8F2 } /* Generic */
+[data-theme="dark"] .codehilite .k { color: #66D9EF } /* Keyword */
+[data-theme="dark"] .codehilite .l { color: #AE81FF } /* Literal */
+[data-theme="dark"] .codehilite .n { color: #F8F8F2 } /* Name */
+[data-theme="dark"] .codehilite .o { color: #FF4689 } /* Operator */
+[data-theme="dark"] .codehilite .x { color: #F8F8F2 } /* Other */
+[data-theme="dark"] .codehilite .p { color: #F8F8F2 } /* Punctuation */
+[data-theme="dark"] .codehilite .ch { color: #959077 } /* Comment.Hashbang */
+[data-theme="dark"] .codehilite .cm { color: #959077 } /* Comment.Multiline */
+[data-theme="dark"] .codehilite .cp { color: #959077 } /* Comment.Preproc */
+[data-theme="dark"] .codehilite .cpf { color: #959077 } /* Comment.PreprocFile */
+[data-theme="dark"] .codehilite .c1 { color: #959077 } /* Comment.Single */
+[data-theme="dark"] .codehilite .cs { color: #959077 } /* Comment.Special */
+[data-theme="dark"] .codehilite .gd { color: #FF4689 } /* Generic.Deleted */
+[data-theme="dark"] .codehilite .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+[data-theme="dark"] .codehilite .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="dark"] .codehilite .gr { color: #FF4689 } /* Generic.Error */
+[data-theme="dark"] .codehilite .gh { color: #F8F8F2 } /* Generic.Heading */
+[data-theme="dark"] .codehilite .gi { color: #A6E22E } /* Generic.Inserted */
+[data-theme="dark"] .codehilite .go { color: #66D9EF } /* Generic.Output */
+[data-theme="dark"] .codehilite .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+[data-theme="dark"] .codehilite .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+[data-theme="dark"] .codehilite .gu { color: #959077 } /* Generic.Subheading */
+[data-theme="dark"] .codehilite .gt { color: #66D9EF } /* Generic.Traceback */
+[data-theme="dark"] .codehilite .kc { color: #66D9EF } /* Keyword.Constant */
+[data-theme="dark"] .codehilite .kd { color: #66D9EF } /* Keyword.Declaration */
+[data-theme="dark"] .codehilite .kn { color: #FF4689 } /* Keyword.Namespace */
+[data-theme="dark"] .codehilite .kp { color: #66D9EF } /* Keyword.Pseudo */
+[data-theme="dark"] .codehilite .kr { color: #66D9EF } /* Keyword.Reserved */
+[data-theme="dark"] .codehilite .kt { color: #66D9EF } /* Keyword.Type */
+[data-theme="dark"] .codehilite .ld { color: #E6DB74 } /* Literal.Date */
+[data-theme="dark"] .codehilite .m { color: #AE81FF } /* Literal.Number */
+[data-theme="dark"] .codehilite .s { color: #E6DB74 } /* Literal.String */
+[data-theme="dark"] .codehilite .na { color: #A6E22E } /* Name.Attribute */
+[data-theme="dark"] .codehilite .nb { color: #A6E22E } /* Name.Builtin */
+[data-theme="dark"] .codehilite .nc { color: #A6E22E } /* Name.Class */
+[data-theme="dark"] .codehilite .no { color: #66D9EF } /* Name.Constant */
+[data-theme="dark"] .codehilite .nd { color: #A6E22E } /* Name.Decorator */
+[data-theme="dark"] .codehilite .ni { color: #F8F8F2 } /* Name.Entity */
+[data-theme="dark"] .codehilite .ne { color: #A6E22E } /* Name.Exception */
+[data-theme="dark"] .codehilite .nf { color: #A6E22E } /* Name.Function */
+[data-theme="dark"] .codehilite .nl { color: #F8F8F2 } /* Name.Label */
+[data-theme="dark"] .codehilite .nn { color: #F8F8F2 } /* Name.Namespace */
+[data-theme="dark"] .codehilite .nx { color: #A6E22E } /* Name.Other */
+[data-theme="dark"] .codehilite .py { color: #F8F8F2 } /* Name.Property */
+[data-theme="dark"] .codehilite .nt { color: #FF4689 } /* Name.Tag */
+[data-theme="dark"] .codehilite .nv { color: #F8F8F2 } /* Name.Variable */
+[data-theme="dark"] .codehilite .ow { color: #FF4689 } /* Operator.Word */
+[data-theme="dark"] .codehilite .pm { color: #F8F8F2 } /* Punctuation.Marker */
+[data-theme="dark"] .codehilite .w { color: #F8F8F2 } /* Text.Whitespace */
+[data-theme="dark"] .codehilite .mb { color: #AE81FF } /* Literal.Number.Bin */
+[data-theme="dark"] .codehilite .mf { color: #AE81FF } /* Literal.Number.Float */
+[data-theme="dark"] .codehilite .mh { color: #AE81FF } /* Literal.Number.Hex */
+[data-theme="dark"] .codehilite .mi { color: #AE81FF } /* Literal.Number.Integer */
+[data-theme="dark"] .codehilite .mo { color: #AE81FF } /* Literal.Number.Oct */
+[data-theme="dark"] .codehilite .sa { color: #E6DB74 } /* Literal.String.Affix */
+[data-theme="dark"] .codehilite .sb { color: #E6DB74 } /* Literal.String.Backtick */
+[data-theme="dark"] .codehilite .sc { color: #E6DB74 } /* Literal.String.Char */
+[data-theme="dark"] .codehilite .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+[data-theme="dark"] .codehilite .sd { color: #E6DB74 } /* Literal.String.Doc */
+[data-theme="dark"] .codehilite .s2 { color: #E6DB74 } /* Literal.String.Double */
+[data-theme="dark"] .codehilite .se { color: #AE81FF } /* Literal.String.Escape */
+[data-theme="dark"] .codehilite .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+[data-theme="dark"] .codehilite .si { color: #E6DB74 } /* Literal.String.Interpol */
+[data-theme="dark"] .codehilite .sx { color: #E6DB74 } /* Literal.String.Other */
+[data-theme="dark"] .codehilite .sr { color: #E6DB74 } /* Literal.String.Regex */
+[data-theme="dark"] .codehilite .s1 { color: #E6DB74 } /* Literal.String.Single */
+[data-theme="dark"] .codehilite .ss { color: #E6DB74 } /* Literal.String.Symbol */
+[data-theme="dark"] .codehilite .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+[data-theme="dark"] .codehilite .fm { color: #A6E22E } /* Name.Function.Magic */
+[data-theme="dark"] .codehilite .vc { color: #F8F8F2 } /* Name.Variable.Class */
+[data-theme="dark"] .codehilite .vg { color: #F8F8F2 } /* Name.Variable.Global */
+[data-theme="dark"] .codehilite .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+[data-theme="dark"] .codehilite .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+[data-theme="dark"] .codehilite .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="light"] .codehilite .hll { background-color: #ffffcc }
+[data-theme="light"] .codehilite { background: #f0f0f0; }
+[data-theme="light"] .codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+[data-theme="light"] .codehilite .err { border: 1px solid #F00 } /* Error */
+[data-theme="light"] .codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+[data-theme="light"] .codehilite .o { color: #666 } /* Operator */
+[data-theme="light"] .codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+[data-theme="light"] .codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+[data-theme="light"] .codehilite .cp { color: #007020 } /* Comment.Preproc */
+[data-theme="light"] .codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+[data-theme="light"] .codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+[data-theme="light"] .codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+[data-theme="light"] .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+[data-theme="light"] .codehilite .ge { font-style: italic } /* Generic.Emph */
+[data-theme="light"] .codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="light"] .codehilite .gr { color: #F00 } /* Generic.Error */
+[data-theme="light"] .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+[data-theme="light"] .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+[data-theme="light"] .codehilite .go { color: #888 } /* Generic.Output */
+[data-theme="light"] .codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+[data-theme="light"] .codehilite .gs { font-weight: bold } /* Generic.Strong */
+[data-theme="light"] .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+[data-theme="light"] .codehilite .gt { color: #04D } /* Generic.Traceback */
+[data-theme="light"] .codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+[data-theme="light"] .codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+[data-theme="light"] .codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+[data-theme="light"] .codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+[data-theme="light"] .codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+[data-theme="light"] .codehilite .kt { color: #902000 } /* Keyword.Type */
+[data-theme="light"] .codehilite .m { color: #40A070 } /* Literal.Number */
+[data-theme="light"] .codehilite .s { color: #4070A0 } /* Literal.String */
+[data-theme="light"] .codehilite .na { color: #4070A0 } /* Name.Attribute */
+[data-theme="light"] .codehilite .nb { color: #007020 } /* Name.Builtin */
+[data-theme="light"] .codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+[data-theme="light"] .codehilite .no { color: #60ADD5 } /* Name.Constant */
+[data-theme="light"] .codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+[data-theme="light"] .codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+[data-theme="light"] .codehilite .ne { color: #007020 } /* Name.Exception */
+[data-theme="light"] .codehilite .nf { color: #06287E } /* Name.Function */
+[data-theme="light"] .codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+[data-theme="light"] .codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+[data-theme="light"] .codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+[data-theme="light"] .codehilite .nv { color: #BB60D5 } /* Name.Variable */
+[data-theme="light"] .codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+[data-theme="light"] .codehilite .w { color: #BBB } /* Text.Whitespace */
+[data-theme="light"] .codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+[data-theme="light"] .codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+[data-theme="light"] .codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+[data-theme="light"] .codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+[data-theme="light"] .codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+[data-theme="light"] .codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+[data-theme="light"] .codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+[data-theme="light"] .codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+[data-theme="light"] .codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+[data-theme="light"] .codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+[data-theme="light"] .codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+[data-theme="light"] .codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+[data-theme="light"] .codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+[data-theme="light"] .codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+[data-theme="light"] .codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+[data-theme="light"] .codehilite .sr { color: #235388 } /* Literal.String.Regex */
+[data-theme="light"] .codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+[data-theme="light"] .codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+[data-theme="light"] .codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+[data-theme="light"] .codehilite .fm { color: #06287E } /* Name.Function.Magic */
+[data-theme="light"] .codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+[data-theme="light"] .codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+[data-theme="light"] .codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+[data-theme="light"] .codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+[data-theme="light"] .codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+[data-theme="dark"] .codehilite, [data-theme="dark"] .codehilite pre{background:transparent;}
+</style>
+</head>
+<body>
+<button id="themeBtn" title="切换深色 / 浅色">🌙</button>
+<div class="layout">
+<nav><div class="brand">C++ 入门课程</div>
+<a href="../README.html">课程说明</a>
+<div class="group">附录</div>
+<a href="../附录/术语表.html">术语表</a>
+<a href="../附录/零基础起飞.html" class="active">零基础起飞</a>
+<div class="group">讲义</div>
+<a href="../讲义/第01章-预备知识.html">第01章-预备知识</a>
+<a href="../讲义/第02章-开始学习C++.html">第02章-开始学习C++</a>
+<a href="../讲义/第03章-处理数据.html">第03章-处理数据</a>
+<a href="../讲义/第04章A-数组与字符串.html">第04章A-数组与字符串</a>
+<a href="../讲义/第04章B-结构共用体枚举.html">第04章B-结构共用体枚举</a>
+<div class="group">练习</div>
+<a href="../练习/第01章-练习.html">第01章-练习</a>
+<a href="../练习/第02章-练习.html">第02章-练习</a>
+<a href="../练习/第03章-练习.html">第03章-练习</a>
+<a href="../练习/第04章A-练习.html">第04章A-练习</a>
+<a href="../练习/第04章B-练习.html">第04章B-练习</a>
+<div class="group">参考答案</div>
+<a href="../参考答案/第01章/复习题答案.html">第01章 · 复习题答案</a>
+<a href="../参考答案/第01章/错误分类实验-答案.html">第01章 · 错误分类实验-答案</a>
+<a href="../参考答案/第01章/摸底测试/说明.html">第01章/摸底测试 · 说明</a>
+<a href="../参考答案/第02章/复习题答案.html">第02章 · 复习题答案</a>
+<a href="../参考答案/第03章/复习题答案.html">第03章 · 复习题答案</a>
+<a href="../参考答案/第04章A/复习题答案.html">第04章A · 复习题答案</a>
+<a href="../参考答案/第04章B/复习题答案.html">第04章B · 复习题答案</a>
+</nav>
+<main><article>
+<details class="toc-box"><summary>本页目录（61 项，点击展开）</summary><div class="toc">
+<ul>
+<li><a href="#目录">目录</a></li>
+<li><a href="#1-电脑到底在干什么">1. 电脑到底在干什么</a><ul>
+<li><a href="#11-先用一个比方电脑是一间厨房">1.1 先用一个比方：电脑是一间厨房</a></li>
+<li><a href="#12-台面和柜子最大的区别是什么">1.2 台面和柜子最大的区别是什么</a></li>
+<li><a href="#13-名词对照先混个眼熟">1.3 名词对照，先混个眼熟</a></li>
+</ul>
+</li>
+<li><a href="#2-什么是文件">2. 什么是「文件」</a><ul>
+<li><a href="#21-先说为什么会有文件这个东西">2.1 先说为什么会有"文件"这个东西</a></li>
+<li><a href="#22-文件里装的到底是什么">2.2 文件里装的到底是什么</a></li>
+<li><a href="#23-一个你天天在用但没意识到的例子">2.3 一个你天天在用但没意识到的例子</a></li>
+</ul>
+</li>
+<li><a href="#3-文件的名字和扩展名">3. 文件的名字和扩展名</a><ul>
+<li><a href="#31-一个文件有两个身份">3.1 一个文件有两个身份</a></li>
+<li><a href="#32-常见的扩展名都是什么">3.2 常见的扩展名都是什么</a></li>
+<li><a href="#33-重点windows-默认藏着扩展名你必须把它打开">3.3 ⚠️ 重点：Windows 默认藏着扩展名，你必须把它打开</a></li>
+<li><a href="#34-显示扩展名之后你要小心一件事">3.4 显示扩展名之后，你要小心一件事</a></li>
+</ul>
+</li>
+<li><a href="#4-什么是文件夹和路径">4. 什么是「文件夹」和「路径」</a><ul>
+<li><a href="#41-为什么需要文件夹">4.1 为什么需要文件夹</a></li>
+<li><a href="#42-什么是路径">4.2 什么是「路径」</a></li>
+<li><a href="#43-两个必须知道的细节">4.3 两个必须知道的细节</a></li>
+<li><a href="#44-绝对路径-vs-相对路径">4.4 绝对路径 vs 相对路径</a></li>
+<li><a href="#45-马上验证一下">4.5 马上验证一下</a></li>
+</ul>
+</li>
+<li><a href="#5-什么是程序">5. 什么是「程序」</a><ul>
+<li><a href="#51-程序就是硬盘上的一个文件">5.1 程序就是"硬盘上的一个文件"</a></li>
+<li><a href="#52-重点区分文本文件-vs-可执行文件">5.2 ⚠️ 重点区分：文本文件 vs 可执行文件</a></li>
+<li><a href="#53-一个细节exe-文件看起来像乱码这是正常的">5.3 一个细节：.exe 文件看起来像乱码，这是正常的</a></li>
+</ul>
+</li>
+<li><a href="#6-什么是进程和任务管理器">6. 什么是「进程」和任务管理器</a><ul>
+<li><a href="#61-从死文件到活东西">6.1 从"死文件"到"活东西"</a></li>
+<li><a href="#62-任务管理器是什么">6.2 任务管理器是什么</a></li>
+<li><a href="#63-手把手怎么打开任务管理器">6.3 手把手：怎么打开任务管理器</a></li>
+<li><a href="#64-任务管理器能看什么能干什么">6.4 任务管理器能看什么、能干什么</a></li>
+<li><a href="#65-动手验证">6.5 动手验证</a></li>
+</ul>
+</li>
+<li><a href="#7-什么是代码编程语言编译器">7. 什么是「代码」「编程语言」「编译器」</a><ul>
+<li><a href="#71-从指令到代码">7.1 从"指令"到"代码"</a></li>
+<li><a href="#72-代码是什么">7.2 代码是什么</a></li>
+<li><a href="#73-编程语言是什么为什么需要它">7.3 编程语言是什么，为什么需要它</a></li>
+<li><a href="#74-编译器是什么一个翻译官">7.4 编译器是什么：一个"翻译官"</a></li>
+<li><a href="#75-一个重要的心理准备">7.5 一个重要的心理准备</a></li>
+</ul>
+</li>
+<li><a href="#8-什么是命令行-终端">8. 什么是「命令行 / 终端」</a><ul>
+<li><a href="#81-为什么还要学打字下命令">8.1 为什么还要学打字下命令</a></li>
+<li><a href="#82-名词先对齐一下">8.2 名词先对齐一下</a></li>
+<li><a href="#83-手把手怎么打开它">8.3 手把手：怎么打开它</a></li>
+<li><a href="#84-四个最基础的命令">8.4 四个最基础的命令</a><ul>
+<li><a href="#1dir-看这个目录里有什么">（1）dir —— 看这个目录里有什么</a></li>
+<li><a href="#2cd-换目录走到别的地方去">（2）cd —— 换目录（"走到别的地方去"）</a></li>
+<li><a href="#3cls-清屏">（3）cls —— 清屏</a></li>
+<li><a href="#4exit-关掉命令行窗口">（4）exit —— 关掉命令行窗口</a></li>
+</ul>
+</li>
+<li><a href="#85-四个命令小结表">8.5 四个命令小结表</a></li>
+<li><a href="#86-现在动手试一遍">8.6 现在动手试一遍</a></li>
+</ul>
+</li>
+<li><a href="#9-字符编码和乱码是怎么回事">9. 字符编码和乱码是怎么回事</a><ul>
+<li><a href="#91-先看一个你一定遇到过的现象">9.1 先看一个你一定遇到过的现象</a></li>
+<li><a href="#92-用密码本来理解">9.2 用"密码本"来理解</a></li>
+<li><a href="#93-为什么会有好几本密码本">9.3 为什么会有好几本"密码本"</a></li>
+<li><a href="#94-于是就有了乱码">9.4 于是就有了乱码</a></li>
+<li><a href="#95-顺手看一眼你电脑用的是哪本">9.5 顺手看一眼你电脑用的是哪本</a></li>
+</ul>
+</li>
+<li><a href="#10-我改了代码为什么运行结果没变">10. 我改了代码，为什么运行结果没变？</a><ul>
+<li><a href="#101-完整的正确流程">10.1 完整的正确流程</a></li>
+<li><a href="#102-为什么必须重新编译">10.2 为什么必须重新编译</a></li>
+<li><a href="#103-一个很坑的细节双击了旧的-exe">10.3 一个很坑的细节：双击了"旧的 exe"</a></li>
+<li><a href="#104-症状对照表">10.4 症状对照表</a></li>
+</ul>
+</li>
+<li><a href="#11-一页速查表">11. 一页速查表</a></li>
+<li><a href="#12-动手清单读完请做完这-10-件事">12. 动手清单：读完请做完这 10 件事</a></li>
+<li><a href="#最后几句话">最后几句话</a></li>
+</ul>
+</div>
+</details><h1 id="零基础起飞-学-c-之前先把这些搞明白">零基础起飞 · 学 C++ 之前先把这些搞明白</h1>
+<blockquote>
+<p><strong>这篇是给谁看的</strong>：会开机、会上网、会用微信，但没打开过命令行、没听过「编译」「进程」这些词的读者。
+<strong>这篇要解决什么</strong>：让你翻开第 1 章讲义时，不再被「文件」「程序」「编译」这些词卡住。
+<strong>怎么读</strong>：不用背，不用记。每一节都让你<strong>自己动手点一下</strong>，点完你就懂了。
+<strong>要多久</strong>：认真读完 + 跟着做，大约 60–90 分钟。可以在电脑前坐好再开始。</p>
+</blockquote>
+<p>先给你吃一颗定心丸：<strong>下面所有东西都不是"高深知识"，只是没人跟你好好说过而已。</strong> 你现在觉得陌生的词，一小时以后会觉得"就这？"。</p>
+<hr />
+<h2 id="目录">目录</h2>
+<ol>
+<li><a href="#1-电脑到底在干什么">电脑到底在干什么</a></li>
+<li><a href="#2-什么是文件">什么是「文件」</a></li>
+<li><a href="#3-文件的名字和扩展名">文件的名字和扩展名</a>（含：如何把扩展名显示出来）</li>
+<li><a href="#4-什么是文件夹和路径">什么是「文件夹」和「路径」</a></li>
+<li><a href="#5-什么是程序">什么是「程序」</a></li>
+<li><a href="#6-什么是进程和任务管理器">什么是「进程」和任务管理器</a></li>
+<li><a href="#7-什么是代码编程语言编译器">什么是「代码」「编程语言」「编译器」</a></li>
+<li><a href="#8-什么是命令行-终端">什么是「命令行 / 终端」</a></li>
+<li><a href="#9-字符编码和乱码是怎么回事">字符编码和乱码是怎么回事</a></li>
+<li><a href="#10-我改了代码为什么运行结果没变">我改了代码，为什么运行结果没变？</a></li>
+<li><a href="#11-一页速查表">一页速查表</a></li>
+<li><a href="#12-动手清单读完请做完这-10-件事">动手清单：读完请做完这 10 件事</a></li>
+</ol>
+<hr />
+<h2 id="1-电脑到底在干什么">1. 电脑到底在干什么</h2>
+<h3 id="11-先用一个比方电脑是一间厨房">1.1 先用一个比方：电脑是一间厨房</h3>
+<p>你在厨房里做菜，需要三样东西：</p>
+<table>
+<thead>
+<tr>
+<th>厨房里的东西</th>
+<th>电脑里对应的东西</th>
+<th>它是干什么的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>灶台和炒锅</strong></td>
+<td><strong>CPU</strong>（中央处理器）</td>
+<td>真正干活、真正"算"的地方。所有计算都在这里发生</td>
+</tr>
+<tr>
+<td><strong>料理台面</strong></td>
+<td><strong>内存</strong>（memory，也叫 RAM）</td>
+<td>临时摊开正在处理的东西。切到一半的菜、正在炒的锅，都放这儿</td>
+</tr>
+<tr>
+<td><strong>冰箱和储物柜</strong></td>
+<td><strong>硬盘</strong>（硬盘 / 磁盘 / 存储）</td>
+<td>长期存放东西的地方。关火下班了，东西还在这儿</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键的一句话</strong>：</p>
+<blockquote>
+<p>CPU 只会"算"，但它自己不记得任何东西；它要算的东西必须先从柜子（硬盘）搬到台面（内存）上，算完再考虑要不要放回柜子。</p>
+</blockquote>
+<p>这就是为什么电脑开机要等一会儿——它正把一堆东西从"柜子"搬出来。</p>
+<h3 id="12-台面和柜子最大的区别是什么">1.2 台面和柜子最大的区别是什么</h3>
+<p>这两个东西经常被搞混，但它们的脾气完全不一样：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>内存（台面）</th>
+<th>硬盘（柜子）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>断电后会怎样</td>
+<td><strong>东西全没了</strong></td>
+<td><strong>东西还在</strong></td>
+</tr>
+<tr>
+<td>容量</td>
+<td>小（通常 8G / 16G / 32G）</td>
+<td>大（通常 256G / 512G / 1T）</td>
+</tr>
+<tr>
+<td>速度</td>
+<td>快</td>
+<td>慢很多（但比人快无数倍）</td>
+</tr>
+<tr>
+<td>用来干什么</td>
+<td>正在处理的东西</td>
+<td>长期保存的东西</td>
+</tr>
+</tbody>
+</table>
+<p>所以：</p>
+<ul>
+<li>为什么写文档要<strong>经常按 Ctrl+S 保存</strong>？因为保存 = 从台面挪进柜子。不保存，一断电就没了。</li>
+<li>为什么电脑<strong>卡</strong>的时候，往往是内存（台面）不够用了？台面堆满了，东西只能挤来挤去。</li>
+<li>为什么你说"我的照片存哪了"？在硬盘（柜子）里。关机能丢的那个，是内存。</li>
+</ul>
+<blockquote>
+<p>📌 后面讲"程序"和"进程"的时候，会再回到"台面 / 柜子"这个比方。这两个词你现在只要记住结论：<strong>内存断电就没，硬盘断电还在。</strong></p>
+</blockquote>
+<h3 id="13-名词对照先混个眼熟">1.3 名词对照，先混个眼熟</h3>
+<table>
+<thead>
+<tr>
+<th>你以后会听到的说法</th>
+<th>其实指的是</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPU、处理器、核心</td>
+<td>灶台（算东西的）</td>
+</tr>
+<tr>
+<td>内存、RAM、8G 内存</td>
+<td>台面（临时的）</td>
+</tr>
+<tr>
+<td>硬盘、C 盘、D 盘、磁盘、存储空间</td>
+<td>柜子（长期的）</td>
+</tr>
+<tr>
+<td>显卡、GPU</td>
+<td>专门算画面（图形）的一整套家伙</td>
+</tr>
+<tr>
+<td>主板</td>
+<td>把上面这些连起来的地基和线路</td>
+</tr>
+</tbody>
+</table>
+<p><strong>现在不用记，眼熟就行。</strong> 后面每出现一次，我都会再说一次它是厨房里的谁。</p>
+<hr />
+<h2 id="2-什么是文件">2. 什么是「文件」</h2>
+<h3 id="21-先说为什么会有文件这个东西">2.1 先说为什么会有"文件"这个东西</h3>
+<p>回到柜子的比方：东西要长期放在柜子里，不能是一堆散沙。</p>
+<p>假设你写了一篇作文，关掉电脑，明天想接着写。那么：</p>
+<ul>
+<li>这篇作文必须被<strong>放到硬盘上</strong>（不然关机就没了）；</li>
+<li>它必须<strong>有个名字</strong>，不然几万个东西你认不出哪个是它；</li>
+<li>它必须<strong>是完整的一整块</strong>，不能撒得满硬盘都是碎片。</li>
+</ul>
+<p>于是有了<strong>文件</strong>。</p>
+<blockquote>
+<p><strong>一句话定义：文件 = 硬盘上一整块有名字的数据。</strong></p>
+</blockquote>
+<p>拆开看这三个词：</p>
+<table>
+<thead>
+<tr>
+<th>词</th>
+<th>什么意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>硬盘上</td>
+<td>它在柜子里，断电能活下来</td>
+</tr>
+<tr>
+<td>一整块</td>
+<td>它是一个完整的整体，要么整份在，要么整份不在</td>
+</tr>
+<tr>
+<td>有名字</td>
+<td>你能靠名字找到它、区分它</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-文件里装的到底是什么">2.2 文件里装的到底是什么</h3>
+<p>表面上你看到的是字、是图、是歌、是视频。但<strong>硬盘本身不理解"字"和"图"</strong>——它只会存 0 和 1。</p>
+<p>所以，一个文件本质上就是<strong>一大串 0 和 1 排成的队</strong>。至于这串 0 和 1 到底该被理解成文字、图片还是声音，取决于<strong>你用哪个程序去打开它</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>这串 0 和 1 交给谁</th>
+<th>你看到什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>记事本</td>
+<td>一堆文字（可能还是乱码）</td>
+</tr>
+<tr>
+<td>看图软件</td>
+<td>一张图片</td>
+</tr>
+<tr>
+<td>音乐播放器</td>
+<td>一段声音</td>
+</tr>
+<tr>
+<td>视频播放器</td>
+<td>一段画面</td>
+</tr>
+</tbody>
+</table>
+<p>这解释了一件让新手很困惑的事：<strong>为什么同一个文件用不同软件打开，看到的东西完全不一样？</strong> 因为文件本身只是数据，是打开它的程序在"解释"它。</p>
+<h3 id="23-一个你天天在用但没意识到的例子">2.3 一个你天天在用但没意识到的例子</h3>
+<p>你微信里发的照片、收到的 Word 文档、存在桌面上的作业——<strong>它们全都是文件</strong>。没有例外。</p>
+<p>你现在就可以验证一下：</p>
+<blockquote>
+<p><strong>动手 ①</strong>：在桌面上随便找一张图片，<strong>右键 → 属性</strong>。看两个东西：一个是"类型"，一个是"位置"。
+你会发现它有个类型（比如 JPEG 图像），也有个位置（一个以盘符开头的一长串东西）。</p>
+</blockquote>
+<p>记住了"类型"和"位置"这两个词，下面两节就是专门讲它们的。</p>
+<hr />
+<h2 id="3-文件的名字和扩展名">3. 文件的名字和扩展名</h2>
+<h3 id="31-一个文件有两个身份">3.1 一个文件有两个身份</h3>
+<table>
+<thead>
+<tr>
+<th>身份</th>
+<th>长什么样</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>主名</strong>（文件名）</td>
+<td><code>我的作业</code></td>
+<td>给你自己看的，让你知道这是啥</td>
+</tr>
+<tr>
+<td><strong>扩展名</strong>（后缀）</td>
+<td><code>.txt</code></td>
+<td><strong>给电脑看的</strong>，告诉系统"该用什么软件打开它"</td>
+</tr>
+</tbody>
+</table>
+<p>合起来就是 <code>我的作业.txt</code>，中间那个点（<code>.</code>）是分隔符。</p>
+<p><strong>记法</strong>：点<strong>后面</strong>那截，是给电脑的暗号；点<strong>前面</strong>那截，是给人看的标签。</p>
+<h3 id="32-常见的扩展名都是什么">3.2 常见的扩展名都是什么</h3>
+<table>
+<thead>
+<tr>
+<th>扩展名</th>
+<th>叫什么</th>
+<th>谁来打开</th>
+<th>白话解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.txt</code></td>
+<td>纯文本文件</td>
+<td>记事本</td>
+<td>只有文字，没有任何格式（没有加粗、颜色、图片）</td>
+</tr>
+<tr>
+<td><code>.jpg</code> <code>.png</code></td>
+<td>图片文件</td>
+<td>看图软件</td>
+<td>一张图</td>
+</tr>
+<tr>
+<td><code>.mp4</code></td>
+<td>视频文件</td>
+<td>播放器</td>
+<td>一段视频</td>
+</tr>
+<tr>
+<td><code>.docx</code></td>
+<td>Word 文档</td>
+<td>Word</td>
+<td>带格式的文字</td>
+</tr>
+<tr>
+<td><code>.zip</code> <code>.rar</code></td>
+<td>压缩包</td>
+<td>解压软件</td>
+<td>把很多文件打包成一个，方便传输</td>
+</tr>
+<tr>
+<td><code>.exe</code></td>
+<td><strong>可执行文件</strong></td>
+<td>双击就运行</td>
+<td><strong>能"跑起来"的东西</strong>，后面第 5 节专门讲</td>
+</tr>
+<tr>
+<td><code>.cpp</code></td>
+<td><strong>C++ 源代码文件</strong></td>
+<td>记事本 / 代码编辑器</td>
+<td><strong>你以后天天写的东西</strong>：用 C++ 语言写的指令</td>
+</tr>
+<tr>
+<td><code>.h</code> <code>.hpp</code></td>
+<td>头文件</td>
+<td>编辑器</td>
+<td>也是源代码的一部分，第 2 章以后会用到</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <code>.cpp</code> 和 <code>.exe</code> 的关系，是整篇材料里最重要的一对关系。先记住一句话：<strong><code>.cpp</code> 是"菜谱"，<code>.exe</code> 是"按菜谱做好的一盘菜"。</strong></p>
+</blockquote>
+<h3 id="33-重点windows-默认藏着扩展名你必须把它打开">3.3 ⚠️ 重点：Windows 默认藏着扩展名，你必须把它打开</h3>
+<p>这是本节最需要你动手的一步，<strong>对学编程来说它是刚需，不是可选项</strong>。</p>
+<p><strong>问题是这样</strong>：Windows 出厂设置默认<strong>不显示</strong>扩展名。也就是说，一个真名叫 <code>作业.txt</code> 的文件，在资源管理器里只显示成 <code>作业</code>。</p>
+<p>这在平时没太大关系，但学编程会出大问题：</p>
+<table>
+<thead>
+<tr>
+<th>你会遇到的坑</th>
+<th>不显示扩展名的后果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>编译器要求文件必须叫 <code>demo.cpp</code></td>
+<td>你看到的是 <code>demo</code>，以为自己起对了名字，其实可能叫 <code>demo.cpp.txt</code></td>
+</tr>
+<tr>
+<td>文件双击没反应</td>
+<td>你不知道它是 <code>.txt</code> 还是 <code>.exe</code>，无法判断该不该双击</td>
+</tr>
+<tr>
+<td>老师让你改文件类型</td>
+<td>你连"类型"藏在哪都看不见</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>"文件资源管理器"是什么</strong>：就是你平时点开"此电脑"、"我的文档"、"D 盘"时弹出来的那个窗口。任务栏上那个<strong>黄色文件夹图标</strong>就是它。按 <code>Win + E</code> 也能直接打开（<code>Win</code> 键就是键盘左下角那个有窗户图标的键）。</p>
+</blockquote>
+<p><strong>动手 ②：把扩展名显示出来（Windows 10 / 11）</strong></p>
+<ol>
+<li>按 <code>Win + E</code> 打开<strong>文件资源管理器</strong>（或者双击任务栏上的黄色文件夹图标）。</li>
+<li>看窗口<strong>最上面</strong>那一排按钮，找到 <strong>「查看」</strong>（View），点它。</li>
+<li>在展开的菜单里找到 <strong>「显示」</strong>（Show），鼠标移上去。</li>
+<li>在子菜单里找到 <strong>「文件扩展名」</strong>（File name extensions），<strong>点一下，让它前面出现勾 ✔</strong>。</li>
+<li>关掉窗口再打开，随便看几个文件，名字后面是不是多出了 <code>.txt</code>、<code>.jpg</code>、<code>.exe</code>？</li>
+</ol>
+<p><strong>做完立刻验证效果</strong>：</p>
+<ul>
+<li>去桌面看看，有没有叫 <code>xxx.exe</code> 的图标（快捷方式不算）；</li>
+<li>去"下载"文件夹看看，是不是有 <code>.zip</code>、<code>.pdf</code>。</li>
+</ul>
+<blockquote>
+<p>别慌，这一步不会弄坏任何东西。就算点错了，再点一下把勾取消就还原了。</p>
+<p>📌 <strong>如果找不到「查看」按钮</strong>：在资源管理器窗口里按 <code>Alt</code> 键，会冒出一条老式菜单栏，里面有「查看」；或者右键窗口空白处，也能找到「查看」选项。不同 Windows 版本位置略有差别，但关键词永远是<strong>查看 → 显示 → 文件扩展名</strong>。</p>
+</blockquote>
+<h3 id="34-显示扩展名之后你要小心一件事">3.4 显示扩展名之后，你要小心一件事</h3>
+<p>一旦扩展名显示出来了，你会发现可以<strong>重命名</strong>它（右键 → 重命名，或者按 <code>F2</code>）。</p>
+<p><strong>这说明扩展名是可以随便改的，但随便改会出乱子。</strong> 比如：</p>
+<ul>
+<li>把 <code>照片.jpg</code> 改成 <code>照片.txt</code>：文件内容一点没变，还是那张图，但你双击它会用记事本打开，看到一屏乱码。<strong>改扩展名不会转换文件内容，只是换了"用谁来打开"的约定。</strong></li>
+<li>把 <code>程序.exe</code> 改成 <code>程序.txt</code>：程序本身没坏，但你双击它不会运行了。</li>
+</ul>
+<p><strong>新手守则</strong>：除非你明确知道自己在干什么，<strong>不要手动改扩展名</strong>。写 C++ 时，扩展名要老实写成 <code>.cpp</code>。</p>
+<hr />
+<h2 id="4-什么是文件夹和路径">4. 什么是「文件夹」和「路径」</h2>
+<h3 id="41-为什么需要文件夹">4.1 为什么需要文件夹</h3>
+<p>假设硬盘是个大柜子，你往里扔了 5 万个文件，全平铺在一起。然后你要找一张上周拍的猫照片——<strong>你打算怎么找？</strong></p>
+<p>所以需要"分类的抽屉"。<strong>文件夹（也叫"目录"）就是硬盘上的抽屉。</strong></p>
+<blockquote>
+<p><strong>一句话：文件夹本身也是一个"东西"，只不过它里面装的不是数据，而是"一堆文件和其他文件夹的清单"。</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>对比</th>
+<th>文件</th>
+<th>文件夹</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>里面装什么</td>
+<td>数据（字、图、声音）</td>
+<td>其他文件和文件夹</td>
+</tr>
+<tr>
+<td>能不能双击打开</td>
+<td>能（用某个程序打开内容）</td>
+<td>能（进入它，看里面有什么）</td>
+</tr>
+<tr>
+<td>断电会丢吗</td>
+<td>不会</td>
+<td>不会</td>
+</tr>
+<tr>
+<td>举例</td>
+<td><code>作业.txt</code></td>
+<td><code>我的文档</code>、<code>下载</code></td>
+</tr>
+</tbody>
+</table>
+<p>文件夹可以一层套一层（抽屉里还有小抽屉），这就叫<strong>目录树</strong>——因为它长得像一棵倒过来的树：根在最上面，往下不断分叉。</p>
+<h3 id="42-什么是路径">4.2 什么是「路径」</h3>
+<p>问题来了：你有一层套一层的抽屉，你怎么<strong>精确地告诉别人"那个文件在哪"</strong>？</p>
+<p>答案就是<strong>路径</strong>。它就是<strong>文件的快递地址</strong>。</p>
+<blockquote>
+<p><strong>一句话：路径 = 从某个起点开始，一层一层走到这个文件，中间要用什么名字，全写下来。</strong></p>
+</blockquote>
+<p>看一个真实的例子：</p>
+<div class="codehilite"><pre><span></span><code>C:\Users\小明\Desktop\test.cpp
+</code></pre></div>
+
+<p>从左往右，一段一段拆开看：</p>
+<table>
+<thead>
+<tr>
+<th>这一段</th>
+<th>叫什么</th>
+<th>什么意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>C:</code></td>
+<td><strong>盘符</strong></td>
+<td>哪一个大柜子。电脑可以把硬盘分成几个"盘"：C 盘、D 盘、E 盘。C 盘通常是系统盘</td>
+</tr>
+<tr>
+<td><code>\</code></td>
+<td><strong>反斜杠</strong></td>
+<td>分隔符，相当于地址里的"→"，表示"进到下一层去"</td>
+</tr>
+<tr>
+<td><code>Users</code></td>
+<td>文件夹名</td>
+<td>C 盘里的 <code>Users</code> 文件夹（中文系统里可能显示为"用户"）</td>
+</tr>
+<tr>
+<td><code>\</code></td>
+<td>分隔符</td>
+<td>继续往下</td>
+</tr>
+<tr>
+<td><code>小明</code></td>
+<td>文件夹名</td>
+<td><code>Users</code> 里面的 <code>小明</code> 文件夹。<strong>这就是你的用户名文件夹</strong>，你的桌面、下载、文档其实都住在它下面</td>
+</tr>
+<tr>
+<td><code>\</code></td>
+<td>分隔符</td>
+<td>继续往下</td>
+</tr>
+<tr>
+<td><code>Desktop</code></td>
+<td>文件夹名</td>
+<td>桌面。中文系统里显示为"桌面"，但实际文件夹名就是 <code>Desktop</code></td>
+</tr>
+<tr>
+<td><code>\</code></td>
+<td>分隔符</td>
+<td>继续往下</td>
+</tr>
+<tr>
+<td><code>test.cpp</code></td>
+<td><strong>文件名</strong></td>
+<td>最后一段是文件本身，它前面所有内容就是它的"地址"</td>
+</tr>
+</tbody>
+</table>
+<p><strong>所以完整读法是</strong>：C 盘 → 用户 → 小明 → 桌面 → 名字叫 <code>test.cpp</code> 的那个文件。</p>
+<p>就像一个地址：<strong>中国 → 江苏省 → 南京市 → 某小区 → 3 栋 502</strong>。每一段都不能少，少一段就找不到。</p>
+<h3 id="43-两个必须知道的细节">4.3 两个必须知道的细节</h3>
+<p><strong>细节一：Windows 用反斜杠 <code>\</code>，网上常见正斜杠 <code>/</code></strong></p>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>出现在哪</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>C:\Users\小明\Desktop\test.cpp</code></td>
+<td><strong>Windows</strong>（你现在的系统）</td>
+</tr>
+<tr>
+<td><code>/home/xiaoming/test.cpp</code></td>
+<td>Linux、macOS</td>
+</tr>
+</tbody>
+</table>
+<p>学 C++ 的时候你还会遇到第三种写法：<code>C:\\Users\\...</code>（两个反斜杠）。那是因为在 C++ 代码里，<strong>单个反斜杠有特殊含义</strong>，所以要写两个来表示"我就是要一个反斜杠"。这个第 2 章会讲，现在别纠结。</p>
+<p><strong>细节二：文件夹名带空格是个坑</strong></p>
+<p>如果路径里有空格，比如 <code>C:\我的 文档\test.cpp</code>，在命令行里会被理解成"两段"。所以<strong>新手建议：以后建文件夹、起文件名，一律不要用空格和中文</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>推荐</th>
+<th>不推荐</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cpp_learn</code></td>
+<td><code>我的 C++ 学习</code></td>
+<td>空格让命令行误解，中文可能遇到编码问题</td>
+</tr>
+<tr>
+<td><code>test.cpp</code></td>
+<td><code>测试 1.cpp</code></td>
+<td>同上</td>
+</tr>
+<tr>
+<td><code>chapter01</code></td>
+<td><code>第 1 章</code></td>
+<td>同上</td>
+</tr>
+</tbody>
+</table>
+<p>用下划线 <code>_</code> 代替空格，是最省事的做法。</p>
+<h3 id="44-绝对路径-vs-相对路径">4.4 绝对路径 vs 相对路径</h3>
+<p>这是新手最容易懵的一对词，但其实用一个"问路"的比方就懂了。</p>
+<p><strong>场景</strong>：有人问你"邮局怎么走？"</p>
+<p><strong>回答 A</strong>："中国 → 江苏省 → 南京市 → 中山路 → 88 号。"
+<strong>回答 B</strong>："从这儿往前走，第二个路口左转。"</p>
+<ul>
+<li>回答 A 是<strong>绝对路径</strong>：从<strong>最顶上的起点</strong>（盘符）开始，一路写到底。<strong>不管你在哪问，答案都一样。</strong></li>
+<li>回答 B 是<strong>相对路径</strong>：从<strong>你当前站的位置</strong>开始算。<strong>换个地方问，同样的回答就指到别处去了。</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>绝对路径</th>
+<th>相对路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>从哪儿算起</td>
+<td>盘符（<code>C:\</code>）</td>
+<td>你"现在所在的位置"</td>
+</tr>
+<tr>
+<td>长什么样</td>
+<td><code>C:\Users\小明\Desktop\test.cpp</code></td>
+<td><code>test.cpp</code>（就在当前位置）<br><code>Desktop\test.cpp</code>（当前位置下的 Desktop 里）</td>
+</tr>
+<tr>
+<td>换个目录还有效吗</td>
+<td><strong>有效</strong>，永远指向同一个文件</td>
+<td>可能失效，因为"当前所在位置"变了</td>
+</tr>
+<tr>
+<td>什么时候好用</td>
+<td>要精确说明"就是这个文件"</td>
+<td>在当前目录里干活，懒得写一长串</td>
+</tr>
+</tbody>
+</table>
+<p>相对路径里还有两个符号，提前认识一下：</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>读作</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.</code></td>
+<td>一个点</td>
+<td>当前位置（我自己这儿）</td>
+</tr>
+<tr>
+<td><code>..</code></td>
+<td>两个点</td>
+<td><strong>上一层</strong>（回到父文件夹，"退一步"）</td>
+</tr>
+</tbody>
+</table>
+<p>举个例子，假设你现在"站"在 <code>C:\Users\小明\Desktop</code> 里：</p>
+<table>
+<thead>
+<tr>
+<th>你写的</th>
+<th>实际指的是</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>test.cpp</code></td>
+<td><code>C:\Users\小明\Desktop\test.cpp</code></td>
+</tr>
+<tr>
+<td><code>..\test.cpp</code></td>
+<td><code>C:\Users\小明\test.cpp</code>（退到上一层再找）</td>
+</tr>
+<tr>
+<td><code>..\Documents\a.txt</code></td>
+<td><code>C:\Users\小明\Documents\a.txt</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>怎么知道"我现在站在哪"</strong>？在文件资源管理器里，就是地址栏显示的那一串。在命令行里，就是提示符前面那一串（第 8 节会看到）。<strong>写相对路径前，先确认自己站在哪。</strong></p>
+</blockquote>
+<h3 id="45-马上验证一下">4.5 马上验证一下</h3>
+<blockquote>
+<p><strong>动手 ③</strong>：打开文件资源管理器，<strong>在地址栏里点一下</strong>（整个路径会变成可复制的文字），看一眼完整路径长什么样。然后按 <code>Win + E</code> 新开一个窗口，进到"下载"文件夹，再看一次地址栏。</p>
+<p>观察一下：这两次的路径，<strong>前面几段是不是一样的</strong>？（提示：都是 <code>C:\Users\你的用户名\...</code>）</p>
+</blockquote>
+<hr />
+<h2 id="5-什么是程序">5. 什么是「程序」</h2>
+<h3 id="51-程序就是硬盘上的一个文件">5.1 程序就是"硬盘上的一个文件"</h3>
+<p>你现在已经知道：文件是硬盘上一整块有名字的数据。</p>
+<p>那么<strong>程序</strong>呢？答案是——<strong>程序也是文件，没有什么神秘的。</strong></p>
+<blockquote>
+<p><strong>一句话：程序 = 一个存在硬盘上的文件，里面装的是一串"给 CPU 的指令"。</strong></p>
+</blockquote>
+<p>第 1 节说过，CPU 只干"算"这一件事。但 CPU 不会自己想"我该算什么"，它得<strong>有人告诉它一步步做什么</strong>。这一串"一步步做什么"的说明，就是<strong>指令</strong>。</p>
+<p>程序文件，就是这些指令被打包存起来的结果。</p>
+<table>
+<thead>
+<tr>
+<th>比方</th>
+<th>对应</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一份菜谱（写在纸上，放在柜子里）</td>
+<td><strong>程序文件</strong>（<code>.exe</code>，躺在硬盘上）</td>
+</tr>
+<tr>
+<td>你照着菜谱开始炒菜</td>
+<td><strong>运行程序</strong>（CPU 开始一条条执行指令）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键区别</strong>：菜谱放在抽屉里的时候，菜不会自己出来。<strong>程序躺在硬盘上的时候，它什么也没干。</strong></p>
+<h3 id="52-重点区分文本文件-vs-可执行文件">5.2 ⚠️ 重点区分：文本文件 vs 可执行文件</h3>
+<p>这是新手最容易踩的坑，一定要看清楚。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>文本文件</strong>（<code>.txt</code> <code>.cpp</code> <code>.md</code>）</th>
+<th><strong>可执行文件</strong>（<code>.exe</code>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>里面装的是什么</td>
+<td>给人看的<strong>文字</strong></td>
+<td>给 CPU 执行的<strong>机器指令</strong></td>
+</tr>
+<tr>
+<td>谁看得懂</td>
+<td>人（你、我）</td>
+<td>电脑</td>
+</tr>
+<tr>
+<td>双击会怎样</td>
+<td>用记事本打开，你能读到内容</td>
+<td><strong>运行！真的干活！</strong></td>
+</tr>
+<tr>
+<td>谁生成它</td>
+<td>你用键盘敲出来的</td>
+<td><strong>编译器生成的</strong>（第 7 节讲）</td>
+</tr>
+<tr>
+<td>能不能直接改</td>
+<td>能，随便改</td>
+<td>一般不能（打开就是乱码）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>所以，最重要的一句话</strong>：</p>
+<blockquote>
+<p><strong>双击 <code>.cpp</code> 文件，什么都不会发生</strong>（最多打开记事本让你编辑），因为它只是给人看的文字。
+<strong>双击 <code>.exe</code> 文件，程序才会跑起来</strong>，因为它里面是 CPU 能执行的指令。</p>
+</blockquote>
+<p><strong>"双击没反应"是新手最常见的第一号困惑。</strong> 记住这个区别，你就不会困惑了：你写的是"菜谱"，还没有人把它做成"菜"。</p>
+<h3 id="53-一个细节exe-文件看起来像乱码这是正常的">5.3 一个细节：<code>.exe</code> 文件看起来像乱码，这是正常的</h3>
+<p>你以后可能会好奇，用一个叫"记事本"的程序去打开一个 <code>.exe</code>（右键 → 打开方式 → 记事本）。你会看到一屏谁也看不懂的方块和怪符号。</p>
+<p><strong>这是正常的，不是文件坏了。</strong> 因为 <code>.exe</code> 里的内容是给 CPU 看的数字，而记事本只会把数字当文字解释——"解释错了"，所以看到乱码（这个现象第 9 节还会再讲一次）。</p>
+<p>所以，<code>.exe</code> 的用法是：<strong>双击运行，不要打开看</strong>。</p>
+<hr />
+<h2 id="6-什么是进程和任务管理器">6. 什么是「进程」和任务管理器</h2>
+<h3 id="61-从死文件到活东西">6.1 从"死文件"到"活东西"</h3>
+<p>上一节说：程序躺在硬盘上的时候，什么也没干。</p>
+<p>那么你双击它之后，发生了什么？</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>发生了什么</th>
+<th>用厨房比方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>系统把 <code>.exe</code> 里的指令<strong>从硬盘搬进内存</strong></td>
+<td>把菜谱从柜子里拿出来，摊在台面上</td>
+</tr>
+<tr>
+<td>2</td>
+<td>CPU 开始<strong>一条条执行</strong>这些指令</td>
+<td>厨师照着菜谱开始炒</td>
+</tr>
+<tr>
+<td>3</td>
+<td>程序需要的数据也放在内存里</td>
+<td>切好的菜、调料都摊在台面上</td>
+</tr>
+<tr>
+<td>4</td>
+<td>你关掉窗口，系统把内存里的东西清掉</td>
+<td>收拾台面，菜谱放回柜子</td>
+</tr>
+</tbody>
+</table>
+<p><strong>第 1–3 步的状态，就叫"进程"。</strong></p>
+<blockquote>
+<p><strong>一句话：进程 = 一个正在运行的程序的实例，它活在内存里，正在占用 CPU。</strong></p>
+<p><strong>程序是"死"的（硬盘上的文件），进程是"活"的（内存里正在干活的东西）。</strong> 同一个程序可以同时开好几个进程——比如你开三个记事本窗口，就是三个进程。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>程序（program）</th>
+<th>进程（process）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>在哪</td>
+<td>硬盘（柜子）</td>
+<td>内存（台面）</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>死的，安静的</td>
+<td>活的，正在吃 CPU 和内存</td>
+</tr>
+<tr>
+<td>关机后</td>
+<td>还在</td>
+<td>没了</td>
+</tr>
+<tr>
+<td>能有几个</td>
+<td>一个 <code>.exe</code> 就是一个</td>
+<td><strong>可以同时有好几个</strong></td>
+</tr>
+<tr>
+<td>怎么产生</td>
+<td>编译器生成</td>
+<td><strong>双击运行它</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>为什么学编程必须懂这个</strong>：你写的程序会变成进程。程序写得不对，进程就可能失控——把内存吃光、把 CPU 占满到 100%、窗口点不动。这时候你必须知道<strong>怎么找到它、怎么弄死它</strong>。这就是下面要讲的。</p>
+</blockquote>
+<h3 id="62-任务管理器是什么">6.2 任务管理器是什么</h3>
+<p><strong>任务管理器</strong>是 Windows 自带的一个"监控台"，它让你看到：</p>
+<ul>
+<li>现在有哪些<strong>进程</strong>在跑；</li>
+<li>每个进程<strong>吃了多少 CPU</strong>、<strong>占了多少内存</strong>；</li>
+<li>谁在偷偷用网络；</li>
+<li>不想要谁，可以<strong>强制把它结束掉</strong>。</li>
+</ul>
+<p><strong>为什么一般人也要会这个</strong>：电脑卡的时候，你能看出是哪个程序在捣乱；软件假死（窗口变灰、点不动）的时候，你能把它关掉，不用重启电脑。</p>
+<h3 id="63-手把手怎么打开任务管理器">6.3 手把手：怎么打开任务管理器</h3>
+<p><strong>最简单的方法（推荐记住这个）</strong>：</p>
+<blockquote>
+<p>同时按 <strong><code>Ctrl + Shift + Esc</code></strong> 三个键。</p>
+</blockquote>
+<p>对，就这么简单。三个键一起按下去，任务管理器窗口就出来了。</p>
+<p><strong>其他方法（万一忘了上面那个）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>右键任务栏</td>
+<td>在屏幕<strong>最下面那条横条</strong>（任务栏）的空白处，<strong>右键 → 任务管理器</strong></td>
+</tr>
+<tr>
+<td>万能安全键</td>
+<td>按 <code>Ctrl + Alt + Delete</code>，在出现的蓝屏菜单里点「任务管理器」</td>
+</tr>
+<tr>
+<td>开始菜单搜索</td>
+<td>按 <code>Win</code> 键 → 直接打字 <code>任务管理器</code> → 回车</td>
+</tr>
+<tr>
+<td>老手方式</td>
+<td>按 <code>Win + R</code> → 输入 <code>taskmgr</code> → 回车</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>"任务栏"是什么</strong>：屏幕最下面那一条，左边有开始按钮，右边有时钟，中间是你打开的程序图标。找不到就看看最底下。</p>
+</blockquote>
+<h3 id="64-任务管理器能看什么能干什么">6.4 任务管理器能看什么、能干什么</h3>
+<p>打开后，如果是精简界面（只有几个正在运行的程序），点左下角 <strong>「详细信息」</strong> 展开完整列表。</p>
+<p>你会看到一张表，每一行是一个进程，几列关键信息：</p>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>什么意思</th>
+<th>怎么用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>名称</strong></td>
+<td>这个进程是谁</td>
+<td>找出捣乱的是哪个程序</td>
+</tr>
+<tr>
+<td><strong>CPU</strong></td>
+<td>它现在占多少 CPU（越大越忙）</td>
+<td>长期接近 100% 说明有程序在疯狂算</td>
+</tr>
+<tr>
+<td><strong>内存</strong></td>
+<td>它现在占了多少内存（台面）</td>
+<td>某程序占了几 G，说明它是"大块头"</td>
+</tr>
+<tr>
+<td><strong>磁盘</strong></td>
+<td>它现在读写硬盘有多频繁</td>
+<td>卡硬盘的时候看这列</td>
+</tr>
+<tr>
+<td><strong>网络</strong></td>
+<td>它在不在传数据</td>
+<td>看谁在偷跑流量</td>
+</tr>
+</tbody>
+</table>
+<p><strong>两个最实用的操作</strong>：</p>
+<p><strong>操作一：找出占资源最多的</strong></p>
+<p>在「CPU」或「内存」这一列的<strong>标题上点一下</strong>，列表就会按这一列排序。再点一下反向排。这样谁最贪心，一眼就看到。</p>
+<p><strong>操作二：结束任务（俗称"杀掉进程"）</strong></p>
+<blockquote>
+<p>选中那一行 → 点右下角 <strong>「结束任务」</strong>（或者右键 → 结束任务）。</p>
+</blockquote>
+<p><strong>什么时候该用它</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>情况</th>
+<th>该怎么办</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>某个软件窗口变灰、点不动、转圈不停</td>
+<td>结束它的任务。多数情况下不用重启电脑</td>
+</tr>
+<tr>
+<td>你的程序写错了，界面卡死</td>
+<td>结束它。<strong>这是学编程时最常用的一招</strong></td>
+</tr>
+<tr>
+<td>你写的程序在死循环，风扇狂转、电脑发烫</td>
+<td><strong>赶紧</strong>结束它。它在占满 CPU</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>"死循环"是什么</strong>：你本来想让程序做 10 次，结果不小心写成了"永远做下去，没有停止条件"。它就真的永远做下去了。CPU 被它占满，风扇开始狂转——<strong>别慌，这非常正常，所有写程序的人都干过。</strong> 结束任务就行，代码改一改再来。</p>
+</blockquote>
+<p><strong>注意</strong>：结束任务 = <strong>强制</strong>关掉，程序来不及保存就没了。所以别拿它去关正在写文档的 Word，会丢东西。它是"紧急刹车"，不是"正常停车"。</p>
+<h3 id="65-动手验证">6.5 动手验证</h3>
+<blockquote>
+<p><strong>动手 ④</strong>：按 <code>Ctrl + Shift + Esc</code> 打开任务管理器。
+1. 点「详细信息」。
+2. 在「内存」那一列标题上点一下，看哪个进程排第一。
+3. 找到你现在正在用的浏览器，看它占了多少内存。
+4. 随便开一个记事本，再回来看，是不是多了一个进程？关掉记事本，它是不是消失了？</p>
+</blockquote>
+<p>做完这一步，你就已经比很多同班同学多会一件事了。</p>
+<hr />
+<h2 id="7-什么是代码编程语言编译器">7. 什么是「代码」「编程语言」「编译器」</h2>
+<h3 id="71-从指令到代码">7.1 从"指令"到"代码"</h3>
+<p>第 5 节说：程序里装的是"给 CPU 的指令"。</p>
+<p>但 CPU 能懂的指令长这样（一串数字）：</p>
+<div class="codehilite"><pre><span></span><code>48 8B 05 B1 1A 00 00
+</code></pre></div>
+
+<p>这是<strong>机器码</strong>——CPU 唯一懂的语言。问题是：<strong>人没法用这个写东西。</strong> 写十行就晕了，而且没人看得懂自己在写什么。</p>
+<p>那怎么办？<strong>让人写人能看懂的东西，再让工具翻译成机器码。</strong></p>
+<ul>
+<li><strong>人能看懂的东西</strong> = 用某种<strong>编程语言</strong>写出来的<strong>代码</strong>；</li>
+<li><strong>负责翻译的工具</strong> = <strong>编译器</strong>。</li>
+</ul>
+<h3 id="72-代码是什么">7.2 代码是什么</h3>
+<blockquote>
+<p><strong>一句话：代码 = 用某种编程语言写的、给电脑的指令单。</strong></p>
+</blockquote>
+<p>"指令单"这个词是故意的。它不是散文，不是作文，它是<strong>一张一步接一步的清单</strong>，必须精确到电脑能一条条执行。</p>
+<p>以后你会写的代码大概长这样（先看一眼，不用懂）：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"你好，世界！"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>这 7 行就是你亲手写的"指令单"。它的意思是：<strong>准备一下打印功能 → 开始 → 打印"你好，世界！" → 换行 → 结束 → 报告一切正常。</strong></p>
+<p>现在的你看它像天书，<strong>这完全正常</strong>。第 2 章会一行一行拆开讲。现在你只要知道：<strong>这东西叫"代码"，它是给人看的，电脑还看不懂。</strong></p>
+<h3 id="73-编程语言是什么为什么需要它">7.3 编程语言是什么，为什么需要它</h3>
+<blockquote>
+<p><strong>一句话：编程语言 = 一套人和电脑之间的"中间语言"，人写起来还算顺手，同时有现成工具能把它翻译成机器码。</strong></p>
+</blockquote>
+<p>为什么要有这么一层？因为两边直接对话不可能：</p>
+<table>
+<thead>
+<tr>
+<th>谁</th>
+<th>只能懂</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPU</td>
+<td>机器码（一串数字）</td>
+</tr>
+<tr>
+<td>人</td>
+<td>自然语言（中文、英文）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>编程语言就是架在中间的桥。</strong> 它比自然语言严格得多（因为电脑不能猜），比机器码好读得多（因为人得看懂）。</p>
+<p>C++ 就是众多编程语言里的一个。别急着问"C++ 和别的语言哪个好"，现在的答案是：<strong>它们都是桥，只是造法不同。</strong></p>
+<h3 id="74-编译器是什么一个翻译官">7.4 编译器是什么：一个"翻译官"</h3>
+<blockquote>
+<p><strong>一句话：编译器 = 一个程序，它的工作是把你写的 C++ 代码翻译成 CPU 能懂的机器码。</strong></p>
+</blockquote>
+<p>注意这句话里有个有意思的地方：<strong>编译器自己也是个程序</strong>。（就像那个帮你把中文菜谱翻成英文的人，他自己也是个人。）</p>
+<p><strong>完整的链路是这样</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>比方里是谁</th>
+<th>在 C++ 里是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>你写的字</td>
+<td>中文菜谱</td>
+<td><strong>源代码</strong>（<code>test.cpp</code>）</td>
+</tr>
+<tr>
+<td>翻译官</td>
+<td>把中文翻成英文的人</td>
+<td><strong>编译器</strong>（<code>g++</code>）</td>
+</tr>
+<tr>
+<td>翻译结果</td>
+<td>英文菜谱</td>
+<td><strong>机器码 → 最终变成 <code>.exe</code></strong></td>
+</tr>
+<tr>
+<td>执行的人</td>
+<td>只会英文的厨师</td>
+<td><strong>CPU</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>三个关键点</strong>：</p>
+<ol>
+<li><strong>厨师（CPU）只看得懂英文（机器码）。</strong> 你的中文（C++ 代码）写得再漂亮，不翻译，电脑一个字都执行不了。这就是为什么<strong>双击 <code>.cpp</code> 什么都不会发生</strong>——菜谱还没翻译，厨师看不懂。</li>
+<li><strong>翻译是一整本一起翻的</strong>，不是做一步翻一句。这就是 C++ 这类"编译型语言"的特点。</li>
+<li><strong>翻译官会发现菜谱里的错。</strong> 比如你少买了一样东西（少写了一个分号），翻译官当场就说"这不行"，<strong>根本轮不到厨师下厨</strong>。这就是"编译错误"——你在第 1 章讲义里会看到这个词，它其实是个好消息：<strong>它在程序运行之前就帮你拦住了错误。</strong></li>
+</ol>
+<h3 id="75-一个重要的心理准备">7.5 一个重要的心理准备</h3>
+<table>
+<thead>
+<tr>
+<th>你的直觉</th>
+<th>实际情况</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>我写完代码就能用了</td>
+<td>不，还得<strong>编译</strong>一次，生成 <code>.exe</code></td>
+</tr>
+<tr>
+<td>改了代码文件就变了</td>
+<td>不，改的是<strong>菜谱</strong>，<code>exe</code>（做好的菜）还是老的</td>
+</tr>
+<tr>
+<td>程序能跑就说明写对了</td>
+<td>不一定，能跑只代表"翻译官没意见"</td>
+</tr>
+</tbody>
+</table>
+<p>最后一条是第 1 章的隐藏重点：<strong>"能编译通过"和"程序是对的"是两件完全不同的事。</strong> 编译器的职责是检查"你写的语法对不对"，不是"你的想法对不对"。</p>
+<blockquote>
+<p>📌 <strong>关于"编译四步"</strong>：编译器干活其实分四步（预处理、编译、汇编、链接），每一步产出什么文件，第 1 章讲义会详细讲。<strong>你现在完全不用管这四步</strong>，只要脑子里有一个画面就够了：<strong>一个翻译官，把中文菜谱翻成英文菜谱，翻之前还会检查有没有漏掉的材料。</strong></p>
+</blockquote>
+<hr />
+<h2 id="8-什么是命令行-终端">8. 什么是「命令行 / 终端」</h2>
+<h3 id="81-为什么还要学打字下命令">8.1 为什么还要学打字下命令</h3>
+<p>你可能会想：<strong>我都用鼠标点这么多年了，为什么学编程还要打字？</strong></p>
+<p>三个很实在的理由：</p>
+<table>
+<thead>
+<tr>
+<th>理由</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>有些工具根本没有"窗口"</strong></td>
+<td>编译器 <code>g++</code> 就是这样一个程序——它没有按钮、没有界面，<strong>你只能通过打字来用它</strong></td>
+</tr>
+<tr>
+<td><strong>打字更快、更精确</strong></td>
+<td>一次编译、一次运行，两行字搞定，不用点鼠标找半天</td>
+</tr>
+<tr>
+<td><strong>报错信息都出现在那里</strong></td>
+<td>你写错代码时，编译器告诉你的错误信息，就是一行行文字打在这个黑窗口里的</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>一句话：命令行 = 一个"用打字代替点鼠标"的窗口。</strong></p>
+</blockquote>
+<p>它不是"高级模式"，也不是"黑客专用"。它只是另一种操作方式：<strong>鼠标是"指哪儿点哪儿"，命令行是"说清楚要它干什么"。</strong></p>
+<h3 id="82-名词先对齐一下">8.2 名词先对齐一下</h3>
+<p>你可能听过好几个称呼，其实基本是一回事：</p>
+<table>
+<thead>
+<tr>
+<th>叫法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>命令行</strong>（command line）</td>
+<td>强调"打字输入命令"这种方式</td>
+</tr>
+<tr>
+<td><strong>终端</strong>（terminal）</td>
+<td>强调"这是一个让你打字的窗口"</td>
+</tr>
+<tr>
+<td><strong>控制台</strong>（console）</td>
+<td>老叫法，基本同义</td>
+</tr>
+<tr>
+<td><strong>cmd</strong></td>
+<td>Windows 上最经典的那个命令行程序的名字</td>
+</tr>
+<tr>
+<td><strong>PowerShell</strong></td>
+<td>Windows 上更新更强的命令行程序，用法类似</td>
+</tr>
+</tbody>
+</table>
+<p><strong>先别管哪个更好，用哪个都行，学 C++ 都够用。</strong></p>
+<h3 id="83-手把手怎么打开它">8.3 手把手：怎么打开它</h3>
+<blockquote>
+<p><strong>方法一（最简单，推荐）</strong>：
+1. 按一下键盘左下角的 <strong><code>Win</code> 键</strong>（有窗户图标那个）；
+2. 直接<strong>打字</strong>：<code>cmd</code>；
+3. 看到"命令提示符"出现，按 <strong>回车</strong>。</p>
+<p><strong>方法二</strong>：同样的步骤，打字 <code>powershell</code>，按回车。</p>
+</blockquote>
+<p><strong>打开之后你会看到一个黑底（或者蓝底）的窗口</strong>，里面有一行字，末尾在闪一个光标，大概长这样：</p>
+<div class="codehilite"><pre><span></span><code>Microsoft Windows [版本 10.0.19045.3803]
+(c) Microsoft Corporation。保留所有权利。
+
+C:\Users\小明&gt;
+</code></pre></div>
+
+<p><strong>别慌，这是正常的。</strong> 它没有坏，也没有被黑。最后那一行 <code>C:\Users\小明&gt;</code> 就是它在问你："<strong>你现在站在哪，要我干什么？</strong>"</p>
+<blockquote>
+<p>📌 <strong>那个 <code>C:\Users\小明&gt;</code> 叫什么</strong>：叫<strong>提示符</strong>（prompt）。它告诉你两件事：
+1. <strong>你现在站在哪个目录</strong>（<code>C:\Users\小明</code>，这就是你的"当前位置"）；
+2. <strong>它在等你打字</strong>（打完按回车才会执行）。</p>
+<p>这正好接上第 4 节讲的<strong>相对路径</strong>——提示符里的路径，就是"相对路径从哪儿算起"的那个起点。</p>
+</blockquote>
+<p><strong>关掉它</strong>：直接打 <code>exit</code> 按回车，或者点右上角的 ×。<strong>放心，关掉命令行不会关机，也不会弄坏东西。</strong></p>
+<h3 id="84-四个最基础的命令">8.4 四个最基础的命令</h3>
+<p>在命令行里，<strong>打完命令必须按回车</strong>才会执行。这是新手最常忘的一步。</p>
+<h4 id="1dir-看这个目录里有什么">（1）<code>dir</code> —— 看这个目录里有什么</h4>
+<p><strong><code>dir</code></strong> = <strong>d</strong>irectory（目录）的缩写。</p>
+<div class="codehilite"><pre><span></span><code>C:\Users\小明&gt; dir
+</code></pre></div>
+
+<p>输出大概长这样：</p>
+<div class="codehilite"><pre><span></span><code> 驱动器 C 中的卷没有标签。
+ 卷的序列号是 1234-ABCD
+
+ C:\Users\小明 的目录
+
+2024/03/15  09:12    &lt;DIR&gt;          Desktop
+2024/03/15  09:12    &lt;DIR&gt;          Documents
+2024/03/15  09:12    &lt;DIR&gt;          Downloads
+2024/03/20  21:05             1,024 备注.txt
+2024/03/21  14:30             2,560 test.cpp
+               2 个文件          3,584 字节
+               3 个目录  98,765,432,100 可用字节
+</code></pre></div>
+
+<p><strong>怎么读这张表</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>你看到</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;DIR&gt;</code></td>
+<td>这一行是<strong>文件夹</strong>，不是文件</td>
+</tr>
+<tr>
+<td><code>备注.txt</code> <code>test.cpp</code></td>
+<td>这些是<strong>文件</strong></td>
+</tr>
+<tr>
+<td>中间那串数字</td>
+<td>文件大小（字节）</td>
+</tr>
+<tr>
+<td>最后两行</td>
+<td>统计：几个文件、几个目录、硬盘还剩多少空间</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>类比一下</strong>：<code>dir</code> 就等于你用鼠标打开一个文件夹、用眼睛看里面有什么。只不过这里是"用打字问它，它用文字回答你"。</p>
+</blockquote>
+<h4 id="2cd-换目录走到别的地方去">（2）<code>cd</code> —— 换目录（"走到别的地方去"）</h4>
+<p><strong><code>cd</code></strong> = <strong>c</strong>hange <strong>d</strong>irectory（改变目录）。<strong>这是四个命令里最重要的一个。</strong></p>
+<p><strong>用法一：往下走</strong></p>
+<div class="codehilite"><pre><span></span><code>C:\Users\小明&gt; cd Desktop
+</code></pre></div>
+
+<p>执行后，提示符变成：</p>
+<div class="codehilite"><pre><span></span><code>C:\Users\小明\Desktop&gt;
+</code></pre></div>
+
+<p>刚才你站在"小明"文件夹里，现在站到它下面的"桌面"里了。</p>
+<p><strong>用法二：往上退一步</strong></p>
+<div class="codehilite"><pre><span></span><code>C:\Users\小明\Desktop&gt; cd ..
+</code></pre></div>
+
+<p>提示符变回 <code>C:\Users\小明&gt;</code>。还记得第 4 节的 <code>..</code> 吗？就是"上一层"。</p>
+<p><strong>用法三：一步跳到任意位置（绝对路径）</strong></p>
+<div class="codehilite"><pre><span></span><code>C:\Users\小明&gt; cd C:\Users\小明\Documents
+</code></pre></div>
+
+<p>不管你原来站在哪，这一下就跳过去了。这就是<strong>绝对路径</strong>的好处。</p>
+<blockquote>
+<p>📌 <strong>为什么编程时天天用 <code>cd</code></strong>：因为编译器 <code>g++</code> 干活的地方就是"你当前站着的目录"。你得先 <code>cd</code> 到你的代码所在的文件夹，才能编译它。<strong>"先 cd 到代码所在的文件夹"是学 C++ 的第一个日常动作。</strong></p>
+</blockquote>
+<h4 id="3cls-清屏">（3）<code>cls</code> —— 清屏</h4>
+<p><strong><code>cls</code></strong> = <strong>cl</strong>ear <strong>s</strong>creen（清屏幕）。</p>
+<div class="codehilite"><pre><span></span><code>C:\Users\小明&gt; cls
+</code></pre></div>
+
+<p>执行后，满屏的字<strong>全都没了</strong>，只剩最上面一行干净的提示符。</p>
+<p><strong>别慌</strong>：它只是"擦干净白板"，<strong>没有删掉任何文件，也没有结束任何程序</strong>。只是让屏幕好看一点。</p>
+<h4 id="4exit-关掉命令行窗口">（4）<code>exit</code> —— 关掉命令行窗口</h4>
+<div class="codehilite"><pre><span></span><code>C:\Users\小明&gt; exit
+</code></pre></div>
+
+<p>窗口关闭。跟点 × 一样。</p>
+<h3 id="85-四个命令小结表">8.5 四个命令小结表</h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>全称</th>
+<th>干什么</th>
+<th>提示符会变吗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dir</code></td>
+<td>directory</td>
+<td>列出当前目录里的文件和文件夹</td>
+<td>不变</td>
+</tr>
+<tr>
+<td><code>cd 目标</code></td>
+<td>change directory</td>
+<td>换到另一个目录</td>
+<td><strong>会变</strong>（这是判断自己站对没有的方法）</td>
+</tr>
+<tr>
+<td><code>cls</code></td>
+<td>clear screen</td>
+<td>清空屏幕</td>
+<td>不变</td>
+</tr>
+<tr>
+<td><code>exit</code></td>
+<td>——</td>
+<td>关闭窗口</td>
+<td>窗口没了</td>
+</tr>
+</tbody>
+</table>
+<p><strong>通用小技巧</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>想干的事</th>
+<th>怎么做</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>重看刚才打过的命令</td>
+<td>按 <strong>↑ 上箭头</strong>（能翻历史记录，非常好用）</td>
+</tr>
+<tr>
+<td>命令打到一半想重来</td>
+<td>按 <code>Esc</code> 清空这一行</td>
+</tr>
+<tr>
+<td>补全文件/文件夹名字</td>
+<td>打前几个字母，按 <strong><code>Tab</code> 键</strong>，它会自动补全</td>
+</tr>
+<tr>
+<td>复制粘贴</td>
+<td>老的 cmd 里要用<strong>右键</strong>粘贴；PowerShell 里可以 <code>Ctrl+V</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="86-现在动手试一遍">8.6 现在动手试一遍</h3>
+<blockquote>
+<p><strong>动手 ⑤</strong>：打开 <code>cmd</code>，按顺序打下面这几条，每条打完按回车，注意<strong>提示符的变化</strong>：</p>
+<p><code>dir
+cd Desktop
+dir
+cd ..
+cls
+exit</code></p>
+<p><strong>重点观察</strong>：每次 <code>cd</code> 之后，提示符最前面那一串有没有变？这就是"你现在站在哪"。</p>
+<p>⚠️ <strong>如果提示 <code>系统找不到指定的路径</code></strong>：说明你打的目录名不存在（可能你电脑上的桌面文件夹不叫 <code>Desktop</code>，或者名字大小写有差）。没关系，打 <code>dir</code> 看看实际有哪些文件夹，照着抄一个名字进去。<strong>打错命令完全不会弄坏电脑，最坏的结果就是它说"找不到"，你再打一次。</strong></p>
+</blockquote>
+<hr />
+<h2 id="9-字符编码和乱码是怎么回事">9. 字符编码和乱码是怎么回事</h2>
+<h3 id="91-先看一个你一定遇到过的现象">9.1 先看一个你一定遇到过的现象</h3>
+<p>打开一个从网上下载的文本文件，里面是这样的：</p>
+<div class="codehilite"><pre><span></span><code>ÎÒ°®±à³Ì
+</code></pre></div>
+
+<p>或者这样的：</p>
+<div class="codehilite"><pre><span></span><code>æˆ‘çˆ±ç¼–ç¨‹
+</code></pre></div>
+
+<p>又或者是这样的：</p>
+<div class="codehilite"><pre><span></span><code>����
+</code></pre></div>
+
+<p><strong>这不是电脑坏了，也不是文件中毒了。</strong> 这是"编码不匹配"。</p>
+<h3 id="92-用密码本来理解">9.2 用"密码本"来理解</h3>
+<p>第 2 节说过：硬盘上存的其实全是数字（0 和 1），不存在"字"。</p>
+<p>那"字"是怎么变出来的？靠一本<strong>对照表</strong>：</p>
+<blockquote>
+<p><strong>一个数字 ↔ 一个字符</strong> 的对照关系，就叫<strong>字符编码</strong>（character encoding）。</p>
+</blockquote>
+<p>比方：电脑里存了一个数字 <code>65</code>。</p>
+<table>
+<thead>
+<tr>
+<th>你用的对照表</th>
+<th><code>65</code> 被读成什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>表 A</td>
+<td>字母 <code>A</code></td>
+</tr>
+<tr>
+<td>表 B</td>
+<td>某个汉字</td>
+</tr>
+<tr>
+<td>表 C</td>
+<td>某个符号</td>
+</tr>
+</tbody>
+</table>
+<p><strong>同一堆数字，用不同的"密码本"去读，得到完全不同的字。</strong> 这就是编码。</p>
+<blockquote>
+<p><strong>一句话：字符编码 = 电脑"数字 ↔ 文字"的翻译对照表。</strong></p>
+</blockquote>
+<h3 id="93-为什么会有好几本密码本">9.3 为什么会有好几本"密码本"</h3>
+<p>因为历史原因，不同地方各搞各的：</p>
+<table>
+<thead>
+<tr>
+<th>编码名</th>
+<th>谁在用</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ASCII</strong></td>
+<td>最早的，只管英文</td>
+<td>只够表示英文字母、数字、标点，<strong>装不下汉字</strong></td>
+</tr>
+<tr>
+<td><strong>GBK</strong></td>
+<td><strong>中文 Windows 的默认</strong></td>
+<td>能装汉字，是中国早年自己定的标准</td>
+</tr>
+<tr>
+<td><strong>UTF-8</strong></td>
+<td>现在国际上通用</td>
+<td>全世界的字都能装，<strong>是现在的推荐做法</strong></td>
+</tr>
+</tbody>
+</table>
+<p>ASCII 装不下汉字，所以中国必须自己再定一套（GBK）。后来大家都想统一，就有了 UTF-8。<strong>结果就是：老系统习惯用 GBK，新软件喜欢用 UTF-8，两边一见面就可能打架。</strong></p>
+<h3 id="94-于是就有了乱码">9.4 于是就有了乱码</h3>
+<p>回到中文 Windows 的场景：</p>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>用的密码本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>中文版 Windows 的命令行（cmd），默认</td>
+<td><strong>GBK</strong></td>
+</tr>
+<tr>
+<td>很多现代编辑器、编译器的输出，默认</td>
+<td><strong>UTF-8</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>一方用 GBK 写，另一方用 UTF-8 读 → 读出来的东西全是错的 → 乱码。</strong></p>
+<p>就像一个中国人用中文写了封信，收信人拿英文字典去查——每个符号都能查到一个"对应物"，但整句话毫无意义。</p>
+<p><strong>记住这个结论就够了</strong>：</p>
+<blockquote>
+<p><strong>乱码不是电脑坏了，是"读的时候用错了密码本"。</strong></p>
+</blockquote>
+<h3 id="95-顺手看一眼你电脑用的是哪本">9.5 顺手看一眼你电脑用的是哪本</h3>
+<blockquote>
+<p><strong>动手 ⑥</strong>：打开 <code>cmd</code>，输入这条命令：</p>
+<p><code>chcp</code></p>
+<p>你会看到类似这样的输出：</p>
+<p><code>活动代码页: 936</code></p>
+<p><strong><code>936</code> 就是 GBK 的编号</strong>（中文 Windows 的默认）。如果是 <code>65001</code>，那就是 UTF-8。</p>
+<p>想临时换成 UTF-8，可以输入 <code>chcp 65001</code>（<strong>临时生效</strong>，关掉窗口就恢复）。</p>
+</blockquote>
+<p><strong>现在不用去折腾这个。</strong> 你只需要建立一个认知：<strong>以后看到乱码，第一反应应该是"编码不匹配"，而不是"电脑坏了"。</strong> 具体怎么解决，等你真的遇到时再查也来得及。</p>
+<blockquote>
+<p>📌 <strong>提前打个预防针</strong>：学 C++ 的过程中你<strong>一定会</strong>遇到乱码，特别是程序输出中文的时候。到那时你至少知道该往哪个方向想。<strong>这是所有人都会经过的一关，不是你特别笨。</strong></p>
+</blockquote>
+<hr />
+<h2 id="10-我改了代码为什么运行结果没变">10. 我改了代码，为什么运行结果没变？</h2>
+<p>这是新手问得最多的一个问题。答案已经在第 7 节埋好了：</p>
+<blockquote>
+<p><strong>你改的是"菜谱"（<code>.cpp</code>），但你运行的是上次做好的"菜"（<code>.exe</code>）。菜不会因为你改了菜谱就自己变。</strong></p>
+</blockquote>
+<h3 id="101-完整的正确流程">10.1 完整的正确流程</h3>
+<p>每次改完代码，正确的顺序是：</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>做什么</th>
+<th>用鼠标的说法</th>
+<th>用命令行的说法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>改代码</td>
+<td>在编辑器里改，<strong>然后保存</strong>（<code>Ctrl+S</code>）</td>
+<td>保存</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>重新编译</strong></td>
+<td>点"编译"按钮</td>
+<td><code>g++ test.cpp -o test.exe</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>运行新的 exe</td>
+<td>双击新生成的 <code>.exe</code></td>
+<td><code>test.exe</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>第 2 步是新手最常漏掉的一步。</strong></p>
+<h3 id="102-为什么必须重新编译">10.2 为什么必须重新编译</h3>
+<p>因为 <code>.cpp</code> 和 <code>.exe</code> 是<strong>两个独立的文件</strong>：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>test.cpp</code></th>
+<th><code>test.exe</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>里面是什么</td>
+<td>你写的 C++ 文字</td>
+<td>翻译好的机器码</td>
+</tr>
+<tr>
+<td>谁生成</td>
+<td>你的键盘</td>
+<td>编译器</td>
+</tr>
+<tr>
+<td>改了代码后</td>
+<td>变了（新菜谱）</td>
+<td><strong>没变</strong>（还是上次那盘菜）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>编译器不会"盯着"你的文件自动重做。</strong> 除非你让它再翻一遍，否则 <code>.exe</code> 永远是你上次编译时的那个老版本。</p>
+<h3 id="103-一个很坑的细节双击了旧的-exe">10.3 一个很坑的细节：双击了"旧的 exe"</h3>
+<p>新手还常犯另一个错：</p>
+<table>
+<thead>
+<tr>
+<th>情况</th>
+<th>发生了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>你有两个 exe：<code>test.exe</code>（旧的）和 <code>test_new.exe</code>（新的）</td>
+<td>你双击的是<strong>旧的那个</strong></td>
+</tr>
+<tr>
+<td>你在别的文件夹里还留着一份老 exe</td>
+<td>你双击的是<strong>别的文件夹里那份</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>建议</strong>：编译前先看清楚输出文件的路径，运行前看清楚自己双击的是哪个文件。<strong>这条以后能帮你省下好几个小时的抓瞎。</strong></p>
+<h3 id="104-症状对照表">10.4 症状对照表</h3>
+<table>
+<thead>
+<tr>
+<th>你看到的现象</th>
+<th>大概率原因</th>
+<th>怎么办</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>改完代码，结果一模一样</td>
+<td><strong>没重新编译</strong></td>
+<td>再编译一次</td>
+</tr>
+<tr>
+<td>编译了，还是老的</td>
+<td>编译器报错了，<strong>旧的 exe 还在</strong>，你又双击了它</td>
+<td>看编译输出，有没有 <code>error</code></td>
+</tr>
+<tr>
+<td>双击 exe 一闪而过</td>
+<td>程序跑完就自动关了（正常行为）</td>
+<td>在命令行里运行它，就能看到输出</td>
+</tr>
+<tr>
+<td>双击 exe 没反应</td>
+<td><strong>你双击的可能是 <code>.cpp</code></strong></td>
+<td>检查扩展名（第 3 节）</td>
+</tr>
+<tr>
+<td>提示"拒绝访问"</td>
+<td>程序可能还在运行</td>
+<td>去任务管理器结束它（第 6 节）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>第 2 行特别重要</strong>：编译失败了，<strong>上次那个旧的 <code>.exe</code> 还留在硬盘上</strong>。你双击它，当然还是老结果——于是你以为"改了没用"，其实是新的根本没生成出来。</p>
+<blockquote>
+<p>📌 <strong>养成一个习惯</strong>：编译之后，<strong>看一眼有没有报错</strong>。没有报错，才去运行。这个习惯会让你少走无数弯路。</p>
+</blockquote>
+<hr />
+<h2 id="11-一页速查表">11. 一页速查表</h2>
+<p>把这篇的核心结论压成一张表，忘了就回来翻：</p>
+<table>
+<thead>
+<tr>
+<th>名词</th>
+<th>一句话解释</th>
+<th>厨房比方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CPU</strong></td>
+<td>真正负责"算"的部件</td>
+<td>灶台</td>
+</tr>
+<tr>
+<td><strong>内存</strong></td>
+<td>临时放正在处理的东西，<strong>断电就没</strong></td>
+<td>料理台面</td>
+</tr>
+<tr>
+<td><strong>硬盘</strong></td>
+<td>长期存放东西，<strong>断电还在</strong></td>
+<td>冰箱 / 柜子</td>
+</tr>
+<tr>
+<td><strong>文件</strong></td>
+<td>硬盘上一整块有名字的数据</td>
+<td>一个贴了标签的保鲜盒</td>
+</tr>
+<tr>
+<td><strong>主名 + 扩展名</strong></td>
+<td>主名给人看，扩展名告诉电脑用什么打开</td>
+<td>标签 + 盒子颜色</td>
+</tr>
+<tr>
+<td><strong>文件夹 / 目录</strong></td>
+<td>装文件和文件夹的"抽屉"</td>
+<td>抽屉</td>
+</tr>
+<tr>
+<td><strong>路径</strong></td>
+<td>文件的快递地址，一层层写到文件</td>
+<td>中国 → 江苏 → 南京 → 3 栋 502</td>
+</tr>
+<tr>
+<td><strong>绝对路径</strong></td>
+<td>从盘符算起，走到哪都有效</td>
+<td>完整地址</td>
+</tr>
+<tr>
+<td><strong>相对路径</strong></td>
+<td>从"当前位置"算起</td>
+<td>"往前走到第二个路口左转"</td>
+</tr>
+<tr>
+<td><strong>程序</strong></td>
+<td>硬盘上的一个文件，里面是给 CPU 的指令</td>
+<td>抽屉里的菜谱</td>
+</tr>
+<tr>
+<td><strong><code>.exe</code></strong></td>
+<td>可执行文件，双击会<strong>真的运行</strong></td>
+<td>做好的菜</td>
+</tr>
+<tr>
+<td><strong><code>.cpp</code></strong></td>
+<td>C++ 源代码，给人看的文字，双击<strong>不会运行</strong></td>
+<td>写在纸上的菜谱</td>
+</tr>
+<tr>
+<td><strong>进程</strong></td>
+<td>程序跑起来之后，活在内存里的那个"活的它"</td>
+<td>正在灶台上炒的那锅</td>
+</tr>
+<tr>
+<td><strong>任务管理器</strong></td>
+<td><code>Ctrl+Shift+Esc</code>，看谁在吃资源，能杀掉卡死的进程</td>
+<td>厨房监控 + 紧急刹车</td>
+</tr>
+<tr>
+<td><strong>代码</strong></td>
+<td>用编程语言写的、给电脑的指令单</td>
+<td>菜谱全文</td>
+</tr>
+<tr>
+<td><strong>编程语言</strong></td>
+<td>人和电脑之间的"中间语言"</td>
+<td>中文和英文之间的通用语</td>
+</tr>
+<tr>
+<td><strong>编译器</strong></td>
+<td>把 C++ 翻译成机器码的"翻译官"（它本身也是个程序）</td>
+<td>坐在中间的翻译</td>
+</tr>
+<tr>
+<td><strong>命令行 / 终端</strong></td>
+<td>用打字代替点鼠标的窗口</td>
+<td>对着对讲机下命令</td>
+</tr>
+<tr>
+<td><strong>字符编码</strong></td>
+<td>"数字 ↔ 文字"的对照表</td>
+<td>密码本</td>
+</tr>
+<tr>
+<td><strong>乱码</strong></td>
+<td>用错了密码本，不是电脑坏了</td>
+<td>拿英文字典读中文信</td>
+</tr>
+</tbody>
+</table>
+<p><strong>六个命令，记住就够用</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>干什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ctrl + Shift + Esc</code></td>
+<td>打开任务管理器</td>
+</tr>
+<tr>
+<td><code>Win + E</code></td>
+<td>打开文件资源管理器</td>
+</tr>
+<tr>
+<td><code>dir</code></td>
+<td>看当前目录里有什么</td>
+</tr>
+<tr>
+<td><code>cd 目标</code></td>
+<td>换目录</td>
+</tr>
+<tr>
+<td><code>cls</code></td>
+<td>清屏</td>
+</tr>
+<tr>
+<td><code>exit</code></td>
+<td>关掉命令行窗口</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="12-动手清单读完请做完这-10-件事">12. 动手清单：读完请做完这 10 件事</h2>
+<p><strong>光读不做，等于没读。</strong> 下面这 10 件事，每件都不超过 5 分钟，请全部做一遍：</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>做什么</th>
+<th>对应小节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>打开<strong>文件资源管理器</strong>，把<strong>文件扩展名</strong>显示出来，然后随便看 5 个文件的后缀</td>
+<td>第 3 节</td>
+</tr>
+<tr>
+<td>2</td>
+<td>在地址栏点一下，看一个完整<strong>路径</strong>长什么样，认出哪几段是文件夹、哪段是文件名</td>
+<td>第 4 节</td>
+</tr>
+<tr>
+<td>3</td>
+<td>按 <code>Ctrl + Shift + Esc</code> 打开<strong>任务管理器</strong>，按内存排序，找出最占内存的进程</td>
+<td>第 6 节</td>
+</tr>
+<tr>
+<td>4</td>
+<td>开一个记事本，回任务管理器里找到它的进程；关掉记事本，看它消失</td>
+<td>第 6 节</td>
+</tr>
+<tr>
+<td>5</td>
+<td>打开 <code>cmd</code>，依次输入 <code>dir</code>、<code>cd Desktop</code>、<code>dir</code>、<code>cd ..</code>、<code>cls</code>、<code>exit</code>，注意提示符变化</td>
+<td>第 8 节</td>
+</tr>
+<tr>
+<td>6</td>
+<td>在 <code>cmd</code> 里输入 <code>chcp</code>，看你电脑的代码页是 936 还是 65001</td>
+<td>第 9 节</td>
+</tr>
+<tr>
+<td>7</td>
+<td>随便找一个 <code>.txt</code> 文件，右键 → 属性，看"类型"和"位置"两项</td>
+<td>第 2 节</td>
+</tr>
+<tr>
+<td>8</td>
+<td>在桌面上新建一个文件夹，名字用<strong>纯英文 + 下划线</strong>（比如 <code>cpp_learn</code>），<strong>不要有空格</strong></td>
+<td>第 4 节</td>
+</tr>
+<tr>
+<td>9</td>
+<td>在命令行里 <code>cd</code> 到你刚才建的那个文件夹，用 <code>dir</code> 确认自己站对了地方</td>
+<td>第 4、8 节</td>
+</tr>
+<tr>
+<td>10</td>
+<td>用自己的话，<strong>跟别人（或者跟自己）讲一遍</strong>："为什么双击 <code>.cpp</code> 不会运行？"</td>
+<td>第 5、7 节</td>
+</tr>
+</tbody>
+</table>
+<p><strong>第 10 条是最重要的。</strong> 如果你能顺畅地跟一个完全不懂电脑的人讲清楚这件事，说明这一篇你真的读进去了。</p>
+<hr />
+<h2 id="最后几句话">最后几句话</h2>
+<p>你可能会觉得，这篇讲的东西"好像都很基础"。<strong>对，它们就是很基础。但这正是它们重要的原因。</strong></p>
+<p>后面第 1 章讲义里会出现这些词：源代码、编译器、可执行文件、编译错误、链接错误、运行时错误、命令行、<code>g++</code>。<strong>你现在已经全部见过它们了</strong>，而且知道每一个"是什么、为什么要它"。</p>
+<p>所以翻开第 1 章的时候，你会有一种感觉：</p>
+<blockquote>
+<p>"哦，这些东西在讲什么，我知道。"</p>
+</blockquote>
+<p><strong>这就是这篇材料存在的意义。</strong></p>
+<p>最后一句：<strong>看得懂不等于会做，会做不等于做熟。</strong> 上面那 10 件事，挑今天做完。做完之后，你就是真的"起飞"了。</p>
+<p>加油，一步一步来就行。 🌱</p>
+<div class="pager"><a class="prev" href="../附录/术语表.html">← 上一页：术语表</a><a class="next" href="../讲义/第01章-预备知识.html">下一页：第01章-预备知识 →</a></div>
+<div class="footer"><a href="../index.html">← 返回总目录</a></div>
+</article></main>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('themeBtn');
+  function sync(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    btn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    btn.title = (t === 'dark') ? '切换到浅色' : '切换到深色';
+  }
+  btn.addEventListener('click', function(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    t = (t === 'dark') ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    try{ localStorage.setItem('cppcourse-theme', t); }catch(e){}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>
