@@ -377,10 +377,10 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#实验-a忘了结构声明后面那个分号">实验 A：忘了结构声明后面那个分号</a></li>
 <li><a href="#实验-b结构能整体赋值数组不能">实验 B：结构能整体赋值，数组不能</a></li>
 <li><a href="#实验-cstruct-和-union-的内存差别">实验 C：struct 和 union 的内存差别</a></li>
-<li><a href="#实验-d枚举的取值范围怎么影响它的大小">实验 D：枚举的取值范围怎么影响它的大小</a></li>
+<li><a href="#实验-d枚举量与实际存储大小">实验 D：枚举量与实际存储大小</a></li>
 </ul>
 </li>
-<li><a href="#二任务-3复习题教材-p123">二、任务 3：复习题（教材 p123）</a><ul>
+<li><a href="#二任务-3复习题教材第-4-章-412pdf-p140-起">二、任务 3：复习题（教材第 4 章 4.12，PDF p140 起）</a><ul>
 <li><a href="#第-8-题设计一个描述鱼的结构声明">第 8 题：设计一个描述鱼的结构声明</a></li>
 <li><a href="#第-9-题声明该结构的变量并初始化">第 9 题：声明该结构的变量并初始化</a></li>
 <li><a href="#第-10-题用-enum-定义一个名为-response-的类型">第 10 题：用 enum 定义一个名为 Response 的类型</a></li>
@@ -393,14 +393,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div><h1 id="第-04-章-b-复习题-参考答案">第 04 章 B 复习题 · 参考答案</h1>
 <blockquote>
 <p><strong>教材附录 J（p933）有官方答案，建议先自己做完再对照。</strong></p>
-<p><strong>说明</strong>：本课练习的题目是教材 p123 复习题的第 8、9、10 题。
+<p><strong>说明</strong>：本课练习选自教材第 4 章 4.12 复习题（PDF p140 起）的第 8、9、10 题。
 这三题<strong>此前没有任何作答记录</strong>（答案是空的），所以本文件的结构是
 「<strong>参考答案 + 讲解</strong>」，没有「原始作答记录 / 核对结果 / 订正说明」这几节。
 拿不准的地方会明确写出「此处建议对照教材附录 J 核对」，不会硬编。</p>
 <p>全部结论都在本机实测过：<strong>GCC 8.1.0（MinGW-w64）</strong>，
 编译选项 <code>-std=c++17 -Wall -Wextra</code>。</p>
 </blockquote>
-<p><strong>本文件覆盖</strong>：任务 2 的 4 个实验、任务 3 的 3 道复习题（教材 p123）。
+<p><strong>本文件覆盖</strong>：任务 2 的 4 个实验、任务 3 的 3 道复习题（教材第 4 章 4.12）。
 配套代码在 <a href="代码/"><code>代码/</code></a> 目录下（<code>ex5.cpp</code>、<code>ex6.cpp</code>、<code>ex7.cpp</code>）。</p>
 <hr />
 <h2 id="一任务-2-的-4-个实验">一、任务 2 的 4 个实验</h2>
@@ -452,8 +452,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <p><strong>一句话解释：为什么结构可以、数组不行？</strong></p>
 <blockquote>
-<p><strong>数组名在多数场合会"退化成地址"，而地址不能当值赋给另一个数组；
-结构是一个完整的值，所以能整体复制。</strong></p>
+<p><strong>内置数组类型不支持整体赋值；结构类型通常支持成员复制。</strong></p>
 </blockquote>
 <p><strong>把 <code>b = a;</code> 注释掉还能不能编译通过？</strong></p>
 <p><strong>能。</strong> 把那一行注释掉以后，程序 0 错误 0 警告通过。
@@ -464,12 +463,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </ul>
 <p><strong>讲解：为什么会有这个差别？</strong></p>
 <ul>
-<li><strong>数组</strong>：<code>int a[3];</code> 里的 <code>a</code>，在大多数用到它的地方，
-  编译器会把它<strong>当成"第一个元素的地址"</strong>来用，而不是当成"装着 3 个整数的盒子"。
-  地址是一个位置编号，你没法把「一个位置」整个塞进「另一个位置」，
-  所以 <code>b = a;</code> 被直接拒绝。
-  （这也是为什么数组不能"整体赋值"、不能"整体当函数参数传进去"——
-  传进去的其实是地址。）</li>
+<li><strong>数组</strong>：<code>int a[3]</code> 的类型是数组，而不是指针。数组在很多表达式中会转换为首元素地址，
+  但 <code>b = a</code> 报错的直接原因是<strong>内置数组没有整体赋值运算</strong>。数组作函数参数的规则会在指针章节详讲。</li>
 <li><strong>结构</strong>：<code>Point p1;</code> 里的 <code>p1</code> <strong>不是地址</strong>，它是一个实实在在的盒子，
   里面装着 <code>x</code> 和 <code>y</code>。盒子可以整个搬走，所以 <code>p2 = p1;</code> 合法，
   编译器会<strong>逐个成员</strong>帮你复制过去。</li>
@@ -485,7 +480,7 @@ p2 = (3, 4)   &lt;- 从 p1 复制来的
 
 <blockquote>
 <p>📌 <strong>地址这件事，是第 4 章 C「指针与自由存储空间」的核心内容。</strong>
-现在记住结论就够了：<strong>数组名 ≈ 地址，结构名 = 一整个值</strong>。
+现在记住结论就够了：<strong>数组不可整体赋值，结构可以整体赋值</strong>。
 如果这里只是死记硬背，到了指针那一课会很吃力——
 建议现在就把它当成一个"待解释的疑问"存着，那正是下一课要回答的问题。</p>
 </blockquote>
@@ -538,7 +533,7 @@ sizeof(U) = 16
 </tr>
 <tr>
 <td><code>union U</code> 实测</td>
-<td>= 最大成员 →</td>
+<td>本机恰好等于最大成员 →</td>
 <td><strong>16</strong></td>
 </tr>
 </tbody>
@@ -565,7 +560,7 @@ sizeof(U) = 16
 <p><strong>用一句话说出 <code>struct</code> 和 <code>union</code> 的根本区别：</strong></p>
 <blockquote>
 <p><strong><code>struct</code> 的成员各占一块内存（大小 = 各成员之和 + 对齐空隙）；
-<code>union</code> 的成员共用一块内存（大小 = 最大成员）。</strong></p>
+<code>union</code> 的成员共用一块内存（大小至少容纳最大成员，可能受对齐影响）。</strong></p>
 </blockquote>
 <p><strong>再补一个对比图：</strong></p>
 <div class="codehilite"><pre><span></span><code>union U { int i; double d; char c[16]; }
@@ -583,14 +578,14 @@ sizeof(U) = 16
 <p><strong>怎么在代码里亲眼看到"起始地址相同"？</strong></p>
 <p>取 <code>&amp;u.i</code>、<code>&amp;u.d</code>、<code>&amp;u.c[0]</code> 打印出来，三个地址是<strong>完全一样</strong>的
 （<code>示例代码/04_结构共用体枚举/05_union.cpp</code> 里打印了 <code>&amp;v.i</code> 和 <code>&amp;v.d</code>，
-实测都是 <code>0x61fe48</code>）。</p>
+两者地址相同；具体地址每次运行可能不同）。</p>
 <blockquote>
 <p>⚠️ <strong>提醒</strong>：<code>sizeof(struct S)</code> 里的那个 <code>32</code> 是本机、本编译器的实测值。
 <strong>换个编译器或平台可能不同</strong>（对齐规则不完全是语言规定的）。
 所以不要拿结构大小去写死数字。</p>
 </blockquote>
 <hr />
-<h3 id="实验-d枚举的取值范围怎么影响它的大小">实验 D：枚举的取值范围怎么影响它的大小</h3>
+<h3 id="实验-d枚举量与实际存储大小">实验 D：枚举量与实际存储大小</h3>
 <p><strong>参考答案</strong></p>
 <p><strong>实测输出</strong>（GCC 8.1.0 / MinGW-w64）：</p>
 <div class="codehilite"><pre><span></span><code>sizeof(E1) = 4
@@ -599,55 +594,37 @@ sizeof(E3) = 8
 </code></pre></div>
 
 <p><strong>这说明了什么？</strong></p>
-<p>它正好对应教材 4.6.2（p113–114）那条<strong>取值范围规则</strong>，逐条对：</p>
+<p>这里要分清<strong>枚举量的数值</strong>和<strong>枚举对象的字节数</strong>：</p>
 <table>
 <thead>
 <tr>
 <th>枚举</th>
-<th>最大枚举量</th>
-<th>按规则算出的取值范围</th>
-<th>需要多大空间</th>
-<th>实测</th>
+<th style="text-align: right;">最大枚举量</th>
+<th style="text-align: right;">本机 <code>sizeof</code></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>E1 { a1, a2 }</code></td>
-<td>1</td>
-<td>上限 = 2¹−1 = <strong>1</strong>，下限 0 → <code>0..1</code></td>
-<td>1 个比特就够</td>
-<td><strong>4 字节</strong></td>
+<td><code>E1</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4 字节</td>
 </tr>
 <tr>
-<td><code>E2 { b1, b2 = 1000 }</code></td>
-<td>1000</td>
-<td>上限 = 2¹⁰−1 = <strong>1023</strong> → <code>0..1023</code></td>
-<td>2 字节够</td>
-<td><strong>4 字节</strong></td>
+<td><code>E2</code></td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">4 字节</td>
 </tr>
 <tr>
-<td><code>E3 { c1, c2 = 5000000000LL }</code></td>
-<td>5000000000</td>
-<td>上限 = 2³³−1 → 需要 <strong>64 位</strong></td>
-<td>8 字节</td>
-<td><strong>8 字节</strong></td>
+<td><code>E3</code></td>
+<td style="text-align: right;">5000000000</td>
+<td style="text-align: right;">8 字节</td>
 </tr>
 </tbody>
 </table>
-<p><strong>结论</strong>：<strong>枚举的大小由"装得下它的取值范围"决定</strong>，
-而取值范围由"最大（和最小）枚举量"按那条规则推出来。</p>
-<ul>
-<li><code>E3</code> 里的 <code>5000000000</code> 已经超出了 32 位 <code>int</code> 能表示的范围
-  （<code>int</code> 最大约 21 亿），所以编译器必须给它一个 64 位的底层类型 → <code>sizeof</code> 变 8。
-  这就是题目特意让你写 <code>LL</code> 后缀的原因。</li>
-<li><code>E1</code> / <code>E2</code> 都只需要 32 位以内，所以都是 4 字节。</li>
-</ul>
-<p><strong>追问：既然 <code>E1</code> 里的最大值只有 1，为什么它没有变成 1 字节？</strong></p>
-<p>因为<strong>"能装下"只是必要条件，编译器还有选择余地</strong>。
-C++ 只要求"底层类型必须能表示所有枚举量的值"，<strong>没有要求"必须选最小的那个"</strong>。
-GCC 在这里统一选了 <code>unsigned int</code>（4 字节）。</p>
+<p>未指定底层类型时，编译器选择能够容纳所有枚举量的整数类型；语言<strong>不要求选择最小的类型</strong>。<code>E3</code> 的大数值需要比本机 32 位整数更大的类型。<code>E1</code> 与 <code>E2</code> 在本机都是 4 字节，只是这个编译器的选择，换个平台可能不同。</p>
+<p><strong>追问：<code>E1</code> 的最大值只有 1，却在本机占 4 字节，是否违规？</strong> 没有；能够容纳枚举量即可。</p>
 <blockquote>
-<p>📌 <strong>所以：不要用 <code>sizeof(枚举)</code> 做任何假设</strong>。
+<p>📌 <strong>所以：不要从枚举量的个数或最大值推断固定的 <code>sizeof</code></strong>。
 如果你确实需要一个 1 字节的枚举（比如要往文件里写固定格式的数据），
 C++11 允许你<strong>显式指定底层类型</strong>：
 <code>cpp
@@ -656,7 +633,7 @@ enum class Priority : unsigned char { low, mid, high };   // 明确要求 1 字�
 实测都是 4。）</p>
 </blockquote>
 <hr />
-<h2 id="二任务-3复习题教材-p123">二、任务 3：复习题（教材 p123）</h2>
+<h2 id="二任务-3复习题教材第-4-章-412pdf-p140-起">二、任务 3：复习题（教材第 4 章 4.12，PDF p140 起）</h2>
 <h3 id="第-8-题设计一个描述鱼的结构声明">第 8 题：设计一个描述鱼的结构声明</h3>
 <p><strong>题目</strong>：设计一个描述<strong>鱼</strong>的结构声明。结构中应当包括<strong>品种</strong>、<strong>重量</strong>（整数，单位为盎司）和<strong>长度</strong>（英寸，包括小数）。</p>
 <p><strong>参考答案</strong></p>
@@ -898,14 +875,14 @@ Point3 p = {100, 3, 4};     // 本意是 (3, 4, 100)，手滑写反了</code>
 <p><strong>数组不能整体赋值，结构可以。</strong>
    <code>int b[3]; b = a;</code> → <code>error: invalid array assignment</code>；
    <code>Point p2; p2 = p1;</code> → 完全合法，而且是<strong>复制</strong>不是共享。
-   原因：<strong>数组名在多数场合会退化成地址，结构是一整个值。</strong>
+   原因：<strong>内置数组不支持整体赋值，结构通常支持成员复制。</strong>
    （地址到底是什么，第 4 章 C 会讲透。）</p>
 </li>
 <li>
 <p><strong><code>struct</code> 各占一块，<code>union</code> 共用一块。</strong>
    同一批成员 <code>int i; double d; char c[16];</code>：
-   <code>struct</code> 是 <strong>32</strong> 字节（28 + 4 对齐空隙），<code>union</code> 是 <strong>16</strong> 字节（最大成员）。
-   而 <code>union</code> 读"不是最后写入的那个成员"<strong>不会报错，只会给垃圾值</strong>。</p>
+   在本机，<code>struct</code> 是 <strong>32</strong> 字节（28 + 4 对齐空隙），<code>union</code> 是 <strong>16</strong> 字节（足以容纳最大成员）。
+   <code>union</code> 应只读取当前活动的成员；读取非活动成员的结果不受标准保证。</p>
 </li>
 </ol>
 <hr />

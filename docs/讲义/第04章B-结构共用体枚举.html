@@ -404,11 +404,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#73-遍历找最高分经典套路值得背下来">7.3 遍历找最高分（经典套路，值得背下来）</a></li>
 <li><a href="#81-什么是位字段">8.1 什么是位字段</a></li>
 <li><a href="#82-位字段有三个坑">8.2 位字段有三个坑</a></li>
-<li><a href="#83-一个有意思的实测发现位字段溢出会报警告">8.3 ⭐ 一个有意思的实测发现：位字段溢出会报警告</a></li>
-<li><a href="#84-和数组越界对比一个会警告一个连警告都没有">8.4 ⭐ 和「数组越界」对比：一个会警告，一个连警告都没有</a></li>
+<li><a href="#83-可选实验给位字段赋超出范围的值">8.3 可选实验：给位字段赋超出范围的值</a></li>
+<li><a href="#84-警告是帮助不是越界检测的保证">8.4 警告是帮助，不是越界检测的保证</a></li>
 <li><a href="#85-要不要用位字段">8.5 要不要用位字段？</a></li>
 <li><a href="#91-一句话说明">9.1 一句话说明</a></li>
-<li><a href="#92-实测大小等于最大的那个成员">9.2 实测：大小等于最大的那个成员</a></li>
+<li><a href="#92-实测共用体要容纳最大的成员">9.2 实测：共用体要容纳最大的成员</a></li>
 <li><a href="#93-struct-和-union-的内存差别必须看懂的图">9.3 ⭐ struct 和 union 的内存差别（必须看懂的图）</a></li>
 <li><a href="#94-什么是内存对齐">9.4 什么是「内存对齐」</a></li>
 <li><a href="#95-共用体的核心特点写一个覆盖其他">9.5 共用体的核心特点：写一个，覆盖其他</a></li>
@@ -421,7 +421,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#104-枚举量就是整数">10.4 枚举量就是整数</a></li>
 <li><a href="#105-枚举的取值范围与底层类型教材-462p113114">10.5 枚举的取值范围与「底层类型」（教材 4.6.2，p113–114）</a><ul>
 <li><a href="#先说什么叫底层类型">先说什么叫「底层类型」</a></li>
-<li><a href="#取值范围规则">取值范围规则</a></li>
+<li><a href="#取值范围和-sizeof-不是同一件事">取值范围和 sizeof 不是同一件事</a></li>
 </ul>
 </li>
 <li><a href="#106-一个要注意的地方名字污染">10.6 ⚠️ 一个要注意的地方：名字污染</a></li>
@@ -530,9 +530,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <td>第 10.5 节</td>
 </tr>
 <tr>
-<td>4.7 复习题 / 4.8 编程练习</td>
-<td>p123–124</td>
-<td>做练习</td>
+<td>4.12 复习题 / 4.13 编程练习</td>
+<td>p140 起</td>
+<td>选做与本课相关的题</td>
 <td>见 <code>练习/</code> 和 <code>参考答案/</code></td>
 </tr>
 </tbody>
@@ -885,25 +885,16 @@ p2 = (3, 4)   &lt;- 从 p1 复制来的
 （「共享」是另一个东西，本课第 9 节的 <code>union</code> 才是真共享。）</p>
 </blockquote>
 <h2 id="52-为什么数组不行结构行">5.2 ⭐ 为什么数组不行、结构行？</h2>
-<p>这一句解释要记牢：</p>
-<blockquote>
-<p><strong>数组名在多数场合会「退化成地址」，而地址不能当值赋给另一个数组；
-结构是一个完整的值，所以能整体复制。</strong></p>
-</blockquote>
-<p>拆开来说：</p>
+<p>准确的原因是：<strong>内置数组类型不支持整体赋值，结构类型通常支持。</strong></p>
 <ul>
-<li><strong>数组</strong>：<code>int a[3];</code> 里的 <code>a</code>，在大多数用到它的地方，编译器会把它<strong>当成"第一个元素的地址"来用</strong>，
-  而不是当成"装着 3 个整数的那个盒子"。
-  地址是个位置编号，你没法把「一个位置」整个塞进「另一个位置」里，
-  所以 <code>b = a;</code> 编译器直接拒绝。</li>
-<li><strong>结构</strong>：<code>Point p1;</code> 里的 <code>p1</code> <strong>不是地址</strong>，它是一个实实在在的盒子，
-  里面装着 <code>x</code> 和 <code>y</code>。盒子可以整个搬走，所以 <code>p2 = p1;</code> 合法，
-  编译器会<strong>逐个成员</strong>帮你复制过去。</li>
+<li><code>int a[3]</code> 的类型仍然是「含 3 个 <code>int</code> 的数组」，并不等同于指针。
+  数组在许多表达式中会转换为首元素的地址，但这不是 <code>b = a</code> 报错的理由；
+  <code>b</code> 这个数组本身不能作为整体赋值的目标。</li>
+<li><code>Point</code> 是结构类型，<code>p2 = p1</code> 会复制成员；修改 <code>p2.x</code> 不影响 <code>p1.x</code>。</li>
 </ul>
 <blockquote>
-<p>📌 <strong>地址这件事，是第 4 章 C「指针与自由存储空间」要讲透的核心内容。</strong>
-现在只需要记住这个结论：<strong>数组名 ≈ 地址，结构名 = 一整个值</strong>。
-到了那一课你会彻底明白为什么。</p>
+<p>📌 后续指针章节会详细讲「数组在什么场合转换为指针」。此处先记住：
+<strong>数组不可整体赋值，结构可以整体赋值</strong>。</p>
 </blockquote>
 <h2 id="53-值语义是个好东西">5.3 「值语义」是个好东西</h2>
 <p>「结构是完整的值」带来一串好处，这就是教材 4.4.4 想说的：
@@ -982,7 +973,7 @@ p2 = (3, 4)   &lt;- 从 p1 复制来的
 长度也不必提前写死。所以拿它当结构成员特别省心。</p>
 </blockquote>
 <p>跑 <code>示例代码/04_结构共用体枚举/04_struct_string_bitfield.cpp</code>，还能看到整体复制也正常：</p>
-<div class="codehilite"><pre><span></span><code>Person q = p; 再改 q.name 之后：p.name = Li Ming, q.name = Wang Fang   &lt;- 各有一份
+<div class="codehilite"><pre><span></span><code>p.name = Li Ming, q.name = Wang Fang
 </code></pre></div>
 
 <h2 id="62-成员几乎可以是任何类型">6.2 成员几乎可以是任何类型</h2>
@@ -1089,10 +1080,10 @@ Zhang Wei       18      95.5
 <p>语法就是：<strong><code>类型 成员名 : 位数;</code></strong></p>
 <p>实测（<code>示例代码/04_结构共用体枚举/04_struct_string_bitfield.cpp</code>）：</p>
 <div class="codehilite"><pre><span></span><code>sizeof(Date) = 4 字节
-  若用三个普通 int 存，要 12 字节
+sizeof(三个 unsigned int) = 12 字节
 </code></pre></div>
 
-<p>5 + 4 + 12 = 21 比特，一个 4 字节（32 比特）的 <code>unsigned int</code> 就装得下，所以是 4 字节。</p>
+<p>5 + 4 + 12 = 21 比特，在这台机器上 <code>Date</code> 占 4 字节。<strong>布局与最终大小由实现决定</strong>，不能据此推断所有平台的结果。</p>
 <blockquote>
 <p>💡 <strong>生活化的比方</strong>：位字段就像<strong>一份表格里留出"几格"给某一项</strong>。
 明明只需要填「0～31」这么小的数，你却给它留了一整页纸，是浪费；
@@ -1121,9 +1112,8 @@ Zhang Wei       18      95.5
 </tr>
 </tbody>
 </table>
-<h2 id="83-一个有意思的实测发现位字段溢出会报警告">8.3 ⭐ 一个有意思的实测发现：位字段溢出<strong>会</strong>报警告</h2>
-<p>我们本来以为位字段溢出是「静默截断」（就是悄悄给你改掉、什么都不说）。
-<strong>实测：编译器会警告。</strong></p>
+<h2 id="83-可选实验给位字段赋超出范围的值">8.3 可选实验：给位字段赋超出范围的值</h2>
+<p>正常示例只使用有效值，编译时应无警告。想观察超范围赋值，可复制示例到自己的实验文件，再加上：</p>
 <div class="codehilite"><pre><span></span><code><span class="n">Date</span><span class="w"> </span><span class="n">d2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">};</span>
 <span class="n">d2</span><span class="p">.</span><span class="n">day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40</span><span class="p">;</span><span class="w">              </span><span class="c1">// 5 位最大只能到 31</span>
 </code></pre></div>
@@ -1132,7 +1122,7 @@ Zhang Wei       18      95.5
          changes value from '40' to '8' [-Woverflow]
 </code></pre></div>
 
-<p>值被截断成 <code>8</code>（40 − 32），<strong>而且编译器提前提醒了你</strong>。</p>
+<p>在当前 GCC 上，这段实验会报告 <code>-Woverflow</code>，并把 40 转换为 8。<strong>诊断是否出现、文本如何写，取决于编译器和选项。</strong> 不要依赖超出位宽后的值来表示有效日期。</p>
 <blockquote>
 <p>💡 <strong>这条警告怎么读？</strong> 三句话：
 1. <code>conversion from 'unsigned int' to 'unsigned char:5'</code>
@@ -1142,34 +1132,8 @@ Zhang Wei       18      95.5
 3. <code>[-Woverflow]</code> ——「这属于 overflow（溢出）这一类警告」，
    以后想单独关掉或打开它，就用这个名字。</p>
 </blockquote>
-<h2 id="84-和数组越界对比一个会警告一个连警告都没有">8.4 ⭐ 和「数组越界」对比：一个会警告，一个连警告都没有</h2>
-<p>这个对比很有教学价值：</p>
-<table>
-<thead>
-<tr>
-<th>情形</th>
-<th>编译器会不会提醒</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>位字段装不下</strong></td>
-<td><strong>会</strong>，给出 <code>-Woverflow</code> 警告，还告诉你值会变成多少</td>
-</tr>
-<tr>
-<td><strong>数组越界</strong></td>
-<td><strong>不会</strong>（连警告都没有 —— 这才是最危险的）</td>
-</tr>
-</tbody>
-</table>
-<p>实测：<code>int a[3]; a[7] = 100;</code> 用 <code>-Wall -Wextra</code> 编译，<strong>一条警告都没有</strong>，
-程序照常跑，结果只是数据悄悄坏掉。</p>
-<blockquote>
-<p>📌 <strong>结论</strong>：<strong>警告不是噪音，是编译器在帮你。</strong>
-而且注意——<code>-Woverflow</code> 这一类警告<strong>就算你不加 <code>-Wall</code> 也照样会出现</strong>，
-因为它是 GCC 默认就开的基本警告。
-所以你看到警告时，<strong>先别急着忽略，读一读它说了什么</strong>。</p>
-</blockquote>
+<h2 id="84-警告是帮助不是越界检测的保证">8.4 警告是帮助，不是越界检测的保证</h2>
+<p>这台机器上的 GCC 对上面写死的 <code>40</code> 给出了警告；其他编译器或把数值改为运行时输入时，诊断可能不同。数组越界也不能单靠警告判断是否安全。写程序时应自行检查范围；看到警告要读懂原因并处理。</p>
 <h2 id="85-要不要用位字段">8.5 要不要用位字段？</h2>
 <p><strong>日常几乎用不到。</strong> 你只需要<strong>认识这种写法</strong>，能读懂别人的代码就够了。
 真正需要精确控制「每个字节怎么用」的场合（比如网络协议、嵌入式）才会用到它。</p>
@@ -1181,7 +1145,6 @@ Zhang Wei       18      95.5
 <div class="codehilite"><pre><span></span><code><span class="k">union</span><span class="w"> </span><span class="nc">Value</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="kt">int</span><span class="w">    </span><span class="n">i</span><span class="p">;</span>
-<span class="w">    </span><span class="kt">long</span><span class="w">   </span><span class="n">l</span><span class="p">;</span>
 <span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">d</span><span class="p">;</span>
 <span class="w">    </span><span class="kt">char</span><span class="w">   </span><span class="n">bytes</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
 <span class="p">};</span>
@@ -1196,20 +1159,19 @@ Zhang Wei       18      95.5
 而且<strong>一次只能有一个人的东西在里面</strong>——张三的东西放进去，李四的东西就没地方了（或者被覆盖）。
 <strong>这就是 <code>union</code>：位置只有一块，谁用谁占。</strong></p>
 </blockquote>
-<h2 id="92-实测大小等于最大的那个成员">9.2 实测：大小等于最大的那个成员</h2>
+<h2 id="92-实测共用体要容纳最大的成员">9.2 实测：共用体要容纳最大的成员</h2>
 <p>跑 <code>示例代码/04_结构共用体枚举/05_union.cpp</code>，实测：</p>
-<div class="codehilite"><pre><span></span><code>sizeof(int)         = 4
-sizeof(double)      = 8
-sizeof(char[8])     = 8
---------------------------------
-sizeof(union Value) = 8
-  ^ 等于【最大那个成员】的大小，而不是各成员之和！     ← 这就是和 struct 的根本区别
+<div class="codehilite"><pre><span></span><code>sizeof(int) = 4
+sizeof(double) = 8
+sizeof(char[8]) = 8
+sizeof(Value) = 8
 </code></pre></div>
 
+<p>这台机器上恰好等于最大成员的大小。标准要求空间<strong>足以容纳最大成员</strong>；对齐也可能使 <code>sizeof(Value)</code> 更大。</p>
 <h2 id="93-struct-和-union-的内存差别必须看懂的图">9.3 ⭐ <code>struct</code> 和 <code>union</code> 的内存差别（必须看懂的图）</h2>
 <p>同一批成员，用 <code>struct</code> 和用 <code>union</code> 装，内存长得完全不一样：</p>
 <div class="codehilite"><pre><span></span><code>struct S { int i; double d; char c[16]; }        union U { int i; double d; char c[16]; }
-大小 = 4 + 8 + 16 = 28，对齐后 = 32               大小 = max(4, 8, 16) = 16
+本机大小 = 4 + 8 + 16 + 填充 = 32                 本机大小 = 16（足以容纳最大成员）
 
   ┌──────────────┐ 偏移 0                          ┌──────────────┐ 偏移 0
   │  int  i      │  4 字节                         │              │
@@ -1242,7 +1204,7 @@ sizeof(union Value) = 8
 <tr>
 <td><code>union  U { int i; double d; char c[16]; };</code></td>
 <td><strong>16</strong></td>
-<td>等于<strong>最大成员</strong> <code>char[16]</code> 的 16 字节</td>
+<td>本机恰好等于最大成员 <code>char[16]</code> 的 16 字节</td>
 </tr>
 </tbody>
 </table>
@@ -1274,18 +1236,16 @@ CPU 取数据的速度更快。<strong>代价就是会浪费一点空隙。</str
 <div class="codehilite"><pre><span></span><code>union 的内存布局（sizeof = 8）：
 
    ┌────────────────────────────┐
-   │  i / l / d / bytes 全在这里  │   ← 所有成员的【起始地址相同】
+   │  i / d / bytes 全在这里      │   ← 所有成员的【起始地址相同】
    └────────────────────────────┘
 </code></pre></div>
 
-<p>实测证明了这一点：</p>
+<p>示例只读取当前活动的成员：</p>
 <div class="codehilite"><pre><span></span><code>v.i = 65   （写入 int）
   读 v.i = 65
-  读 v.d = 3.21143e-322   &lt;- 垃圾值（同一块内存被当成 double 解释）
 
 v.d = 3.14159   （写入 double，覆盖了刚才的 i）
   读 v.d = 3.14159
-  读 v.i = -266631570   &lt;- 已经不是 65 了
 
 &amp;v.i = 0x61fe48
 &amp;v.d = 0x61fe48
@@ -1293,20 +1253,16 @@ v.d = 3.14159   （写入 double，覆盖了刚才的 i）
 </code></pre></div>
 
 <blockquote>
-<p>💡 <strong>「垃圾值」不是随机的，是"同一块内存被换了种读法"</strong>。
-你写进去的是 65 的二进制，却让程序按 <code>double</code> 的规则去解读它，
-得到的当然是一个莫名其妙的小数——<strong>那块内存没变，变的是"说明书"</strong>。
-（<code>0x61fe48</code> 这种写法是<strong>十六进制</strong>的地址，你可以先把它当成"格子的门牌号"。）</p>
+<p>💡 写入 <code>v.d</code> 之后，<code>v.i</code> 已不是活动成员。<strong>不要再读它的值</strong>：这样做不受 C++ 标准保证，某次运行得到的数字不能当作规律。
+两个地址相同只说明成员共用存储空间；取地址没有读取成员的值。地址数字每次运行也可能不同。</p>
 </blockquote>
 <h2 id="96-共用体不记录现在存的是哪个类型">9.6 ⚠️ 共用体不记录「现在存的是哪个类型」</h2>
 <div class="codehilite"><pre><span></span><code>union 不记录「当前哪个成员是有效的」。
-你读一个不是最后写入的成员，它【不会报错】，只会给你垃圾值。
-所以正确用法是：自己用一个额外的变量记住「现在存的是什么类型」。
+程序要自己记住写入的是哪一个成员，并只读取对应的活动成员。
 </code></pre></div>
 
 <blockquote>
-<p>⚠️ <strong>这是 <code>union</code> 最危险的地方</strong>：读错了成员，<strong>编译器不会拦你，程序也不会崩</strong>，
-只是给你一个看着像数、其实是垃圾的结果。<strong>这种错最难查。</strong></p>
+<p>⚠️ 读错成员时，编译器不一定阻止；结果也不能解释成一个可靠的「垃圾值」。</p>
 </blockquote>
 <h2 id="97-常见用法union-一个标签">9.7 常见用法：<code>union</code> + 一个标签</h2>
 <div class="codehilite"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">Variant</span>
@@ -1315,24 +1271,24 @@ v.d = 3.14159   （写入 double，覆盖了刚才的 i）
 <span class="w">    </span><span class="k">union</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="p">};</span><span class="w">    </span><span class="c1">// 匿名共用体，成员直接叫 .i / .d</span>
 <span class="p">};</span>
 
-<span class="n">Variant</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w">  </span><span class="n">a</span><span class="p">.</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'i'</span><span class="p">;</span><span class="w">  </span><span class="n">a</span><span class="p">.</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span>
-<span class="n">Variant</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w">  </span><span class="n">b</span><span class="p">.</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'d'</span><span class="p">;</span><span class="w">  </span><span class="n">b</span><span class="p">.</span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.718</span><span class="p">;</span>
+<span class="n">Variant</span><span class="w"> </span><span class="n">a</span><span class="p">{};</span><span class="w">  </span><span class="n">a</span><span class="p">.</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span><span class="w">   </span><span class="n">a</span><span class="p">.</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'i'</span><span class="p">;</span>
+<span class="n">Variant</span><span class="w"> </span><span class="n">b</span><span class="p">{};</span><span class="w">  </span><span class="n">b</span><span class="p">.</span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.718</span><span class="p">;</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'d'</span><span class="p">;</span>
 </code></pre></div>
 
-<p>这种写法叫「<strong>带标签的联合</strong>」——<strong>多花一个字节存个小标签，用来记住是哪一种</strong>。
+<p>这种写法叫「<strong>带标签的联合</strong>」——另存一个标签来记住是哪一种。结构可能有对齐填充，整体大小不一定只多一个字节。
 在<strong>文件格式解析、网络协议、脚本引擎</strong>里很常见。</p>
 <blockquote>
 <p>💡 <strong>生活化的比方</strong>：柜子里现在放着谁的东西，<strong>柜门上贴一张纸条</strong>写着"张三"。
 纸条（<code>tag</code>）不能告诉你里面是什么，但能告诉你<strong>该按谁的规矩去拿</strong>。</p>
 </blockquote>
 <h2 id="98-要不要学-union">9.8 要不要学 <code>union</code>？</h2>
-<p><strong>学习阶段几乎用不到。</strong> 它的价值是「省内存」和「看同一块内存的不同解释」。
+<p><strong>学习阶段几乎用不到。</strong> 它适合在不同时间存放不同类型的值，并可能节省空间。
 现代 C++ 里很多场景被 <code>std::variant</code> 替代了。
 <strong>现在只需要认识它、知道它和 <code>struct</code> 的区别就够了。</strong></p>
 <blockquote>
 <p>📌 <strong>本课要背下来的一句话</strong>：
 <strong><code>struct</code> 的成员各占一块内存（大小 = 各成员之和 + 对齐空隙）；</strong>
-<strong><code>union</code> 的成员共用一块内存（大小 = 最大成员）。</strong></p>
+<strong><code>union</code> 的成员共用一块内存（大小至少容纳最大成员，可能受对齐影响）。</strong></p>
 </blockquote>
 <hr />
 <hr />
@@ -1371,7 +1327,7 @@ v.d = 3.14159   （写入 double，覆盖了刚才的 i）
 <p>跑 <code>示例代码/04_结构共用体枚举/06_enum.cpp</code>，实测：</p>
 <div class="codehilite"><pre><span></span><code>red=0 green=1 blue=2
 Mon=1 Wed=3 Sun=7
-none=0 low=1 high=10 extra=11   &lt;- extra 是 high+1
+none=0 low=1 high=10 extra=11
 </code></pre></div>
 
 <h2 id="103-自己指定值教材-461p113">10.3 自己指定值（教材 4.6.1，p113）</h2>
@@ -1391,9 +1347,9 @@ none=0 low=1 high=10 extra=11   &lt;- extra 是 high+1
 <h2 id="104-枚举量就是整数">10.4 枚举量就是整数</h2>
 <p>实测：</p>
 <div class="codehilite"><pre><span></span><code>Week today = Wed;
-  打印 today 出来是: 3   &lt;- 枚举量打印出来是【数字】，不是名字
-  if (today == Wed) 成立
-  today + 1 = 4   （Wed 是 3，加 1 得 4）
+today 的数值 = 3
+today 是 Wed
+today + 1 = 4（表达式是整数运算）
 </code></pre></div>
 
 <p><strong>三个要点</strong>：</p>
@@ -1401,7 +1357,7 @@ none=0 low=1 high=10 extra=11   &lt;- extra 是 high+1
 <li>打印枚举变量，输出的是<strong>数字</strong>，不是名字（因为计算机里存的就是数字，
    名字在编译完以后就"没了"）；</li>
 <li>可以比较（<code>today == Wed</code>）；</li>
-<li>参与运算时<strong>会退化成 <code>int</code></strong>（就是"变回普通整数"的意思）。</li>
+<li>普通枚举参与运算时会<strong>隐式转换为合适的整数类型</strong>；这个小例子中运算结果是 4。</li>
 </ol>
 <h2 id="105-枚举的取值范围与底层类型教材-462p113114">10.5 枚举的取值范围与「底层类型」（教材 4.6.2，p113–114）</h2>
 <h3 id="先说什么叫底层类型">先说什么叫「底层类型」</h3>
@@ -1412,21 +1368,13 @@ none=0 low=1 high=10 extra=11   &lt;- extra 是 high+1
 但按键底下接的还是第 7 号线路（底层类型）。
 标签是给你看的，<strong>线路是机器真正用的</strong>。</p>
 </blockquote>
-<h3 id="取值范围规则">取值范围规则</h3>
-<p><strong>规则</strong>（教材讲的）：</p>
-<div class="codehilite"><pre><span></span><code>上限 = 「大于最大枚举量的最小 2 的幂」减 1
-       例：最大是 7   →  2³-1 = 7
-           最大是 10  →  2⁴-1 = 15
-下限 = 若最小枚举量 ≥ 0，则是 0；否则是 -(2ⁿ - 1)
-</code></pre></div>
-
-<p><strong>这条规则算出来的「取值范围」，决定了编译器最少要用多大的整数才装得下这些枚举值。</strong>
-换句话说：<strong>枚举的大小是由"取值范围"倒推出来的，不是由"有几个成员"决定的。</strong>
-（注意：规则只规定"必须装得下"，并<strong>不要求</strong>编译器非得选最小的那个类型。
-所以下面实测里，取值范围只要 1 的枚举照样占 4 字节。）</p>
+<h3 id="取值范围和-sizeof-不是同一件事">取值范围和 <code>sizeof</code> 不是同一件事</h3>
+<p>教材讨论枚举类型可以表示哪些值。对初学者最重要的是：<strong>枚举量有明确的数值，但不能由最大枚举量直接算出对象的字节数。</strong>
+未指定底层类型的普通枚举，由编译器选择能容纳所有枚举量的整数类型；它无需选择最小的那个。
+因此 <code>enum E { a, b = 1000 };</code> 并不意味着 <code>sizeof(E)</code> 必然等于存下 1000 所需的最少字节。</p>
 <p>实测：</p>
-<div class="codehilite"><pre><span></span><code>sizeof(Color) = 4 字节
-sizeof(Week)  = 4 字节
+<div class="codehilite"><pre><span></span><code>sizeof(Color) = 4
+sizeof(Week) = 4
 </code></pre></div>
 
 <blockquote>
@@ -1434,7 +1382,7 @@ sizeof(Week)  = 4 字节
 <strong>要精确控制大小，C++11 可以显式写出底层类型</strong>：</p>
 <p><code>cpp
 enum class Priority : unsigned char { low, mid, high };   // 底层类型定为 1 字节</code></p>
-<p><code>: unsigned char</code> 这一段就是在说「内部请用一个 <code>unsigned char</code> 来存」。</p>
+<p><code>: unsigned char</code> 指定底层类型。所有枚举量都必须能放进它。</p>
 </blockquote>
 <h2 id="106-一个要注意的地方名字污染">10.6 ⚠️ 一个要注意的地方：名字污染</h2>
 <div class="codehilite"><pre><span></span><code><span class="k">enum</span><span class="w"> </span><span class="nc">Color</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">red</span><span class="p">,</span><span class="w"> </span><span class="n">green</span><span class="p">,</span><span class="w"> </span><span class="n">blue</span><span class="w"> </span><span class="p">};</span>
@@ -1494,14 +1442,7 @@ note: previous declaration 'Color red'
 </tr>
 </tbody>
 </table>
-<p>实测：</p>
-<div class="codehilite"><pre><span></span><code>Direction dir = Direction::north;   &lt;- 必须带前缀
-  好处 1：名字不冲突（Color::red 和 Other::red 可以共存）
-  好处 2：不会隐式转换成 int，更安全
-  代价 1：不能直接打印，要转型：
-          cout &lt;&lt; static_cast&lt;int&gt;(dir) = 0
-</code></pre></div>
-
+<p>示例 <code>06_enum.cpp</code> 会输出 <code>Direction::north</code> 的数值 0：先用 <code>static_cast&lt;int&gt;(dir)</code> 转换，再交给 <code>cout</code>。它还会打印几种枚举在当前编译器上的 <code>sizeof</code>，供你比较。</p>
 <blockquote>
 <p>💡 <strong><code>static_cast&lt;int&gt;(dir)</code> 是什么？</strong>
 就是「<strong>请把 <code>dir</code> 这个值当成 <code>int</code> 来用</strong>」——一次<strong>显式</strong>的类型转换。
@@ -1558,8 +1499,8 @@ note: previous declaration 'Color red'
 </tr>
 <tr>
 <td>7</td>
-<td>位字段溢出没注意</td>
-<td>有 <code>-Woverflow</code> 警告，值被截断（40 → 8）</td>
+<td>位字段超出表示范围</td>
+<td>当前 GCC 对常量 40 的实验给出 <code>-Woverflow</code>；不要依赖所有编译器都有同样诊断</td>
 </tr>
 <tr>
 <td>8</td>
@@ -1568,8 +1509,8 @@ note: previous declaration 'Color red'
 </tr>
 <tr>
 <td>9</td>
-<td>读 <code>union</code> 里「不是最后写入」的成员</td>
-<td><strong>不报错</strong>，但给你垃圾值</td>
+<td>读 <code>union</code> 的非活动成员</td>
+<td>行为不受标准保证；只读标签对应的活动成员</td>
 </tr>
 <tr>
 <td>10</td>
@@ -1597,9 +1538,9 @@ note: previous declaration 'Color red'
 <h1 id="12-本课作业">12. 本课作业</h1>
 <p>见 <code>练习/第04章B-练习.md</code>：</p>
 <ul>
-<li><strong>第一部分</strong>：教材 p123 复习题中与本课相关的 <strong>3 题</strong>（第 8、9、10 题）</li>
+<li><strong>第一部分</strong>：教材第 4 章 4.12 复习题（PDF p140 起）中与本课相关的 <strong>3 题</strong>（第 8、9、10 题）</li>
 <li>复习题第 2 题（<code>array</code>）、第 15 题（<code>new</code>）属于第 4 章 C / 第 4 章 D，本课不做</li>
-<li><strong>第二部分</strong>：教材 p124 编程练习 <strong>第 5、6、7 题</strong>（全部关于结构）</li>
+<li><strong>第二部分</strong>：教材第 4 章 4.13 编程练习（PDF p140 起）<strong>第 5、6、7 题</strong>（全部关于结构）</li>
 <li>练习 8、9（<code>new</code>）属于第 4 章 C；练习 10（<code>array</code>）属于第 4 章 D</li>
 </ul>
 <hr />

@@ -381,11 +381,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#实验-a忘了结构声明后面那个分号">🔬 实验 A：忘了结构声明后面那个分号</a></li>
 <li><a href="#实验-b结构能整体赋值数组不能">🔬 实验 B：结构能整体赋值，数组不能</a></li>
 <li><a href="#实验-cstruct-和-union-的内存差别">🔬 实验 C：struct 和 union 的内存差别</a></li>
-<li><a href="#实验-d枚举的取值范围怎么影响它的大小">🔬 实验 D：枚举的取值范围怎么影响它的大小</a></li>
+<li><a href="#实验-d枚举量与实际存储大小">🔬 实验 D：枚举量与实际存储大小</a></li>
 </ul>
 </li>
-<li><a href="#任务-3复习题教材-p123-原文3-题">✅ 任务 3：复习题（教材 p123 原文，3 题）</a></li>
-<li><a href="#任务-4编程练习教材-p124-原文3-题-本课重点">✅ 任务 4：编程练习（教材 p124 原文，3 题）⭐ 本课重点</a></li>
+<li><a href="#任务-3复习题教材第-4-章-412pdf-p140-起选做-3-题">✅ 任务 3：复习题（教材第 4 章 4.12，PDF p140 起；选做 3 题）</a></li>
+<li><a href="#任务-4编程练习教材第-4-章-413pdf-p140-起选做-3-题-本课重点">✅ 任务 4：编程练习（教材第 4 章 4.13，PDF p140 起；选做 3 题）⭐ 本课重点</a></li>
 <li><a href="#任务-5过关自测">✅ 任务 5：过关自测</a></li>
 <li><a href="#完成情况自查">📤 完成情况自查</a></li>
 </ul>
@@ -406,7 +406,7 @@ g++ -std=c++17 -Wall -Wextra 文件名.cpp -o 文件名</code>
 </blockquote>
 <hr />
 <h2 id="任务-1读教材约-45-分钟">✅ 任务 1：读教材（约 45 分钟）</h2>
-<p>按 <code>讲义/第04章B-结构共用体枚举.md</code> 第 0 节的表读 <strong>p105–p114</strong>。重点：</p>
+<p>按 <code>讲义/第04章B-结构共用体枚举.md</code> 的阅读指南读 <strong>p105–p114</strong>。重点：</p>
 <ul>
 <li>[ ] <strong>4.4 结构简介</strong>（p105–108）精读 3 遍 ⭐</li>
 <li>[ ] 4.4.2 C++11 结构初始化（p108）</li>
@@ -469,12 +469,7 @@ g++ -std=c++17 -Wall -Wextra 文件名.cpp -o 文件名</code>
 
 <hr />
 <h2 id="任务-2跑示例-4-个实验约-50-分钟">✅ 任务 2：跑示例 + 4 个实验（约 50 分钟）</h2>
-<p>6 个示例在 <code>示例代码/04_结构共用体枚举/</code> 目录下，<strong>全部跑一遍</strong>。</p>
-<blockquote>
-<p>⚠️ <strong>注意</strong>：<code>04_struct_string_bitfield.cpp</code> 编译时会<strong>故意产生一条警告</strong>
-（<code>-Woverflow</code>，位字段溢出），那是教学材料的一部分，<strong>不要去"修好"它</strong>。
-跑的时候请把那条警告原样看清楚。</p>
-</blockquote>
+<p>6 个示例在 <code>示例代码/04_结构共用体枚举/</code> 目录下，<strong>每次编译运行一个</strong>。正常示例应无警告。示例 4 的位字段越界赋值作为可选实验，请在自己的实验文件中尝试。</p>
 <h3 id="实验-a忘了结构声明后面那个分号">🔬 实验 A：忘了结构声明后面那个分号</h3>
 <p>在你自己新建的文件里<strong>故意</strong>这么写：</p>
 <div class="codehilite"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">Point</span>
@@ -527,7 +522,7 @@ g++ -std=c++17 -Wall -Wextra 文件名.cpp -o 文件名</code>
 </code></pre></div>
 
 <ul>
-<li>用一句话解释：<strong>为什么结构可以、数组不行？</strong>（提示：想想"数组名"代表什么）</li>
+<li>用一句话解释：<strong>为什么结构可以、数组不行？</strong>（提示：内置数组类型是否支持整体赋值？）</li>
 </ul>
 <div class="codehilite"><pre><span></span><code>
 </code></pre></div>
@@ -580,7 +575,7 @@ g++ -std=c++17 -Wall -Wextra 文件名.cpp -o 文件名</code>
 <div class="codehilite"><pre><span></span><code>
 </code></pre></div>
 
-<h3 id="实验-d枚举的取值范围怎么影响它的大小">🔬 实验 D：枚举的取值范围怎么影响它的大小</h3>
+<h3 id="实验-d枚举量与实际存储大小">🔬 实验 D：枚举量与实际存储大小</h3>
 <p>新建文件，写三个枚举，分别打印 <code>sizeof</code>：</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
 
@@ -598,25 +593,25 @@ g++ -std=c++17 -Wall -Wextra 文件名.cpp -o 文件名</code>
 </code></pre></div>
 
 <ul>
-<li>三个 <code>sizeof</code> 分别是多少？</li>
+<li>在你使用的编译器上，三个 <code>sizeof</code> 分别是多少？记下编译器和版本。</li>
 </ul>
 <div class="codehilite"><pre><span></span><code>
 </code></pre></div>
 
 <ul>
-<li>这说明了什么？（提示：讲义 10.5 的"取值范围规则"）</li>
+<li>这说明了什么？仅从枚举量的最大值，能否精确算出所有平台上的 <code>sizeof</code>？参考讲义 10.5。</li>
 </ul>
 <div class="codehilite"><pre><span></span><code>
 </code></pre></div>
 
 <ul>
-<li>追问：既然 <code>E1</code> 里的最大值只有 1，为什么它没有变成 1 字节？</li>
+<li>追问：如果 <code>E1</code> 在你的编译器上超过 1 字节，这是否违反语言规则？</li>
 </ul>
 <div class="codehilite"><pre><span></span><code>
 </code></pre></div>
 
 <hr />
-<h2 id="任务-3复习题教材-p123-原文3-题">✅ 任务 3：复习题（教材 p123 原文，3 题）</h2>
+<h2 id="任务-3复习题教材第-4-章-412pdf-p140-起选做-3-题">✅ 任务 3：复习题（教材第 4 章 4.12，PDF p140 起；选做 3 题）</h2>
 <blockquote>
 <p>⚠️ 答案在<strong>附录 J（p933）</strong>。<strong>做完再看。</strong>
 ⚠️ 教材复习题里 <strong>2、15</strong> 涉及 <code>array</code> 和 <code>new</code>，属于第 4 章 C / 第 4 章 D，本课不做。</p>
@@ -642,7 +637,7 @@ g++ -std=c++17 -Wall -Wextra 文件名.cpp -o 文件名</code>
 这两个顺序一样吗？如果不一样，能不能靠"默认从 0 开始、依次 +1"来实现？</p>
 </blockquote>
 <hr />
-<h2 id="任务-4编程练习教材-p124-原文3-题-本课重点">✅ 任务 4：编程练习（教材 p124 原文，3 题）⭐ 本课重点</h2>
+<h2 id="任务-4编程练习教材第-4-章-413pdf-p140-起选做-3-题-本课重点">✅ 任务 4：编程练习（教材第 4 章 4.13，PDF p140 起；选做 3 题）⭐ 本课重点</h2>
 <blockquote>
 <p><strong>要求</strong>：手敲（不许复制粘贴）；在你自己新建的练习目录里，文件名 <code>ex5.cpp</code>、<code>ex6.cpp</code>、<code>ex7.cpp</code>；
 <strong>写完用题目给的初始化值 / 输入例子跑一遍确认输出</strong>；
@@ -654,8 +649,7 @@ g++ -std=c++17 -Wall -Wextra 文件名.cpp -o 文件名</code>
 <blockquote>
 <p>💡 <strong>要点</strong>：
 - 题目明确要求「<strong>声明时初始化</strong>」——请回想讲义 1.3 节里「初始化」和「赋值」的区别。
-  所以要用 <code>CandyBar snack = {"Mocha Munch", 2.3, 350};</code> 这种<strong>一行写完</strong>的形式，
-  不能先声明再一个个赋值。
+  请在声明 <code>snack</code> 的同一行用一组大括号填入题给的三个值。
 - 三个成员类型分别是：<code>std::string</code>、<code>double</code>、<code>int</code>。
 - 输出自己设计，能看清三项内容即可。
 - ⚠️ 注意 <code>"Mocha Munch"</code> <strong>中间有个空格</strong>——这也提醒了你这三个成员为什么必须是三种不同的类型。</p>
@@ -666,13 +660,7 @@ g++ -std=c++17 -Wall -Wextra 文件名.cpp -o 文件名</code>
 <blockquote>
 <p>💡 <strong>要点</strong>：
 - 这是「结构数组」（讲义第 7 节）。
-- 初始化写法是<strong>两层大括号</strong>——外面一层是数组，里面每层是一个结构：
-  <code>cpp
-  CandyBar bars[3] = {
-      {"Mocha Munch", 2.3, 350},
-      {"另起一个名字", 1.8, 280},
-      // ...
-  };</code>
+- 初始化写法是<strong>两层大括号</strong>——外面一层是数组，里面每层是一个结构。
 - 遍历用 <code>for</code>，访问用 <code>bars[i].brand</code> 这种「<strong>先下标，后点</strong>」。
 - 加分项：顺手算出<strong>总重量</strong>和<strong>总卡路里</strong>。</p>
 </blockquote>
@@ -738,7 +726,7 @@ getline(cin, company);      // 紧接着读整行</code>
 <h2 id="完成情况自查">📤 完成情况自查</h2>
 <ul>
 <li>[ ] 任务 1：教材 p105–p114 读完，不懂的地方记下来了</li>
-<li>[ ] 任务 2：6 个示例跑完（含 <code>04</code> 那条<strong>故意的警告</strong>）+ 4 个实验做完（报错都抄下来了）</li>
+<li>[ ] 任务 2：6 个示例跑完 + 4 个实验做完（报错都抄下来了）</li>
 <li>[ ] 任务 3：3 道复习题答完（第 10 题<strong>显式赋了值</strong>）</li>
 <li>[ ] 任务 4：<strong>3 道编程练习写完</strong>，且</li>
 <li>[ ] 练习 5 用了题目指定的初始化值 <code>"Mocha Munch"</code>、<code>2.3</code>、<code>350</code></li>
