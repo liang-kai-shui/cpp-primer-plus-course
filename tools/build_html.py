@@ -16,6 +16,7 @@
     python tools/build_html.py
 """
 
+import atexit
 import html
 import os
 import re
@@ -354,7 +355,37 @@ def build_nav(items, current_rel, prefix=""):
     return "\n".join(out)
 
 
+def preserve_docs_pdfs():
+    """重建 docs/ 时保留其中由 Git LFS 管理的教材 PDF。"""
+    if not os.path.isdir(OUT):
+        return lambda: None
+    names = [fn for fn in os.listdir(OUT)
+             if fn.lower().endswith(".pdf") and os.path.isfile(os.path.join(OUT, fn))]
+    if not names:
+        return lambda: None
+
+    hold = os.path.join(ROOT, ".docs_pdf_backup")
+    if os.path.exists(hold):
+        raise RuntimeError("发现未处理的 .docs_pdf_backup；请先检查并恢复其中的 PDF")
+    os.mkdir(hold)
+    for fn in names:
+        os.replace(os.path.join(OUT, fn), os.path.join(hold, fn))
+
+    def restore():
+        os.makedirs(OUT, exist_ok=True)
+        for fn in names:
+            saved = os.path.join(hold, fn)
+            if os.path.isfile(saved):
+                os.replace(saved, os.path.join(OUT, fn))
+        if os.path.isdir(hold) and not os.listdir(hold):
+            os.rmdir(hold)
+
+    atexit.register(restore)  # 生成中途抛出异常时也恢复
+    return restore
+
+
 def main():
+    restore_pdfs = preserve_docs_pdfs()
     if os.path.isdir(OUT):
         shutil.rmtree(OUT)
     os.makedirs(OUT)
@@ -445,7 +476,7 @@ def main():
     # 但 tools/ 和 .开头 的文件（.gitignore 等）不该进 docs/
     for dirpath, dirnames, filenames in os.walk(ROOT):
         dirnames[:] = [d for d in dirnames
-                       if d not in ("docs", "html", "__pycache__", ".git", "tools")]
+                       if d not in ("docs", "html", "__pycache__", ".git", "tools", ".docs_pdf_backup")]
         for fn in filenames:
             if fn.lower().endswith(".md") or fn.startswith("."):
                 continue
@@ -457,16 +488,18 @@ def main():
 
     # ---------- 首页 ----------
     wanted = [
-        ("01", "程序怎么从一段文字变成能运行的软件；三类错误的分类框架"),
-        ("02", "变量、语句、函数、输入输出；重点是函数原型与名称空间"),
-        ("03", "整型家族、char 的本质、浮点数；整数除法与类型转换的坑"),
-        ("04", "数组、C 风格字符串的本质（\\0）、混合输入的陷阱"),
-        ("05", "结构、共用体、枚举；把不同类型的数据打包成一个整体"),
+        ("第01章", "程序怎么从一段文字变成能运行的软件；三类错误的分类框架"),
+        ("第02章", "变量、语句、函数、输入输出；重点是函数原型与名称空间"),
+        ("第03章", "整型家族、char 的本质、浮点数；整数除法与类型转换的坑"),
+        ("第04章A", "数组、C 风格字符串的本质（\\0）、混合输入的陷阱"),
+        ("第04章B", "结构、共用体、枚举；把不同类型的数据打包成一个整体"),
+        ("第04章C", "指针、地址、new/delete 与动态数组"),
+        ("第04章D", "指针算术、动态结构、array 与 vector"),
     ]
     cards = []
-    for num, desc in wanted:
+    for prefix, desc in wanted:
         for rel, fn, _ in items:
-            if rel.replace("\\", "/") == "讲义" and fn.startswith("第%s章" % num):
+            if rel.replace("\\", "/") == "讲义" and fn.startswith(prefix):
                 cards.append('<div class="card"><h3><a href="讲义/%s.html">%s</a></h3>'
                              '<p>%s</p></div>' % (fn[:-3], html.escape(fn[:-3]), html.escape(desc)))
                 break
@@ -516,6 +549,8 @@ def main():
     # GitHub Pages 用：告诉它别用 Jekyll 处理 docs/（顺便让构建快一点）
     with open(os.path.join(OUT, ".nojekyll"), "w", encoding="utf-8", newline="\n") as f:
         f.write("")
+
+    restore_pdfs()
 
     print("\n完成 → %s" % OUT)
     print("  打开 docs/index.html 在线阅读（默认深色，右上角可切换）")

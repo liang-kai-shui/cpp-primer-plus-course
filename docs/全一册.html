@@ -356,7 +356,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </ul>
 </li>
 <li><a href="#二你需要准备什么">二、你需要准备什么</a><ul>
-<li><a href="#1-教材必须自备">1. 教材（必须自备）</a></li>
+<li><a href="#1-教材">1. 教材</a></li>
 <li><a href="#2-编译器">2. 编译器</a></li>
 <li><a href="#3-编辑器">3. 编辑器</a></li>
 </ul>
@@ -373,7 +373,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#八重新生成-html">八、重新生成 HTML</a></li>
 <li><a href="#九反馈">九、反馈</a></li>
 <li><a href="#十版权与免责声明">十、版权与免责声明</a><ul>
-<li><a href="#本仓库不包含教材">本仓库不包含教材</a></li>
 <li><a href="#关于教材题目">关于教材题目</a></li>
 <li><a href="#关于代码">关于代码</a></li>
 </ul>
@@ -389,10 +388,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <p><strong>不想下载？直接看在线版：<a href="https://liang-kai-shui.github.io/cpp-primer-plus-course/">https://liang-kai-shui.github.io/cpp-primer-plus-course/</a></strong>
 （默认深色模式，右上角可切换浅色）</p>
 <p>一套<strong>从零讲起</strong>的 C++ 自学材料，配合《C++ Primer Plus（第 6 版）》使用。</p>
-<p><strong>面向谁</strong>：
-- 完全没写过程序的人
-- <strong>甚至对电脑本身也不太熟的人</strong>（不知道任务管理器怎么打开也没关系）
-- 写过一点、但基础不牢、想重新打地基的人</p>
+<p><strong>面向谁</strong>：</p>
+<ul>
+<li>完全没写过程序的人</li>
+<li><strong>甚至对电脑本身也不太熟的人</strong>（不知道任务管理器怎么打开也没关系）</li>
+<li>写过一点、但基础不牢、想重新打地基的人</li>
+</ul>
 <p><strong>不需要</strong>任何编程基础，也<strong>不需要</strong>数学基础。</p>
 <h3 id="这套材料想解决的一个具体问题">💡 这套材料想解决的一个具体问题</h3>
 <p>很多课（包括学校里的）是这样讲的：上来就是一堆专有名词——<strong>"变量""函数""编译""指针"</strong>——
@@ -464,12 +465,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <p>如果你读某一段发现"这里突然冒出一个没解释的词"，<strong>那是我们的问题，请记下来</strong>。</p>
 <hr />
 <h2 id="二你需要准备什么">二、你需要准备什么</h2>
-<h3 id="1-教材必须自备">1. 教材（必须自备）</h3>
+<h3 id="1-教材">1. 教材</h3>
 <blockquote>
 <p>《C++ Primer Plus（第 6 版）中文版》</p>
 </blockquote>
-<p><strong>本包不包含教材</strong>（版权原因，请自行购买或借阅）。
-讲义里所有"教材 pXX"都是指 <strong>PDF 版的页号</strong>（封面算第 1 页），不是书页脚印的页码。</p>
+<p>讲义里所有"教材 pXX"都是指 <strong>PDF 版的页号</strong>（封面算第 1 页），不是书页脚印的页码。</p>
 <blockquote>
 <p>💡 如果你手上的 PDF 书签完整，直接用书签跳转最快。</p>
 </blockquote>
@@ -493,15 +493,15 @@ xcode-select<span class="w"> </span>--install
 <blockquote>
 <p>⚠️ <strong>Windows 中文用户注意</strong>：程序输出中文可能乱码。
 原因和控制台"代码页"有关（《零基础起飞》里讲了原理）。
-最简单的一次性解法是在程序开头加：
-```cpp</p>
+最简单的一次性解法是在程序开头加：</p>
+<p>```cpp</p>
 <h1 id="include">include <windows.h></h1>
 <p>int main() {
     SetConsoleOutputCP(65001);   // 把控制台输出改成 UTF-8
     ...
 }
-<code>``
-或者在运行前先执行</code>chcp 65001`。</p>
+```</p>
+<p>或者在运行前先执行 <code>chcp 65001</code>。</p>
 </blockquote>
 <hr />
 <h2 id="三怎么用重要">三、怎么用（重要）</h2>
@@ -579,7 +579,9 @@ xcode-select<span class="w"> </span>--install
 │   ├── 第02章-开始学习C++.md
 │   ├── 第03章-处理数据.md
 │   ├── 第04章A-数组与字符串.md
-│   └── 第04章B-结构共用体枚举.md
+│   ├── 第04章B-结构共用体枚举.md
+│   ├── 第04章C-指针与自由存储空间.md
+│   └── 第04章D-指针算术与数组替代品.md
 ├── 练习/
 │   └── （与讲义一一对应）
 ├── 参考答案/
@@ -587,14 +589,18 @@ xcode-select<span class="w"> </span>--install
 │   ├── 第02章/            ← 复习题答案 + 编程练习代码
 │   ├── 第03章/            ← 复习题答案 + 编程练习代码
 │   ├── 第04章A/           ← 复习题答案 + 编程练习代码 + 实验代码
-│   └── 第04章B/           ← 复习题答案 + 编程练习代码
+│   ├── 第04章B/           ← 复习题答案 + 编程练习代码
+│   ├── 第04章C/           ← 自编练习答案 + 编程练习代码
+│   └── 第04章D/           ← 自编练习答案 + 编程练习代码
 ├── 示例代码/
 │   ├── 01_错误分类实验/            ← 6 个"错误标本"，一半是故意编译不过的
 │   ├── 01_参考_代码重构示例/       ← 一个"把 main 拆成函数"的对照例子
 │   ├── 02_开始学习C++/
 │   ├── 03_处理数据/
 │   ├── 04_数组与字符串/
-│   └── 04_结构共用体枚举/
+│   ├── 04_结构共用体枚举/
+│   ├── 04_指针与自由存储空间/
+│   └── 04_指针算术与数组替代品/
 ├── docs/                  ← ★ 网页版，双击 index.html（也是 GitHub Pages 的根目录）
 └── tools/
     └── build_html.py      ← 重新生成 HTML 的脚本
@@ -602,7 +608,7 @@ xcode-select<span class="w"> </span>--install
 
 <hr />
 <h2 id="六课程速览">六、课程速览</h2>
-<p>第 4 章内容较多，拆成了四课（A、B 已完成，C、D 在编写中）。</p>
+<p>第 4 章内容较多，拆成了四课（A、B、C、D 已完成）。</p>
 <table>
 <thead>
 <tr>
@@ -638,14 +644,14 @@ xcode-select<span class="w"> </span>--install
 <td>怎么把<strong>不同类型</strong>的数据打包成一个整体；<strong>结构声明 ≠ 结构变量</strong>（这是后面学"类"的地基）；<code>struct</code> 和 <code>union</code> 在内存上的根本区别</td>
 </tr>
 <tr>
-<td>第 4 章 C</td>
+<td><strong>第 4 章 C</strong></td>
 <td>指针与自由存储空间</td>
-<td><em>编写中</em></td>
+<td>地址、解引用、<code>nullptr</code>、<code>new</code> / <code>delete</code>、动态数组与所有权</td>
 </tr>
 <tr>
-<td>第 4 章 D</td>
+<td><strong>第 4 章 D</strong></td>
 <td>指针算术与数组替代品</td>
-<td><em>编写中</em></td>
+<td>数组与指针的关系、动态结构、存储持续期、<code>std::array</code> 和 <code>std::vector</code></td>
 </tr>
 </tbody>
 </table>
@@ -708,13 +714,11 @@ python<span class="w"> </span>tools/build_html.py
 说明你在哪一课、哪一段卡住了。</p>
 <hr />
 <h2 id="十版权与免责声明">十、版权与免责声明</h2>
-<h3 id="本仓库不包含教材">本仓库<strong>不包含</strong>教材</h3>
-<p>本材料是《C++ Primer Plus（第 6 版）中文版》的<strong>配套学习笔记</strong>，
-<strong>不包含教材原文，也不包含教材 PDF</strong>。请自行购买或借阅正版教材。</p>
+<p>本材料是《C++ Primer Plus（第 6 版）中文版》的<strong>配套学习笔记</strong>，</p>
 <h3 id="关于教材题目">关于教材题目</h3>
 <p><code>练习/</code> 目录里的复习题与编程练习，<strong>题目文字转抄自上述教材</strong>（为方便读者按书做题），
 著作权归原作者及出版方所有。这些内容仅用于<strong>教学与学习目的</strong>，非商业用途。
-本仓库<strong>不含</strong>任何教材的解答手册（附录 J）原文——参考答案是本仓库独立编写/整理的。</p>
+—参考答案是本仓库独立编写/整理的。</p>
 <blockquote>
 <p>如果你是著作权权利人，认为本仓库的内容不妥，请开 Issue 联系，我会立即调整或删除。</p>
 </blockquote>
@@ -12586,6 +12590,388 @@ note: previous declaration 'Color red'
 <li>附录 E.4 <code>noexcept</code>（p878）—— 现在不用看</li>
 </ul></section>
 <hr>
+<section><h1 style="margin-top:2.6em">第04章C-指针与自由存储空间</h1><div class="toc-box"><strong>本页目录</strong><div class="toc">
+<ul>
+<li><a href="#0-学习路线">0. 学习路线</a></li>
+<li><a href="#1-从一次真实的困惑开始letter_grade-1">1. 从一次真实的困惑开始：letter_grade + 1</a></li>
+<li><a href="#2-地址指针变量所指的值">2. 地址、指针变量、所指的值</a></li>
+<li><a href="#3-nullptr-与危险指针">3. nullptr 与危险指针</a></li>
+<li><a href="#4-new-delete动态创建一个对象">4. new / delete：动态创建一个对象</a></li>
+<li><a href="#5-new-delete动态创建数组">5. new[] / delete[]：动态创建数组</a></li>
+<li><a href="#6-实际写程序时如何选择">6. 实际写程序时如何选择</a></li>
+<li><a href="#7-过关检查">7. 过关检查</a></li>
+</ul>
+</div>
+</div><div class="hintbar">遇到看不懂的专有名词？→ <a href="附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-4-章-c-指针与自由存储空间">第 4 章 C · 指针与自由存储空间</h1>
+<blockquote>
+<p><strong>教材</strong>：4.7，PDF p114–p123。先学完第 4 章 A 的数组，再读本课。
+<strong>本课目标</strong>：看懂地址、指针和解引用；能安全地使用 <code>new</code> / <code>delete</code> 及 <code>new[]</code> / <code>delete[]</code>；知道什么时候不该用裸指针管理内存。</p>
+</blockquote>
+<h2 id="0-学习路线">0. 学习路线</h2>
+<table>
+<thead>
+<tr>
+<th>顺序</th>
+<th>教材</th>
+<th>本课要回答的问题</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>4.7、4.7.1，p114–p118</td>
+<td>地址是什么？<code>&amp;</code>、<code>*</code> 各做什么？</td>
+<td><a href="示例代码/04_指针与自由存储空间/01_pointer_basics.cpp"><code>01_pointer_basics.cpp</code></a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>4.7.2–4.7.3，p118–p119</td>
+<td>为什么未初始化的指针危险？</td>
+<td><a href="示例代码/04_指针与自由存储空间/02_safe_pointers.cpp"><code>02_safe_pointers.cpp</code></a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>4.7.4–4.7.5，p119–p121</td>
+<td><code>new</code> 得到的对象何时释放？</td>
+<td><a href="示例代码/04_指针与自由存储空间/03_new_delete.cpp"><code>03_new_delete.cpp</code></a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>4.7.6，p121–p123</td>
+<td>动态数组为什么要用 <code>delete[]</code>？</td>
+<td><a href="示例代码/04_指针与自由存储空间/04_dynamic_array.cpp"><code>04_dynamic_array.cpp</code></a></td>
+</tr>
+</tbody>
+</table>
+<p>每个示例都是独立程序。在课程仓库根目录的 PowerShell 中，先编译一个，再运行：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">-Wall</span> <span class="n">-Wextra</span> <span class="n">-pedantic</span> <span class="n">示例代码</span><span class="p">/</span><span class="n">04_指针与自由存储空间</span><span class="p">/</span><span class="n">01_pointer_basics</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">example</span><span class="p">.</span><span class="n">exe</span>
+<span class="p">./</span><span class="n">example</span><span class="p">.</span><span class="n">exe</span>
+</code></pre></div>
+
+<h2 id="1-从一次真实的困惑开始letter_grade-1">1. 从一次真实的困惑开始：<code>letter_grade + 1</code></h2>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">letter_grade</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ABCD"</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">letter_grade</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">  </span><span class="c1">// 输出 BCD，而不是把 A 变成 B</span>
+</code></pre></div>
+
+<p>数组名 <code>letter_grade</code> 在这条表达式里转换成<strong>指向第一个元素的指针</strong>；<code>+ 1</code> 得到指向第二个元素的指针。<code>cout</code> 从那里开始打印 C 风格字符串，于是看到 <code>BCD</code>。这先展示现象；指针加法的完整规则留在第 4 章 D。</p>
+<p>想得到第二个字符，写 <code>letter_grade[1]</code>。想把第一个字符改成 <code>'B'</code>，写 <code>letter_grade[0] = 'B'</code>。<strong>地址加 1</strong>和<strong>字符值加 1</strong>是两件事。</p>
+<h2 id="2-地址指针变量所指的值">2. 地址、指针变量、所指的值</h2>
+<p>可以把一个 <code>int</code> 变量想成一间放数据的房间，地址是门牌号，指针变量则是记着门牌号的纸条。纸条本身也占空间，但纸条不是那间房。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">90</span><span class="p">;</span>
+<span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">score</span><span class="p">;</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>含义</th>
+<th>此例中的结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>score</code></td>
+<td>变量里的值</td>
+<td><code>90</code></td>
+</tr>
+<tr>
+<td><code>&amp;score</code></td>
+<td><code>score</code> 的地址</td>
+<td>一个地址，具体数字每次运行可能不同</td>
+</tr>
+<tr>
+<td><code>p</code></td>
+<td>指针变量保存的地址</td>
+<td>与 <code>&amp;score</code> 相同</td>
+</tr>
+<tr>
+<td><code>*p</code></td>
+<td>沿地址找到的 <code>int</code> 值，叫<strong>解引用</strong></td>
+<td><code>90</code></td>
+</tr>
+<tr>
+<td><code>&amp;p</code></td>
+<td>指针变量 <code>p</code> 自己的地址</td>
+<td>通常与 <code>p</code> 不同</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><pre><span></span><code>score: [ 90 ]  ← p 存着 score 的地址
+        ↑
+        *p 读写的就是这个 int
+</code></pre></div>
+
+<p><code>*p = 95;</code> 修改的是 <code>score</code>，之后两者读出来都是 95。<code>int* p</code> 中的 <code>*</code> 表示“声明一个指向 <code>int</code> 的指针”；<code>*p</code> 在表达式中表示“取所指对象”。两处写法相同，作用不同。</p>
+<p><strong>类型也要配对</strong>：<code>int*</code> 应指向 <code>int</code>，<code>double*</code> 应指向 <code>double</code>。指针并非“任意地址都能当任意数据读”。</p>
+<blockquote>
+<p>⚠️ <code>int* a, b;</code> 只让 <code>a</code> 成为指针，<code>b</code> 仍是普通 <code>int</code>。初学时每行只声明一个变量，最不容易看错。</p>
+</blockquote>
+<h2 id="3-nullptr-与危险指针">3. <code>nullptr</code> 与危险指针</h2>
+<p>指针可以暂时不指向对象，C++11 用 <code>nullptr</code> 表示这种状态：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">)</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="o">*</span><span class="n">p</span><span class="p">;</span>
+</code></pre></div>
+
+<p><strong>不能解引用 <code>nullptr</code>。</strong> 也不能先写 <code>int* p;</code> 就马上用 <code>*p</code>：此时 <code>p</code> 没有被初始化，里面不是可靠的地址。下面这些都是错误示范，示例程序不会真的执行它们：</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// int* bad; *bad = 5;        // 未初始化</span>
+<span class="c1">// int* empty = nullptr; *empty = 5; // 空指针</span>
+</code></pre></div>
+
+<p>检查 <code>p != nullptr</code> 只能排除空指针，<strong>不能证明它指向的对象仍然活着</strong>。已释放或已离开生存期的对象还会留下悬空指针。</p>
+<h2 id="4-new-delete动态创建一个对象">4. <code>new</code> / <code>delete</code>：动态创建一个对象</h2>
+<p>普通局部变量离开所在代码块就结束生存期。<code>new</code> 在<strong>自由存储空间</strong>创建对象，返回指向它的指针；这个对象需要按规则释放。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">int</span><span class="p">{</span><span class="mi">42</span><span class="p">};</span><span class="w"> </span><span class="c1">// 创建并初始化一个 int</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="o">*</span><span class="n">p</span><span class="p">;</span><span class="w">      </span><span class="c1">// 42</span>
+<span class="k">delete</span><span class="w"> </span><span class="n">p</span><span class="p">;</span><span class="w">             </span><span class="c1">// 结束这个对象的生存期并释放对应存储空间</span>
+<span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span><span class="w">          </span><span class="c1">// 避免继续误用这个变量保存的旧地址</span>
+</code></pre></div>
+
+<p>可以把 <code>new</code> 想成借来一间房，<code>delete</code> 是退还。<strong>仅把 <code>p</code> 设成 <code>nullptr</code> 不会退还房间</strong>，要先 <code>delete</code>。<code>delete p</code> 之后不能再读 <code>*p</code>，也不能再次 <code>delete p</code>；把 <code>p</code> 置空只保护这一个指针变量，其他保存同一旧地址的指针仍然悬空。</p>
+<p><code>new</code> 可能因内存不足而失败，通常以异常报告。本课先把正常路径和配对释放学会，不要把动态分配当成每个变量的默认写法。见 <a href="示例代码/04_指针与自由存储空间/03_new_delete.cpp"><code>03_new_delete.cpp</code></a>。</p>
+<h2 id="5-new-delete动态创建数组">5. <code>new[]</code> / <code>delete[]</code>：动态创建数组</h2>
+<p>数组长度若要在运行时由输入决定，教材使用 <code>new[]</code>：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w">                 </span><span class="c1">// 实际输入时先检查 count &gt; 0</span>
+<span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">scores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">int</span><span class="p">[</span><span class="n">count</span><span class="p">]{};</span><span class="w"> </span><span class="c1">// {} 把所有元素初始化为 0</span>
+<span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">80</span><span class="p">;</span>
+<span class="n">scores</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">90</span><span class="p">;</span>
+<span class="n">scores</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+
+<span class="k">delete</span><span class="p">[]</span><span class="w"> </span><span class="n">scores</span><span class="p">;</span><span class="w">              </span><span class="c1">// 数组必须用 delete[]</span>
+<span class="n">scores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+</code></pre></div>
+
+<p><code>scores[i]</code> 可按下标访问，但指针<strong>不保存数组长度</strong>。边界仍由你维护。<code>new int{42}</code> 配 <code>delete</code>；<code>new int[count]{}</code> 配 <code>delete[]</code>。不要混用，也不要把 <code>new[]</code> 得到的地址交给 <code>delete</code>。完整示例 <a href="示例代码/04_指针与自由存储空间/04_dynamic_array.cpp"><code>04_dynamic_array.cpp</code></a> 会按输入长度求和。</p>
+<table>
+<thead>
+<tr>
+<th>得到资源</th>
+<th>释放方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>new int{42}</code></td>
+<td><code>delete p</code></td>
+</tr>
+<tr>
+<td><code>new int[count]{}</code></td>
+<td><code>delete[] p</code></td>
+</tr>
+<tr>
+<td>普通局部变量 <code>int x</code></td>
+<td>不手动 <code>delete</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-实际写程序时如何选择">6. 实际写程序时如何选择</h2>
+<p>本课学习裸指针和手动释放，是为了理解教材、读懂旧代码和识别错误。<strong>需要运行时长度的数组时，优先考虑 <code>std::vector</code></strong>，它会管理自己的存储空间；第 4 章 D 会正式使用。单个动态对象以后也会学到智能指针。</p>
+<p>动手前先回答三问：指针当前指向谁？所指对象还活着吗？谁负责释放？如果答不清，先不要解引用或释放。</p>
+<h2 id="7-过关检查">7. 过关检查</h2>
+<ol>
+<li>不看资料写出 <code>int x{7}; int* p{&amp;x};</code>，说明 <code>p</code>、<code>*p</code>、<code>&amp;p</code> 分别是什么。</li>
+<li>能指出未初始化指针、空指针和悬空指针的危险。</li>
+<li>能给 <code>new</code> 与 <code>new[]</code> 选择正确的释放方式，并解释为什么 <code>p = nullptr</code> 不能代替 <code>delete</code>。</li>
+<li>完成<a href="练习/第04章C-练习.html">本课练习</a>后再看<a href="参考答案/第04章C/复习题答案.html">参考答案</a>。</li>
+</ol>
+<p><strong>下一课</strong>：第 4 章 D 将解释 <code>p + 1</code>、<code>p[i]</code>、动态结构，并比较内置数组、<code>std::array</code> 和 <code>std::vector</code>。</p></section>
+<hr>
+<section><h1 style="margin-top:2.6em">第04章D-指针算术与数组替代品</h1><div class="toc-box"><strong>本页目录</strong><div class="toc">
+<ul>
+<li><a href="#0-先跑示例">0. 先跑示例</a></li>
+<li><a href="#1-指针算术按元素移动">1. 指针算术：按“元素”移动</a></li>
+<li><a href="#2-数组和指针相关但不是同一种类型">2. 数组和指针相关，但不是同一种类型</a></li>
+<li><a href="#3-指针与-c-风格字符串">3. 指针与 C 风格字符串</a></li>
+<li><a href="#4-动态结构与">4. 动态结构与 -&gt;</a></li>
+<li><a href="#5-谁决定对象活多久">5. 谁决定对象活多久？</a></li>
+<li><a href="#6-类型组合从变量名往外读">6. 类型组合：从变量名往外读</a></li>
+<li><a href="#7-stdarray-与-stdvector">7. std::array 与 std::vector</a></li>
+<li><a href="#8-完成检查">8. 完成检查</a></li>
+</ul>
+</div>
+</div><div class="hintbar">遇到看不懂的专有名词？→ <a href="附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-4-章-d-指针算术与数组替代品">第 4 章 D · 指针算术与数组替代品</h1>
+<blockquote>
+<p><strong>教材</strong>：4.8–4.10，PDF p123–p139；第 4 章总结 p139、练习 p140 起。
+<strong>先修</strong>：第 4 章 A 的数组与字符串、第 4 章 C 的指针和 <code>new</code> / <code>delete</code>。
+<strong>本课目标</strong>：读懂 <code>p + 1</code>、<code>p[i]</code>、<code>-&gt;</code>；说清数组与指针的关系；会在内置数组、<code>std::array</code>、<code>std::vector</code> 之间选择。</p>
+</blockquote>
+<h2 id="0-先跑示例">0. 先跑示例</h2>
+<table>
+<thead>
+<tr>
+<th>教材小节</th>
+<th>核心问题</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4.8，p123–p128</td>
+<td>指针加 1 移动多少？数组何时变成指针？</td>
+<td><a href="示例代码/04_指针算术与数组替代品/01_pointer_arithmetic.cpp"><code>01</code></a> <a href="示例代码/04_指针算术与数组替代品/02_array_and_pointer.cpp"><code>02</code></a></td>
+</tr>
+<tr>
+<td>4.8.3，p128–p131</td>
+<td>指针指向字符串时有什么坑？</td>
+<td><a href="示例代码/04_指针算术与数组替代品/03_cstrings.cpp"><code>03</code></a></td>
+</tr>
+<tr>
+<td>4.8.4–4.8.5，p131–p135</td>
+<td>动态结构怎样访问？对象活多久？</td>
+<td><a href="示例代码/04_指针算术与数组替代品/04_dynamic_struct.cpp"><code>04</code></a></td>
+</tr>
+<tr>
+<td>4.9–4.10，p135–p139</td>
+<td><code>array</code> 和 <code>vector</code> 好在哪？</td>
+<td><a href="示例代码/04_指针算术与数组替代品/05_containers.cpp"><code>05</code></a></td>
+</tr>
+</tbody>
+</table>
+<p>在仓库根目录编译一个示例，例如：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">-Wall</span> <span class="n">-Wextra</span> <span class="n">-pedantic</span> <span class="n">示例代码</span><span class="p">/</span><span class="n">04_指针算术与数组替代品</span><span class="p">/</span><span class="n">01_pointer_arithmetic</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">example</span><span class="p">.</span><span class="n">exe</span>
+<span class="p">./</span><span class="n">example</span><span class="p">.</span><span class="n">exe</span>
+</code></pre></div>
+
+<h2 id="1-指针算术按元素移动">1. 指针算术：按“元素”移动</h2>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">values</span><span class="p">[</span><span class="mi">4</span><span class="p">]{</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">40</span><span class="p">};</span>
+<span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">values</span><span class="p">;</span><span class="w">             </span><span class="c1">// 此处数组名转换为首元素地址</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="o">*</span><span class="n">p</span><span class="p">;</span><span class="w">             </span><span class="c1">// 10</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">       </span><span class="c1">// 20</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span><span class="w">           </span><span class="c1">// 30</span>
+</code></pre></div>
+
+<p><code>p + 1</code> 指向<strong>下一个 <code>int</code> 元素</strong>，并非“地址数字加 1 个字节”；实际地址会按 <code>sizeof(int)</code> 跨过一个元素。换成 <code>double*</code>，则按 <code>double</code> 元素移动。<code>p[i]</code> 与 <code>*(p + i)</code> 在这里表示同一个元素。</p>
+<div class="codehilite"><pre><span></span><code>values: [10] [20] [30] [40]
+         p  p+1  p+2  p+3   p+4（尾后位置，不可解引用）
+</code></pre></div>
+
+<p>从同一个数组的首元素可以得到指向末尾<strong>后一位置</strong>的指针 <code>p + 4</code>，用它作为循环终点；不能写 <code>*(p + 4)</code>。也不要越过这个位置形成更远的指针。指针减法、比较大小等操作也应限制在<strong>同一个数组及其尾后位置</strong>，不能拿两个不相干对象的地址随意计算距离。</p>
+<blockquote>
+<p>⚠️ <code>p++</code> 改变的是 <code>p</code> 保存的地址；<code>(*p)++</code> 改变的是所指整数的值。括号决定意思，先分别预测再运行。</p>
+</blockquote>
+<h2 id="2-数组和指针相关但不是同一种类型">2. 数组和指针相关，但不是同一种类型</h2>
+<p>在多数表达式里，数组名会转换为首元素指针，因此 <code>values[2]</code> 与 <code>*(values + 2)</code> 都能取得第三个元素。但“数组就是指针”是错的：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">values</span><span class="p">[</span><span class="mi">4</span><span class="p">]{</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">40</span><span class="p">};</span>
+<span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">values</span><span class="p">;</span>
+
+<span class="k">sizeof</span><span class="p">(</span><span class="n">values</span><span class="p">);</span><span class="w"> </span><span class="c1">// 整个数组占的字节数：4 * sizeof(int)</span>
+<span class="k">sizeof</span><span class="p">(</span><span class="n">p</span><span class="p">);</span><span class="w">      </span><span class="c1">// 指针变量自己的大小，与数组长度无关</span>
+<span class="c1">// values = p;  // 错：内置数组不能整体赋值</span>
+</code></pre></div>
+
+<p><code>sizeof</code> 用于这里的数组表达式时，不发生数组到指针的转换；<code>&amp;values</code> 取得整个数组的地址，其<strong>类型</strong>也不同于 <code>&amp;values[0]</code>。两者可能显示同一个起始地址，但 <code>&amp;values + 1</code> 会跨过整个数组，<code>&amp;values[0] + 1</code> 只跨过一个元素。初学阶段优先用下标读写数组，不必靠复杂指针表达式完成简单任务。</p>
+<h2 id="3-指针与-c-风格字符串">3. 指针与 C 风格字符串</h2>
+<div class="codehilite"><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hello"</span><span class="p">;</span><span class="w">  </span><span class="c1">// 指向字符串字面量，不能通过它修改字符</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">word</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hello"</span><span class="p">;</span><span class="w">          </span><span class="c1">// 自己的可修改数组，末尾含 '\0'</span>
+<span class="n">word</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'H'</span><span class="p">;</span>
+</code></pre></div>
+
+<p>输出 <code>message + 1</code> 会从第二个字符开始读到 <code>\0</code>，得到 <code>ello</code>。<code>std::strlen(message)</code> 统计终止符之前的字符数；<code>sizeof(word)</code> 包含末尾的 <code>\0</code>。<strong>不要把指针直接当成有长度的字符串对象</strong>：它可能指向非字符串数据，也可能在终止符之前失效。</p>
+<p>普通文字处理优先用 <code>std::string</code>。只有与 C 接口、教材示例或固定格式数据交互时，才需要仔细处理字符指针与终止符。</p>
+<h2 id="4-动态结构与">4. 动态结构与 <code>-&gt;</code></h2>
+<div class="codehilite"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">Student</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">age</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<span class="n">Student</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Student</span><span class="p">{</span><span class="s">"Li Ming"</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">p</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">;</span><span class="w">          </span><span class="c1">// 等价于 (*p).name</span>
+<span class="k">delete</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+</code></pre></div>
+
+<p><code>p</code> 是<strong>指向结构的指针</strong>；<code>*p</code> 才是结构对象。因此用 <code>p-&gt;name</code> 访问成员。<code>*p.name</code> 不等价：点号先作用于 <code>p</code>，而 <code>p</code> 是指针，没有 <code>name</code> 成员。给动态对象赋值时也要保持 <code>new</code> / <code>delete</code> 配对；结构中的 <code>std::string</code> 成员会在对象销毁时正确处理自身资源。</p>
+<h2 id="5-谁决定对象活多久">5. 谁决定对象活多久？</h2>
+<table>
+<thead>
+<tr>
+<th>存储持续期</th>
+<th>典型写法</th>
+<th>生存期要点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自动</td>
+<td>函数里的 <code>int x{}</code></td>
+<td>进入所在代码块创建，离开时结束</td>
+</tr>
+<tr>
+<td>静态</td>
+<td>全局变量或函数内 <code>static int count{}</code></td>
+<td>一般持续到程序结束</td>
+</tr>
+<tr>
+<td>动态</td>
+<td><code>new Student{...}</code></td>
+<td>从创建到对应的 <code>delete</code></td>
+</tr>
+</tbody>
+</table>
+<p>“作用域”管<strong>名字在哪里可见</strong>，“生存期”管<strong>对象还在不在</strong>。不要返回局部变量的地址给调用者以后使用；局部对象离开函数已结束生存期。动态对象即使创建它的局部指针离开作用域，也不会自动因指针消失而释放，于是可能泄漏。</p>
+<h2 id="6-类型组合从变量名往外读">6. 类型组合：从变量名往外读</h2>
+<p>教材 4.9 会出现“数组的指针”和“指针的数组”：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">pointers</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span><span class="w">    </span><span class="c1">// pointers 是数组，里面有 3 个 int*</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">values</span><span class="p">[</span><span class="mi">3</span><span class="p">]{};</span>
+<span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">whole</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">values</span><span class="p">;</span><span class="w"> </span><span class="c1">// whole 是指针，指向整个 3 元素数组</span>
+</code></pre></div>
+
+<p>先看变量名旁的符号：<code>pointers[3]</code> 先表明它是数组；<code>(*whole)</code> 的括号使 <code>whole</code> 先成为指针，再指向 <code>[3]</code> 这个数组类型。这里先能辨认即可，实际练习优先用清晰的容器类型。</p>
+<h2 id="7-stdarray-与-stdvector">7. <code>std::array</code> 与 <code>std::vector</code></h2>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>长度</th>
+<th>可整体赋值</th>
+<th>常见访问方式</th>
+<th>何时选用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int a[3]</code></td>
+<td>编译时固定</td>
+<td>不可</td>
+<td><code>a[i]</code>，不检查边界</td>
+<td>阅读教材或与旧接口交互</td>
+</tr>
+<tr>
+<td><code>std::array&lt;int, 3&gt;</code></td>
+<td>编译时固定</td>
+<td>可以</td>
+<td><code>a[i]</code>、<code>a.at(i)</code></td>
+<td>固定数量的元素</td>
+</tr>
+<tr>
+<td><code>std::vector&lt;int&gt;</code></td>
+<td>可在运行时决定或增长</td>
+<td>可以</td>
+<td><code>v[i]</code>、<code>v.at(i)</code>、<code>v.push_back(x)</code></td>
+<td>数量由输入决定或会变化</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;array&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fixed</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">growing</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">};</span>
+<span class="n">growing</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+</code></pre></div>
+
+<p>三者的 <code>operator[]</code> <strong>都不做边界检查</strong>；<code>std::array</code> 与 <code>std::vector</code> 的 <code>.at(i)</code> 会检查并在越界时抛出异常。<code>std::vector</code> 管理动态存储空间，普通使用时无需自己 <code>new[]</code> / <code>delete[]</code>。即使 <code>vector</code> 能增长，仍要关注输入是否合理、下标是否小于 <code>size()</code>。</p>
+<blockquote>
+<p>实用选择：已知固定数量用 <code>std::array</code>；数量由输入决定用 <code>std::vector</code>。本章手写 <code>new[]</code> 是为了理解内存规则，不是推荐日常都手工管理动态数组。</p>
+</blockquote>
+<h2 id="8-完成检查">8. 完成检查</h2>
+<ol>
+<li>能解释 <code>p + 1</code> 为何按元素移动，以及尾后位置为何不能解引用。</li>
+<li>能说明 <code>sizeof(array)</code> 与 <code>sizeof(pointer)</code> 的差别。</li>
+<li>能正确使用 <code>p-&gt;member</code>，并识别局部对象地址失效的问题。</li>
+<li>能根据长度是否固定，在内置数组、<code>std::array</code>、<code>std::vector</code> 中选择。</li>
+<li>完成<a href="练习/第04章D-练习.html">本课练习</a>后核对<a href="参考答案/第04章D/复习题答案.html">参考答案</a>。</li>
+</ol>
+<p>到这里，第 4 章四个学习单元已全部覆盖。下一章是循环与关系表达式。</p></section>
+<hr>
 <section><h1 style="margin-top:2.6em">第01章-练习</h1><div class="toc-box"><strong>本页目录</strong><div class="toc">
 <ul>
 <li><a href="#任务-1读教材约-40-分钟">✅ 任务 1：读教材（约 40 分钟）</a></li>
@@ -14480,6 +14866,169 @@ getline(cin, company);      // 紧接着读整行</code>
 而且那个换行符陷阱，<strong>在以后写任何"先读数字再读文字"的程序时都会再遇到一次</strong>。
 现在踩一次，以后就少踩十次。</p>
 </blockquote></section>
+<hr>
+<section><h1 style="margin-top:2.6em">第04章C-练习</h1><div class="toc-box"><strong>本页目录</strong><div class="toc">
+<ul>
+<li><a href="#任务-1四个示例">任务 1：四个示例</a></li>
+<li><a href="#任务-2不用运行危险代码判断对错">任务 2：不用运行危险代码，判断对错</a></li>
+<li><a href="#任务-3自己写两个程序">任务 3：自己写两个程序</a><ul>
+<li><a href="#编程-a一个动态数值">编程 A：一个动态数值</a></li>
+<li><a href="#编程-b运行时长度的分数数组">编程 B：运行时长度的分数数组</a></li>
+</ul>
+</li>
+<li><a href="#任务-4过关自测">任务 4：过关自测</a></li>
+</ul>
+</div>
+</div><h1 id="第-4-章-c-指针与自由存储空间练习">第 4 章 C · 指针与自由存储空间：练习</h1>
+<blockquote>
+<p>先读<a href="讲义/第04章C-指针与自由存储空间.html">讲义</a>和教材 4.7（PDF p114–p123）。在你自己的目录中写代码，不改动 <code>示例代码/</code>。先完成再看<a href="参考答案/第04章C/复习题答案.html">参考答案</a>。</p>
+</blockquote>
+<h2 id="任务-1四个示例">任务 1：四个示例</h2>
+<p>逐个运行 <code>示例代码/04_指针与自由存储空间/</code> 下的 4 个程序。编译一个示例时可用：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">-Wall</span> <span class="n">-Wextra</span> <span class="n">-pedantic</span> <span class="n">示例代码</span><span class="p">/</span><span class="n">04_指针与自由存储空间</span><span class="p">/</span><span class="n">01_pointer_basics</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">example</span><span class="p">.</span><span class="n">exe</span>
+<span class="p">./</span><span class="n">example</span><span class="p">.</span><span class="n">exe</span>
+</code></pre></div>
+
+<ul>
+<li>[ ] <code>01</code>：找出输出中哪两个地址应相同；为什么 <code>&amp;p</code> 不是它们？</li>
+<li>[ ] <code>02</code>：说出 <code>nullptr</code> 能保证什么、不能保证什么。</li>
+<li>[ ] <code>03</code>：指出对象何时创建、何时结束生存期。</li>
+<li>[ ] <code>04</code>：输入 <code>3</code>，预测平均分；再输入 <code>0</code>，观察程序如何拒绝无效长度。</li>
+</ul>
+<h2 id="任务-2不用运行危险代码判断对错">任务 2：不用运行危险代码，判断对错</h2>
+<p>对每一行写“合法并安全 / 不能编译 / 能编译但有危险”，并说明原因：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">value</span><span class="p">;</span>
+<span class="o">*</span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="p">;</span><span class="w">                   </span><span class="c1">// A</span>
+
+<span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<span class="c1">// std::cout &lt;&lt; *q;        // B：若取消注释</span>
+
+<span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">int</span><span class="p">{</span><span class="mi">3</span><span class="p">};</span>
+<span class="k">delete</span><span class="w"> </span><span class="n">r</span><span class="p">;</span>
+<span class="c1">// std::cout &lt;&lt; *r;        // C：若取消注释</span>
+
+<span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">int</span><span class="p">[</span><span class="mi">3</span><span class="p">]{};</span>
+<span class="c1">// delete a;               // D：若取消注释，用它来释放数组</span>
+<span class="k">delete</span><span class="p">[]</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w">                </span><span class="c1">// E</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>行</th>
+<th>判断与理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td></td>
+</tr>
+<tr>
+<td>B</td>
+<td></td>
+</tr>
+<tr>
+<td>C</td>
+<td></td>
+</tr>
+<tr>
+<td>D</td>
+<td></td>
+</tr>
+<tr>
+<td>E</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="任务-3自己写两个程序">任务 3：自己写两个程序</h2>
+<h3 id="编程-a一个动态数值">编程 A：一个动态数值</h3>
+<p>创建一个动态 <code>double</code>，初始化为 <code>2.5</code>，通过指针把它改为原值的两倍，打印结果，正确释放并把指针置空。文件名建议 <code>ex1.cpp</code>。<strong>检查点</strong>：输出应为 <code>5</code>；不能在释放后再读所指对象。</p>
+<h3 id="编程-b运行时长度的分数数组">编程 B：运行时长度的分数数组</h3>
+<p>输入人数 <code>n</code>，只接受 <code>1–100</code>。用 <code>new[]</code> 创建并值初始化 <code>n</code> 个 <code>int</code>，再读取 <code>n</code> 个分数，打印平均分，正确释放。输入错误时要避免除以 0 或越界。文件名建议 <code>ex2.cpp</code>。</p>
+<p>测试：<code>3</code> 人，分数 <code>80 90 100</code>，平均分应是 <code>90</code>。再试 <code>0</code> 和非数字输入。</p>
+<h2 id="任务-4过关自测">任务 4：过关自测</h2>
+<ol>
+<li><code>int x{7}; int* p{&amp;x};</code> 中，<code>p</code>、<code>*p</code>、<code>&amp;p</code> 分别是什么？</li>
+<li><code>int* a, b;</code> 中谁是指针？</li>
+<li>为什么 <code>p = nullptr</code> 不能代替 <code>delete p</code>？</li>
+<li>为什么检查 <code>p != nullptr</code> 仍不能保证解引用安全？</li>
+<li><code>new int[5]{}</code> 对应 <code>delete</code> 还是 <code>delete[]</code>？</li>
+</ol>
+<p>完成后核对<a href="参考答案/第04章C/复习题答案.html">参考答案</a>，再进入第 4 章 D。</p></section>
+<hr>
+<section><h1 style="margin-top:2.6em">第04章D-练习</h1><div class="toc-box"><strong>本页目录</strong><div class="toc">
+<ul>
+<li><a href="#任务-1运行五个示例">任务 1：运行五个示例</a></li>
+<li><a href="#任务-2先预测后用安全代码验证">任务 2：先预测，后用安全代码验证</a></li>
+<li><a href="#任务-3找出危险代码">任务 3：找出危险代码</a></li>
+<li><a href="#任务-4编程">任务 4：编程</a><ul>
+<li><a href="#a-固定数量的成绩">A. 固定数量的成绩</a></li>
+<li><a href="#b-运行时长度的成绩">B. 运行时长度的成绩</a></li>
+<li><a href="#c-动态结构">C. 动态结构</a></li>
+</ul>
+</li>
+<li><a href="#任务-5过关自测">任务 5：过关自测</a></li>
+</ul>
+</div>
+</div><h1 id="第-4-章-d-指针算术与数组替代品练习">第 4 章 D · 指针算术与数组替代品：练习</h1>
+<blockquote>
+<p>先读<a href="讲义/第04章D-指针算术与数组替代品.html">讲义</a>和教材 4.8–4.10（PDF p123–p139）。先自己写，再看<a href="参考答案/第04章D/复习题答案.html">参考答案</a>。本页编程题为本课程自编练习；教材第 4 章末的复习题与编程练习在 PDF p140 起，可作为额外练习。</p>
+</blockquote>
+<h2 id="任务-1运行五个示例">任务 1：运行五个示例</h2>
+<p>逐个编译并运行 <code>示例代码/04_指针算术与数组替代品/</code> 的 <code>01</code>–<code>05</code>。使用 <code>-std=c++17 -Wall -Wextra -pedantic</code>，一次只编译一个程序。</p>
+<ul>
+<li>[ ] <code>01</code>：解释为什么 <code>p++</code> 与 <code>(*p)++</code> 输出不同。</li>
+<li>[ ] <code>02</code>：记录 <code>sizeof(values)</code> 与 <code>sizeof(p)</code>；换平台后这两个数必然相同吗？</li>
+<li>[ ] <code>03</code>：解释 <code>strlen(word)</code> 与 <code>sizeof(word)</code> 为什么不同。</li>
+<li>[ ] <code>04</code>：指出 <code>p-&gt;name</code> 和 <code>(*p).name</code> 的关系；<code>static</code> 变量为何能保留上次的值？</li>
+<li>[ ] <code>05</code>：解释 <code>std::vector</code> 为什么可以 <code>push_back</code>，<code>std::array</code> 为什么没有这个操作。</li>
+</ul>
+<h2 id="任务-2先预测后用安全代码验证">任务 2：先预测，后用安全代码验证</h2>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="mi">4</span><span class="p">]{</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">};</span>
+<span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+</code></pre></div>
+
+<ol>
+<li><code>*p</code>、<code>*(p + 2)</code>、<code>p[3]</code> 各是多少？</li>
+<li><code>p + 4</code> 能否作为循环终点？能否计算 <code>*(p + 4)</code>？为什么？</li>
+<li><code>p++</code> 后，<code>*p</code> 是多少？原来的 <code>a[0]</code> 是否改变？</li>
+<li><code>(*p)++</code> 后，哪个数组元素改变？</li>
+<li><code>sizeof(a)</code> 和 <code>sizeof(p)</code> 分别在计算什么？不要预设具体字节数。</li>
+</ol>
+<h2 id="任务-3找出危险代码">任务 3：找出危险代码</h2>
+<p>下列片段只供分析，<strong>不要运行危险语句</strong>。各写一句修正建议。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="nf">make_bad_pointer</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="n">local</span><span class="p">;</span><span class="w">                </span><span class="c1">// A</span>
+<span class="p">}</span>
+
+<span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"C++"</span><span class="p">;</span>
+<span class="c1">// title[0] = 'c';               // B：若取消注释</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">values</span><span class="p">[</span><span class="mi">3</span><span class="p">]{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">};</span>
+<span class="c1">// std::cout &lt;&lt; values[3];      // C：若取消注释</span>
+</code></pre></div>
+
+<h2 id="任务-4编程">任务 4：编程</h2>
+<h3 id="a-固定数量的成绩">A. 固定数量的成绩</h3>
+<p>用 <code>std::array&lt;int, 4&gt;</code> 保存 <code>80、90、70、100</code>，输出平均分和最高分。文件名建议 <code>ex1.cpp</code>。检查点：平均分 <code>85</code>，最高分 <code>100</code>。</p>
+<h3 id="b-运行时长度的成绩">B. 运行时长度的成绩</h3>
+<p>输入人数 <code>n</code>（只接受 <code>1–100</code>），用 <code>std::vector&lt;int&gt;</code> 保存随后输入的 <code>n</code> 个分数，输出最大值。<strong>不使用 <code>new[]</code> 或 <code>delete[]</code>。</strong> 文件名建议 <code>ex2.cpp</code>。测试：<code>3</code> 人，<code>72 95 83</code>，最高分是 <code>95</code>；再试人数 <code>0</code>。</p>
+<h3 id="c-动态结构">C. 动态结构</h3>
+<p>定义 <code>Student</code> 结构，包含 <code>std::string name</code> 和 <code>int age</code>。用 <code>new</code> 创建一个对象，把姓名设为可含空格的 <code>Li Ming</code>、年龄设为 <code>19</code>，通过 <code>-&gt;</code> 打印，然后正确释放。文件名建议 <code>ex3.cpp</code>。</p>
+<h2 id="任务-5过关自测">任务 5：过关自测</h2>
+<ol>
+<li>为什么 <code>p + 1</code> 对 <code>int*</code> 和 <code>double*</code> 的地址跨度通常不同？</li>
+<li>数组名总会变成指针吗？举一个不会发生转换的例子。</li>
+<li><code>p-&gt;age</code> 与哪个带括号的表达式等价？</li>
+<li><code>std::array</code> 和 <code>std::vector</code> 的共同点、长度上的区别是什么？</li>
+<li><code>.at(i)</code> 与 <code>[i]</code> 在越界处理上有什么区别？</li>
+</ol>
+<p>完成后核对<a href="参考答案/第04章D/复习题答案.html">参考答案</a>。</p></section>
 <hr>
 <section><h1 style="margin-top:2.6em">复习题答案</h1><div class="toc-box"><strong>本页目录</strong><div class="toc">
 <ul>
@@ -17807,6 +18356,122 @@ getline(cin, p.company);       // 现在才能读到完整的一行</code>
 这个坑在以后写任何"先读数字、再读文字"的程序时都会再遇到，
 值得现在就踩一次、记一辈子。</p>
 </blockquote></section>
+<hr>
+<section><h1 style="margin-top:2.6em">复习题答案</h1><div class="toc-box"><strong>本页目录</strong><div class="toc">
+<ul>
+<li><a href="#任务-1">任务 1</a></li>
+<li><a href="#任务-2">任务 2</a></li>
+<li><a href="#任务-3">任务 3</a></li>
+<li><a href="#任务-4">任务 4</a></li>
+</ul>
+</div>
+</div><h1 id="第-4-章-c-参考答案">第 4 章 C · 参考答案</h1>
+<blockquote>
+<p>请先独立完成<a href="练习/第04章C-练习.html">练习</a>。以下答案针对本课程自编练习，不代替教材附录。</p>
+</blockquote>
+<h2 id="任务-1">任务 1</h2>
+<ul>
+<li><code>01</code>：<code>p</code> 保存 <code>&amp;score</code>，所以两者相同；<code>&amp;p</code> 是指针变量自身的地址。地址具体数字不用记。</li>
+<li><code>02</code>：<code>nullptr</code> 表示不指向对象。非空只说明地址不是空值，不证明对象仍活着。</li>
+<li><code>03</code>：<code>new int{42}</code> 创建对象，<code>delete p</code> 结束其生存期；之后不能使用旧地址。</li>
+<li><code>04</code>：<code>n=3</code> 时分数为 60、61、62，平均分为 61；<code>n=0</code> 被输入检查拒绝。</li>
+</ul>
+<h2 id="任务-2">任务 2</h2>
+<table>
+<thead>
+<tr>
+<th>行</th>
+<th>判断与理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>合法并安全，修改的就是 <code>value</code>，结果为 11。</td>
+</tr>
+<tr>
+<td>B</td>
+<td>语法可编译，但解引用空指针有未定义行为。</td>
+</tr>
+<tr>
+<td>C</td>
+<td>语法可编译，但 <code>r</code> 悬空，不能读取已结束生存期的对象。</td>
+</tr>
+<tr>
+<td>D</td>
+<td>语法可编译，但数组分配与单对象释放不匹配，行为未定义。</td>
+</tr>
+<tr>
+<td>E</td>
+<td>合法：<code>new[]</code> 对应 <code>delete[]</code>。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意</strong>：练习中的 B、C、D 保持注释，不要求运行以“观察结果”。危险代码某次看似正常也不能证明它正确。</p>
+<h2 id="任务-3">任务 3</h2>
+<ul>
+<li><a href="参考答案/第04章C/代码/ex1.cpp">编程 A 参考实现</a>：释放前读写，释放后只把指针置空。</li>
+<li><a href="参考答案/第04章C/代码/ex2.cpp">编程 B 参考实现</a>：先检查人数与输入，再计算平均分，最后 <code>delete[]</code>。若输入分数中途失败，参考实现先释放再退出。</li>
+</ul>
+<p>你的实现不必与参考代码逐字相同；重点核对输入边界、释放方式和释放后的使用。</p>
+<h2 id="任务-4">任务 4</h2>
+<ol>
+<li><code>p</code> 是 <code>x</code> 的地址；<code>*p</code> 是 <code>x</code> 的值 7；<code>&amp;p</code> 是指针变量 <code>p</code> 自己的地址。</li>
+<li>只有 <code>a</code> 是指针；<code>b</code> 是 <code>int</code>。</li>
+<li>置空只改变指针变量，不释放先前由 <code>new</code> 创建的对象。</li>
+<li>指针可能保存已释放对象的旧地址，虽然非空，仍然悬空。</li>
+<li><code>delete[]</code>。</li>
+</ol></section>
+<hr>
+<section><h1 style="margin-top:2.6em">复习题答案</h1><div class="toc-box"><strong>本页目录</strong><div class="toc">
+<ul>
+<li><a href="#任务-1">任务 1</a></li>
+<li><a href="#任务-2">任务 2</a></li>
+<li><a href="#任务-3">任务 3</a></li>
+<li><a href="#任务-4">任务 4</a></li>
+<li><a href="#任务-5">任务 5</a></li>
+</ul>
+</div>
+</div><h1 id="第-4-章-d-参考答案">第 4 章 D · 参考答案</h1>
+<blockquote>
+<p>本页对应<a href="练习/第04章D-练习.html">本课程练习</a>。先自己完成，再核对。</p>
+</blockquote>
+<h2 id="任务-1">任务 1</h2>
+<ul>
+<li><code>01</code>：<code>p++</code> 指向下一个元素；<code>(*p)++</code> 增加当前所指元素的值。</li>
+<li><code>02</code>：<code>sizeof(values)</code> 是整个数组的字节数，<code>sizeof(p)</code> 是指针对象的字节数；平台和类型改变都可能影响具体数字。</li>
+<li><code>03</code>：<code>strlen</code> 不数终止符 <code>\0</code>，<code>sizeof(word)</code> 统计整个字符数组，包含终止符。</li>
+<li><code>04</code>：<code>p-&gt;name</code> 等价于 <code>(*p).name</code>；函数内 <code>static</code> 对象的生存期持续到程序结束。</li>
+<li><code>05</code>：<code>vector</code> 的长度可增长，<code>array</code> 的长度由模板参数在编译时固定。</li>
+</ul>
+<h2 id="任务-2">任务 2</h2>
+<ol>
+<li><code>3</code>、<code>9</code>、<code>12</code>。</li>
+<li><code>p + 4</code> 是合法的尾后位置，可当循环终点；不能解引用，那里没有数组元素。</li>
+<li><code>p++</code> 后指向 <code>a[1]</code>，<code>*p</code> 是 6；<code>a[0]</code> 仍为 3。</li>
+<li>接着执行 <code>(*p)++</code> 修改 <code>a[1]</code>，它从 6 变成 7。</li>
+<li><code>sizeof(a)</code> 是四个 <code>int</code> 组成的数组的大小；<code>sizeof(p)</code> 只算指针变量本身。</li>
+</ol>
+<h2 id="任务-3">任务 3</h2>
+<ul>
+<li>A：不能把局部自动对象的地址返回给调用者使用；可返回 <code>int</code> 值，或由调用者管理对象的生存期。</li>
+<li>B：字符串字面量不可修改。若要改字符，使用 <code>char title[] = "C++";</code> 或 <code>std::string</code>。</li>
+<li>C：数组合法下标为 0–2；<code>values[3]</code> 越界。用 <code>std::array</code> / <code>std::vector</code> 时可选 <code>.at(i)</code> 做检查。</li>
+</ul>
+<h2 id="任务-4">任务 4</h2>
+<ul>
+<li><a href="参考答案/第04章D/代码/ex1.cpp">A 参考代码</a>：固定长度，遍历求和与最大值。</li>
+<li><a href="参考答案/第04章D/代码/ex2.cpp">B 参考代码</a>：输入范围先检查，<code>vector</code> 自动管理存储空间。</li>
+<li><a href="参考答案/第04章D/代码/ex3.cpp">C 参考代码</a>：使用 <code>-&gt;</code>，并与 <code>delete</code> 配对。</li>
+</ul>
+<h2 id="任务-5">任务 5</h2>
+<ol>
+<li>加 1 意味着移动到<strong>下一个该类型元素</strong>；元素类型不同，所占字节通常不同。</li>
+<li>不是。对数组直接用 <code>sizeof</code> 时得到整个数组大小；<code>&amp;array</code> 得到指向整个数组的指针。</li>
+<li><code>(*p).age</code>。</li>
+<li>两者都封装了数组式元素访问并支持整体赋值；<code>array</code> 长度固定，<code>vector</code> 可在运行时决定并增长。</li>
+<li><code>.at(i)</code> 检查范围，越界会抛异常；<code>[i]</code> 不做边界检查。</li>
+</ol></section>
 
 <div class="footer">由 Markdown 自动生成 · 全一册</div>
 </article></main>
