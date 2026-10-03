@@ -392,9 +392,10 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div><div class="hintbar">遇到看不懂的专有名词？→ <a href="../附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="../附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-4-章-d-指针算术与数组替代品">第 4 章 D · 指针算术与数组替代品</h1>
 <blockquote>
-<p><strong>教材</strong>：4.8–4.10，PDF p123–p139；第 4 章总结 p139、练习 p140 起。
+<p><strong>教材</strong>：4.8–4.10，PDF 阅读器第 124–140 页（书页 106–122）；第 4 章复习题和编程练习从 PDF 第 141 页起。
 <strong>先修</strong>：第 4 章 A 的数组与字符串、第 4 章 C 的指针和 <code>new</code> / <code>delete</code>。
-<strong>本课目标</strong>：读懂 <code>p + 1</code>、<code>p[i]</code>、<code>-&gt;</code>；说清数组与指针的关系；会在内置数组、<code>std::array</code>、<code>std::vector</code> 之间选择。</p>
+<strong>本课目标</strong>：读懂 <code>p + 1</code>、<code>p[i]</code>、<code>-&gt;</code>；说清数组与指针的关系；会在内置数组、<code>std::array</code>、<code>std::vector</code> 之间选择。
+<strong>材料说明</strong>：本讲义按原书 4.8–4.10 组织，示例与练习由课程自编；原书程序清单 4.19–4.24 可在上述页码内对照阅读。</p>
 </blockquote>
 <h2 id="0-先跑示例">0. 先跑示例</h2>
 <table>
@@ -407,23 +408,23 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </thead>
 <tbody>
 <tr>
-<td>4.8，p123–p128</td>
+<td>4.8–4.8.2，PDF p124–p129</td>
 <td>指针加 1 移动多少？数组何时变成指针？</td>
 <td><a href="../示例代码/04_指针算术与数组替代品/01_pointer_arithmetic.cpp"><code>01</code></a> <a href="../示例代码/04_指针算术与数组替代品/02_array_and_pointer.cpp"><code>02</code></a></td>
 </tr>
 <tr>
-<td>4.8.3，p128–p131</td>
+<td>4.8.3，PDF p129–p132</td>
 <td>指针指向字符串时有什么坑？</td>
 <td><a href="../示例代码/04_指针算术与数组替代品/03_cstrings.cpp"><code>03</code></a></td>
 </tr>
 <tr>
-<td>4.8.4–4.8.5，p131–p135</td>
+<td>4.8.4–4.8.5，PDF p132–p136</td>
 <td>动态结构怎样访问？对象活多久？</td>
 <td><a href="../示例代码/04_指针算术与数组替代品/04_dynamic_struct.cpp"><code>04</code></a></td>
 </tr>
 <tr>
-<td>4.9–4.10，p135–p139</td>
-<td><code>array</code> 和 <code>vector</code> 好在哪？</td>
+<td>4.9–4.10，PDF p136–p140</td>
+<td>类型组合是什么？<code>array</code> 和 <code>vector</code> 好在哪？</td>
 <td><a href="../示例代码/04_指针算术与数组替代品/05_containers.cpp"><code>05</code></a></td>
 </tr>
 </tbody>
@@ -469,6 +470,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <p>输出 <code>message + 1</code> 会从第二个字符开始读到 <code>\0</code>，得到 <code>ello</code>。<code>std::strlen(message)</code> 统计终止符之前的字符数；<code>sizeof(word)</code> 包含末尾的 <code>\0</code>。<strong>不要把指针直接当成有长度的字符串对象</strong>：它可能指向非字符串数据，也可能在终止符之前失效。</p>
 <p>普通文字处理优先用 <code>std::string</code>。只有与 C 接口、教材示例或固定格式数据交互时，才需要仔细处理字符指针与终止符。</p>
+<p>原书程序清单 4.20–4.22 还演示了 <code>strcpy</code>、<code>new char[]</code> 和 <code>delete[]</code>。阅读时注意：给字符数组分配空间必须包含末尾的 <code>\0</code>，复制前目标空间必须足够。写自己的日常文字处理程序时，继续优先用 <code>std::string</code>。</p>
 <h2 id="4-动态结构与">4. 动态结构与 <code>-&gt;</code></h2>
 <div class="codehilite"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">Student</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">age</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
 <span class="n">Student</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Student</span><span class="p">{</span><span class="s">"Li Ming"</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">};</span>

@@ -391,8 +391,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div><div class="hintbar">遇到看不懂的专有名词？→ <a href="../附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="../附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-4-章-c-指针与自由存储空间">第 4 章 C · 指针与自由存储空间</h1>
 <blockquote>
-<p><strong>教材</strong>：4.7，PDF p114–p123。先学完第 4 章 A 的数组，再读本课。
-<strong>本课目标</strong>：看懂地址、指针和解引用；能安全地使用 <code>new</code> / <code>delete</code> 及 <code>new[]</code> / <code>delete[]</code>；知道什么时候不该用裸指针管理内存。</p>
+<p><strong>教材</strong>：4.7，PDF 阅读器第 115–124 页（书页 97–106）。先学完第 4 章 A 的数组，再读本课。
+<strong>本课目标</strong>：看懂地址、指针和解引用；能安全地使用 <code>new</code> / <code>delete</code> 及 <code>new[]</code> / <code>delete[]</code>；知道什么时候不该用裸指针管理内存。
+<strong>材料说明</strong>：本讲义按原书 4.7 组织，示例与练习由课程自编，并非书中程序清单或课后题的逐字版本。原书程序清单 4.14–4.18 在上述页码内，可对照阅读。</p>
 </blockquote>
 <h2 id="0-学习路线">0. 学习路线</h2>
 <table>
@@ -407,25 +408,25 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <tbody>
 <tr>
 <td>1</td>
-<td>4.7、4.7.1，p114–p118</td>
+<td>4.7–4.7.1，PDF p115–p119</td>
 <td>地址是什么？<code>&amp;</code>、<code>*</code> 各做什么？</td>
 <td><a href="../示例代码/04_指针与自由存储空间/01_pointer_basics.cpp"><code>01_pointer_basics.cpp</code></a></td>
 </tr>
 <tr>
 <td>2</td>
-<td>4.7.2–4.7.3，p118–p119</td>
+<td>4.7.2–4.7.3，PDF p119–p120</td>
 <td>为什么未初始化的指针危险？</td>
 <td><a href="../示例代码/04_指针与自由存储空间/02_safe_pointers.cpp"><code>02_safe_pointers.cpp</code></a></td>
 </tr>
 <tr>
 <td>3</td>
-<td>4.7.4–4.7.5，p119–p121</td>
+<td>4.7.4–4.7.5，PDF p120–p122</td>
 <td><code>new</code> 得到的对象何时释放？</td>
 <td><a href="../示例代码/04_指针与自由存储空间/03_new_delete.cpp"><code>03_new_delete.cpp</code></a></td>
 </tr>
 <tr>
 <td>4</td>
-<td>4.7.6，p121–p123</td>
+<td>4.7.6，PDF p122–p124</td>
 <td>动态数组为什么要用 <code>delete[]</code>？</td>
 <td><a href="../示例代码/04_指针与自由存储空间/04_dynamic_array.cpp"><code>04_dynamic_array.cpp</code></a></td>
 </tr>
@@ -492,6 +493,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <p><code>*p = 95;</code> 修改的是 <code>score</code>，之后两者读出来都是 95。<code>int* p</code> 中的 <code>*</code> 表示“声明一个指向 <code>int</code> 的指针”；<code>*p</code> 在表达式中表示“取所指对象”。两处写法相同，作用不同。</p>
 <p><strong>类型也要配对</strong>：<code>int*</code> 应指向 <code>int</code>，<code>double*</code> 应指向 <code>double</code>。指针并非“任意地址都能当任意数据读”。</p>
+<p>原书 4.7.3 还强调：<strong>普通整数不是可随意赋给指针的地址</strong>。不要靠强制转换把猜测的数字当成有效指针；指针应来自现存对象的地址或合法的分配结果。</p>
 <blockquote>
 <p>⚠️ <code>int* a, b;</code> 只让 <code>a</code> 成为指针，<code>b</code> 仍是普通 <code>int</code>。初学时每行只声明一个变量，最不容易看错。</p>
 </blockquote>

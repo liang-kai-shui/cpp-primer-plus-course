@@ -356,7 +356,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </ul>
 </li>
 <li><a href="#二你需要准备什么">二、你需要准备什么</a><ul>
-<li><a href="#1-教材">1. 教材</a></li>
+<li><a href="#1-教材必须自备">1. 教材（必须自备）</a></li>
 <li><a href="#2-编译器">2. 编译器</a></li>
 <li><a href="#3-编辑器">3. 编辑器</a></li>
 </ul>
@@ -373,6 +373,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#八重新生成-html">八、重新生成 HTML</a></li>
 <li><a href="#九反馈">九、反馈</a></li>
 <li><a href="#十版权与免责声明">十、版权与免责声明</a><ul>
+<li><a href="#本仓库不包含教材">本仓库不包含教材</a></li>
 <li><a href="#关于教材题目">关于教材题目</a></li>
 <li><a href="#关于代码">关于代码</a></li>
 </ul>
@@ -388,12 +389,10 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <p><strong>不想下载？直接看在线版：<a href="https://liang-kai-shui.github.io/cpp-primer-plus-course/">https://liang-kai-shui.github.io/cpp-primer-plus-course/</a></strong>
 （默认深色模式，右上角可切换浅色）</p>
 <p>一套<strong>从零讲起</strong>的 C++ 自学材料，配合《C++ Primer Plus（第 6 版）》使用。</p>
-<p><strong>面向谁</strong>：</p>
-<ul>
-<li>完全没写过程序的人</li>
-<li><strong>甚至对电脑本身也不太熟的人</strong>（不知道任务管理器怎么打开也没关系）</li>
-<li>写过一点、但基础不牢、想重新打地基的人</li>
-</ul>
+<p><strong>面向谁</strong>：
+- 完全没写过程序的人
+- <strong>甚至对电脑本身也不太熟的人</strong>（不知道任务管理器怎么打开也没关系）
+- 写过一点、但基础不牢、想重新打地基的人</p>
 <p><strong>不需要</strong>任何编程基础，也<strong>不需要</strong>数学基础。</p>
 <h3 id="这套材料想解决的一个具体问题">💡 这套材料想解决的一个具体问题</h3>
 <p>很多课（包括学校里的）是这样讲的：上来就是一堆专有名词——<strong>"变量""函数""编译""指针"</strong>——
@@ -465,11 +464,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <p>如果你读某一段发现"这里突然冒出一个没解释的词"，<strong>那是我们的问题，请记下来</strong>。</p>
 <hr />
 <h2 id="二你需要准备什么">二、你需要准备什么</h2>
-<h3 id="1-教材">1. 教材</h3>
+<h3 id="1-教材必须自备">1. 教材（必须自备）</h3>
 <blockquote>
 <p>《C++ Primer Plus（第 6 版）中文版》</p>
 </blockquote>
-<p>讲义里所有"教材 pXX"都是指 <strong>PDF 版的页号</strong>（封面算第 1 页），不是书页脚印的页码。</p>
+<p><strong>本包不包含教材</strong>（版权原因，请自行购买或借阅）。
+讲义里所有"教材 pXX"都是指 <strong>PDF 版的页号</strong>（封面算第 1 页），不是书页脚印的页码。</p>
 <blockquote>
 <p>💡 如果你手上的 PDF 书签完整，直接用书签跳转最快。</p>
 </blockquote>
@@ -493,15 +493,15 @@ xcode-select<span class="w"> </span>--install
 <blockquote>
 <p>⚠️ <strong>Windows 中文用户注意</strong>：程序输出中文可能乱码。
 原因和控制台"代码页"有关（《零基础起飞》里讲了原理）。
-最简单的一次性解法是在程序开头加：</p>
-<p>```cpp</p>
+最简单的一次性解法是在程序开头加：
+```cpp</p>
 <h1 id="include">include <windows.h></h1>
 <p>int main() {
     SetConsoleOutputCP(65001);   // 把控制台输出改成 UTF-8
     ...
 }
-```</p>
-<p>或者在运行前先执行 <code>chcp 65001</code>。</p>
+<code>``
+或者在运行前先执行</code>chcp 65001`。</p>
 </blockquote>
 <hr />
 <h2 id="三怎么用重要">三、怎么用（重要）</h2>
@@ -714,11 +714,13 @@ python<span class="w"> </span>tools/build_html.py
 说明你在哪一课、哪一段卡住了。</p>
 <hr />
 <h2 id="十版权与免责声明">十、版权与免责声明</h2>
-<p>本材料是《C++ Primer Plus（第 6 版）中文版》的<strong>配套学习笔记</strong>，</p>
+<h3 id="本仓库不包含教材">本仓库<strong>不包含</strong>教材</h3>
+<p>本材料是《C++ Primer Plus（第 6 版）中文版》的<strong>配套学习笔记</strong>，
+<strong>不包含教材原文，也不包含教材 PDF</strong>。请自行购买或借阅正版教材。</p>
 <h3 id="关于教材题目">关于教材题目</h3>
 <p><code>练习/</code> 目录里的复习题与编程练习，<strong>题目文字转抄自上述教材</strong>（为方便读者按书做题），
 著作权归原作者及出版方所有。这些内容仅用于<strong>教学与学习目的</strong>，非商业用途。
-—参考答案是本仓库独立编写/整理的。</p>
+本仓库<strong>不含</strong>任何教材的解答手册（附录 J）原文——参考答案是本仓库独立编写/整理的。</p>
 <blockquote>
 <p>如果你是著作权权利人，认为本仓库的内容不妥，请开 Issue 联系，我会立即调整或删除。</p>
 </blockquote>
@@ -12604,8 +12606,9 @@ note: previous declaration 'Color red'
 </div>
 </div><div class="hintbar">遇到看不懂的专有名词？→ <a href="附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-4-章-c-指针与自由存储空间">第 4 章 C · 指针与自由存储空间</h1>
 <blockquote>
-<p><strong>教材</strong>：4.7，PDF p114–p123。先学完第 4 章 A 的数组，再读本课。
-<strong>本课目标</strong>：看懂地址、指针和解引用；能安全地使用 <code>new</code> / <code>delete</code> 及 <code>new[]</code> / <code>delete[]</code>；知道什么时候不该用裸指针管理内存。</p>
+<p><strong>教材</strong>：4.7，PDF 阅读器第 115–124 页（书页 97–106）。先学完第 4 章 A 的数组，再读本课。
+<strong>本课目标</strong>：看懂地址、指针和解引用；能安全地使用 <code>new</code> / <code>delete</code> 及 <code>new[]</code> / <code>delete[]</code>；知道什么时候不该用裸指针管理内存。
+<strong>材料说明</strong>：本讲义按原书 4.7 组织，示例与练习由课程自编，并非书中程序清单或课后题的逐字版本。原书程序清单 4.14–4.18 在上述页码内，可对照阅读。</p>
 </blockquote>
 <h2 id="0-学习路线">0. 学习路线</h2>
 <table>
@@ -12620,25 +12623,25 @@ note: previous declaration 'Color red'
 <tbody>
 <tr>
 <td>1</td>
-<td>4.7、4.7.1，p114–p118</td>
+<td>4.7–4.7.1，PDF p115–p119</td>
 <td>地址是什么？<code>&amp;</code>、<code>*</code> 各做什么？</td>
 <td><a href="示例代码/04_指针与自由存储空间/01_pointer_basics.cpp"><code>01_pointer_basics.cpp</code></a></td>
 </tr>
 <tr>
 <td>2</td>
-<td>4.7.2–4.7.3，p118–p119</td>
+<td>4.7.2–4.7.3，PDF p119–p120</td>
 <td>为什么未初始化的指针危险？</td>
 <td><a href="示例代码/04_指针与自由存储空间/02_safe_pointers.cpp"><code>02_safe_pointers.cpp</code></a></td>
 </tr>
 <tr>
 <td>3</td>
-<td>4.7.4–4.7.5，p119–p121</td>
+<td>4.7.4–4.7.5，PDF p120–p122</td>
 <td><code>new</code> 得到的对象何时释放？</td>
 <td><a href="示例代码/04_指针与自由存储空间/03_new_delete.cpp"><code>03_new_delete.cpp</code></a></td>
 </tr>
 <tr>
 <td>4</td>
-<td>4.7.6，p121–p123</td>
+<td>4.7.6，PDF p122–p124</td>
 <td>动态数组为什么要用 <code>delete[]</code>？</td>
 <td><a href="示例代码/04_指针与自由存储空间/04_dynamic_array.cpp"><code>04_dynamic_array.cpp</code></a></td>
 </tr>
@@ -12705,6 +12708,7 @@ note: previous declaration 'Color red'
 
 <p><code>*p = 95;</code> 修改的是 <code>score</code>，之后两者读出来都是 95。<code>int* p</code> 中的 <code>*</code> 表示“声明一个指向 <code>int</code> 的指针”；<code>*p</code> 在表达式中表示“取所指对象”。两处写法相同，作用不同。</p>
 <p><strong>类型也要配对</strong>：<code>int*</code> 应指向 <code>int</code>，<code>double*</code> 应指向 <code>double</code>。指针并非“任意地址都能当任意数据读”。</p>
+<p>原书 4.7.3 还强调：<strong>普通整数不是可随意赋给指针的地址</strong>。不要靠强制转换把猜测的数字当成有效指针；指针应来自现存对象的地址或合法的分配结果。</p>
 <blockquote>
 <p>⚠️ <code>int* a, b;</code> 只让 <code>a</code> 成为指针，<code>b</code> 仍是普通 <code>int</code>。初学时每行只声明一个变量，最不容易看错。</p>
 </blockquote>
@@ -12793,9 +12797,10 @@ note: previous declaration 'Color red'
 </div>
 </div><div class="hintbar">遇到看不懂的专有名词？→ <a href="附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-4-章-d-指针算术与数组替代品">第 4 章 D · 指针算术与数组替代品</h1>
 <blockquote>
-<p><strong>教材</strong>：4.8–4.10，PDF p123–p139；第 4 章总结 p139、练习 p140 起。
+<p><strong>教材</strong>：4.8–4.10，PDF 阅读器第 124–140 页（书页 106–122）；第 4 章复习题和编程练习从 PDF 第 141 页起。
 <strong>先修</strong>：第 4 章 A 的数组与字符串、第 4 章 C 的指针和 <code>new</code> / <code>delete</code>。
-<strong>本课目标</strong>：读懂 <code>p + 1</code>、<code>p[i]</code>、<code>-&gt;</code>；说清数组与指针的关系；会在内置数组、<code>std::array</code>、<code>std::vector</code> 之间选择。</p>
+<strong>本课目标</strong>：读懂 <code>p + 1</code>、<code>p[i]</code>、<code>-&gt;</code>；说清数组与指针的关系；会在内置数组、<code>std::array</code>、<code>std::vector</code> 之间选择。
+<strong>材料说明</strong>：本讲义按原书 4.8–4.10 组织，示例与练习由课程自编；原书程序清单 4.19–4.24 可在上述页码内对照阅读。</p>
 </blockquote>
 <h2 id="0-先跑示例">0. 先跑示例</h2>
 <table>
@@ -12808,23 +12813,23 @@ note: previous declaration 'Color red'
 </thead>
 <tbody>
 <tr>
-<td>4.8，p123–p128</td>
+<td>4.8–4.8.2，PDF p124–p129</td>
 <td>指针加 1 移动多少？数组何时变成指针？</td>
 <td><a href="示例代码/04_指针算术与数组替代品/01_pointer_arithmetic.cpp"><code>01</code></a> <a href="示例代码/04_指针算术与数组替代品/02_array_and_pointer.cpp"><code>02</code></a></td>
 </tr>
 <tr>
-<td>4.8.3，p128–p131</td>
+<td>4.8.3，PDF p129–p132</td>
 <td>指针指向字符串时有什么坑？</td>
 <td><a href="示例代码/04_指针算术与数组替代品/03_cstrings.cpp"><code>03</code></a></td>
 </tr>
 <tr>
-<td>4.8.4–4.8.5，p131–p135</td>
+<td>4.8.4–4.8.5，PDF p132–p136</td>
 <td>动态结构怎样访问？对象活多久？</td>
 <td><a href="示例代码/04_指针算术与数组替代品/04_dynamic_struct.cpp"><code>04</code></a></td>
 </tr>
 <tr>
-<td>4.9–4.10，p135–p139</td>
-<td><code>array</code> 和 <code>vector</code> 好在哪？</td>
+<td>4.9–4.10，PDF p136–p140</td>
+<td>类型组合是什么？<code>array</code> 和 <code>vector</code> 好在哪？</td>
 <td><a href="示例代码/04_指针算术与数组替代品/05_containers.cpp"><code>05</code></a></td>
 </tr>
 </tbody>
@@ -12870,6 +12875,7 @@ note: previous declaration 'Color red'
 
 <p>输出 <code>message + 1</code> 会从第二个字符开始读到 <code>\0</code>，得到 <code>ello</code>。<code>std::strlen(message)</code> 统计终止符之前的字符数；<code>sizeof(word)</code> 包含末尾的 <code>\0</code>。<strong>不要把指针直接当成有长度的字符串对象</strong>：它可能指向非字符串数据，也可能在终止符之前失效。</p>
 <p>普通文字处理优先用 <code>std::string</code>。只有与 C 接口、教材示例或固定格式数据交互时，才需要仔细处理字符指针与终止符。</p>
+<p>原书程序清单 4.20–4.22 还演示了 <code>strcpy</code>、<code>new char[]</code> 和 <code>delete[]</code>。阅读时注意：给字符数组分配空间必须包含末尾的 <code>\0</code>，复制前目标空间必须足够。写自己的日常文字处理程序时，继续优先用 <code>std::string</code>。</p>
 <h2 id="4-动态结构与">4. 动态结构与 <code>-&gt;</code></h2>
 <div class="codehilite"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">Student</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">age</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
 <span class="n">Student</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Student</span><span class="p">{</span><span class="s">"Li Ming"</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">};</span>
@@ -14881,7 +14887,7 @@ getline(cin, company);      // 紧接着读整行</code>
 </div>
 </div><h1 id="第-4-章-c-指针与自由存储空间练习">第 4 章 C · 指针与自由存储空间：练习</h1>
 <blockquote>
-<p>先读<a href="讲义/第04章C-指针与自由存储空间.html">讲义</a>和教材 4.7（PDF p114–p123）。在你自己的目录中写代码，不改动 <code>示例代码/</code>。先完成再看<a href="参考答案/第04章C/复习题答案.html">参考答案</a>。</p>
+<p>先读<a href="讲义/第04章C-指针与自由存储空间.html">讲义</a>和教材 4.7（PDF p115–p124）。本页题目由课程自编；原书复习题从 PDF p141 起。在你自己的目录中写代码，不改动 <code>示例代码/</code>。先完成再看<a href="参考答案/第04章C/复习题答案.html">参考答案</a>。</p>
 </blockquote>
 <h2 id="任务-1四个示例">任务 1：四个示例</h2>
 <p>逐个运行 <code>示例代码/04_指针与自由存储空间/</code> 下的 4 个程序。编译一个示例时可用：</p>
@@ -14975,7 +14981,7 @@ getline(cin, company);      // 紧接着读整行</code>
 </div>
 </div><h1 id="第-4-章-d-指针算术与数组替代品练习">第 4 章 D · 指针算术与数组替代品：练习</h1>
 <blockquote>
-<p>先读<a href="讲义/第04章D-指针算术与数组替代品.html">讲义</a>和教材 4.8–4.10（PDF p123–p139）。先自己写，再看<a href="参考答案/第04章D/复习题答案.html">参考答案</a>。本页编程题为本课程自编练习；教材第 4 章末的复习题与编程练习在 PDF p140 起，可作为额外练习。</p>
+<p>先读<a href="讲义/第04章D-指针算术与数组替代品.html">讲义</a>和教材 4.8–4.10（PDF p124–p140）。先自己写，再看<a href="参考答案/第04章D/复习题答案.html">参考答案</a>。本页题目由课程自编；教材第 4 章末的复习题与编程练习在 PDF p141 起，可作为额外练习。</p>
 </blockquote>
 <h2 id="任务-1运行五个示例">任务 1：运行五个示例</h2>
 <p>逐个编译并运行 <code>示例代码/04_指针算术与数组替代品/</code> 的 <code>01</code>–<code>05</code>。使用 <code>-std=c++17 -Wall -Wextra -pedantic</code>，一次只编译一个程序。</p>
