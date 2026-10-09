@@ -189,7 +189,10 @@ details.toc-box[open] summary{margin-bottom:.5em;}
 .pager a.next{text-align:right;}
 .pager a.disabled{opacity:.35; pointer-events:none;}
 
-.footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+.author-line{color:var(--muted); font-size:14px;}
+.author-line a{font-weight:600;}
+.footer{display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 24px;
+  margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
   color:var(--muted); font-size:13.5px;}
 
 /* ============ 移动端 ============ */
@@ -206,6 +209,7 @@ PAGE = """<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="凉开水">
 <title>{title}</title>
 <script>
 /* 在页面渲染前先定好主题，避免"白屏闪一下" */
@@ -225,7 +229,10 @@ PAGE = """<!DOCTYPE html>
 <main><article>
 {body}
 {pager}
-<div class="footer">{footer}</div>
+<footer class="footer">
+<span>{footer}</span>
+<span>课程作者：<a href="https://lksme.dpdns.org/" rel="author">凉开水</a></span>
+</footer>
 </article></main>
 </div>
 <script>
@@ -514,6 +521,7 @@ def main():
     idx = """
 <h1>C++ 入门课程</h1>
 <p>一套<strong>从零讲起</strong>的 C++ 自学材料，配合《C++ Primer Plus（第 6 版）》使用。</p>
+<p class="author-line">课程作者：<a href="https://lksme.dpdns.org/" rel="author">凉开水</a> · 点击访问个人博客</p>
 <blockquote><p><strong>第一次来，请先读 <a href="README.html">课程说明</a></strong>——
 里面写了「需要准备什么环境」「怎么用这份材料」「遇到问题怎么办」。<br>%s</p></blockquote>
 <div class="cards">%s</div>

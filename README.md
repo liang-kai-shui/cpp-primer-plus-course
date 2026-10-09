@@ -1,5 +1,7 @@
 # C++ 入门课程 · 第 1–4 章
 
+课程作者：[凉开水](https://lksme.dpdns.org/)（个人博客）
+
 [![在线阅读](https://img.shields.io/badge/📖_在线阅读-点这里-58a6ff?style=for-the-badge)](https://liang-kai-shui.github.io/cpp-primer-plus-course/)
 [![License: MIT](https://img.shields.io/badge/代码-MIT-7ee787?style=flat-square)](LICENSE)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/文档-CC_BY--NC--SA_4.0-f0b849?style=flat-square)](LICENSE-DOCS)

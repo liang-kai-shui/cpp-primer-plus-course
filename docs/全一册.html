@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="凉开水">
 <title>C++ 入门课程 · 全一册</title>
 <script>
 /* 在页面渲染前先定好主题，避免"白屏闪一下" */
@@ -166,7 +167,10 @@ details.toc-box[open] summary{margin-bottom:.5em;}
 .pager a.next{text-align:right;}
 .pager a.disabled{opacity:.35; pointer-events:none;}
 
-.footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+.author-line{color:var(--muted); font-size:14px;}
+.author-line a{font-weight:600;}
+.footer{display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 24px;
+  margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
   color:var(--muted); font-size:13.5px;}
 
 /* ============ 移动端 ============ */
@@ -382,6 +386,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </ul>
 </div>
 </div><h1 id="c-入门课程-第-14-章">C++ 入门课程 · 第 1–4 章</h1>
+<p>课程作者：<a href="https://lksme.dpdns.org/">凉开水</a>（个人博客）</p>
 <p><a href="https://liang-kai-shui.github.io/cpp-primer-plus-course/"><img alt="在线阅读" src="https://img.shields.io/badge/📖_在线阅读-点这里-58a6ff?style=for-the-badge" /></a>
 <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/代码-MIT-7ee787?style=flat-square" /></a>
 <a href="LICENSE-DOCS"><img alt="License: CC BY-NC-SA 4.0" src="https://img.shields.io/badge/文档-CC_BY--NC--SA_4.0-f0b849?style=flat-square" /></a></p>
@@ -18479,7 +18484,10 @@ getline(cin, p.company);       // 现在才能读到完整的一行</code>
 <li><code>.at(i)</code> 检查范围，越界会抛异常；<code>[i]</code> 不做边界检查。</li>
 </ol></section>
 
-<div class="footer">由 Markdown 自动生成 · 全一册</div>
+<footer class="footer">
+<span>由 Markdown 自动生成 · 全一册</span>
+<span>课程作者：<a href="https://lksme.dpdns.org/" rel="author">凉开水</a></span>
+</footer>
 </article></main>
 </div>
 <script>
