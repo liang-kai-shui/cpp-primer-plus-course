@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="凉开水">
+<title>第05章-循环和关系表达式</title>
+<script>
+/* 在页面渲染前先定好主题，避免"白屏闪一下" */
+(function(){
+  try{
+    var t = localStorage.getItem('cppcourse-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<style>
+/* ============ 颜色变量：默认深色 ============ */
+:root, [data-theme="dark"]{
+  --bg:#14171a; --bg2:#1b1f24; --bg3:#232a31;
+  --fg:#dfe3e8; --fg2:#b6bec8; --muted:#8b95a1;
+  --line:#2b3138; --accent:#58a6ff;
+  --code-bg:#0f1216; --quote-bg:#1b2027;
+}
+[data-theme="light"]{
+  --bg:#fbfbfa; --bg2:#ffffff; --bg3:#f1f5f9;
+  --fg:#22272e; --fg2:#3b434d; --muted:#6b7280;
+  --line:#e5e7eb; --accent:#1f6feb;
+  --code-bg:#f3f4f6; --quote-bg:#f8fafc;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",Roboto,sans-serif;
+  font-size:16.5px; line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ============ 主题切换按钮 ============ */
+#themeBtn{
+  position:fixed; top:14px; right:18px; z-index:50;
+  width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--line); background:var(--bg2); color:var(--fg);
+  font-size:19px; line-height:1; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, background .15s ease;
+}
+#themeBtn:hover{transform:scale(1.08); background:var(--bg3);}
+
+.layout{display:flex; min-height:100vh;}
+
+/* ============ 侧边导航 ============ */
+nav{
+  width:288px; flex:0 0 288px; background:var(--bg2);
+  border-right:1px solid var(--line); padding:22px 0 80px;
+  overflow-y:auto; position:sticky; top:0; height:100vh;
+}
+nav .brand{
+  padding:0 20px 15px; font-weight:700; font-size:15px;
+  border-bottom:1px solid var(--line); margin-bottom:12px; color:var(--fg);
+}
+nav .group{
+  padding:16px 20px 6px; font-size:11.5px; color:var(--muted);
+  letter-spacing:.1em; font-weight:600;
+}
+nav a{display:block; padding:6px 20px; font-size:14px; color:var(--fg2);
+  border-left:3px solid transparent;}
+nav a:hover{background:var(--bg3); text-decoration:none; color:var(--fg);}
+nav a.active{color:var(--accent); font-weight:600;
+  border-left-color:var(--accent); background:var(--bg3);}
+
+main{flex:1; min-width:0; padding:46px 60px 120px; max-width:1120px;}
+article{
+  background:var(--bg2); border:1px solid var(--line);
+  border-radius:12px; padding:40px 48px;
+  box-shadow:0 1px 3px rgba(0,0,0,.10);
+}
+
+/* ============ 正文排版 ============ */
+h1,h2,h3,h4{line-height:1.4; margin:1.7em 0 .7em; font-weight:700; scroll-margin-top:20px;}
+h1{font-size:1.9em; margin-top:0; padding-bottom:.4em; border-bottom:2px solid var(--line);}
+h2{font-size:1.42em; padding-bottom:.28em; border-bottom:1px solid var(--line);}
+h3{font-size:1.16em;}
+h4{font-size:1.03em; color:var(--fg2);}
+p{margin:.8em 0;}
+ul,ol{padding-left:1.65em;}
+li{margin:.35em 0;}
+strong{font-weight:700;}
+hr{border:0; border-top:1px solid var(--line); margin:2.2em 0;}
+img{max-width:100%;}
+
+blockquote{
+  margin:1.1em 0; padding:.85em 1.15em; background:var(--quote-bg);
+  border-left:4px solid var(--accent); color:var(--fg2);
+  border-radius:0 8px 8px 0;
+}
+blockquote p{margin:.4em 0;}
+blockquote strong{color:var(--fg);}
+
+/* ============ 表格 ============ */
+table{
+  border-collapse:collapse; width:100%; margin:1.2em 0;
+  font-size:14.8px; display:block; overflow-x:auto;
+}
+th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top;}
+th{background:var(--bg3); font-weight:600; white-space:nowrap;}
+tbody tr:nth-child(even) td{background:rgba(127,127,127,.05);}
+
+/* ============ 代码 ============ */
+code{
+  font-family:"Cascadia Code",Consolas,"SF Mono",Monaco,"Courier New","Microsoft YaHei",monospace;
+  font-size:.885em; background:var(--code-bg); padding:.16em .42em;
+  border-radius:4px; border:1px solid var(--line);
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--line); border-radius:9px;
+  padding:15px 17px; overflow-x:auto; margin:1.1em 0; line-height:1.6;
+}
+pre code{background:none; padding:0; border:0; font-size:13.8px;}
+.codehilite{background:var(--code-bg); border:1px solid var(--line);
+  border-radius:9px; margin:1.1em 0;}
+.codehilite pre{border:0; margin:0; background:none;}
+
+/* ============ 本页目录 / 卡片 / 翻页 ============ */
+.toc-box{
+  background:var(--quote-bg); border:1px solid var(--line);
+  border-radius:9px; padding:13px 22px; margin:1.3em 0;
+}
+.toc-box strong{display:block; margin-bottom:5px; color:var(--muted);
+  font-size:13px; letter-spacing:.05em;}
+.toc-box ul{margin:.35em 0; padding-left:1.3em;}
+.toc-box a{color:var(--fg2);}
+.toc-box a:hover{color:var(--accent);}
+
+/* ============ 讲义页顶部的"卡住了去哪查"横幅 ============ */
+.hintbar{
+  background:var(--bg3); border:1px solid var(--line); border-radius:8px;
+  padding:9px 15px; margin:0 0 1.5em; font-size:13.5px; color:var(--muted);
+}
+.hintbar a{font-weight:600;}
+
+/* 超长的"本页目录"（比如术语表有 100+ 词条）折叠起来，别把正文挤下去 */
+details.toc-box summary{
+  cursor:pointer; color:var(--muted); font-size:13.5px;
+  font-weight:600; letter-spacing:.03em; user-select:none;
+}
+details.toc-box summary:hover{color:var(--accent);}
+details.toc-box[open] summary{margin-bottom:.5em;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px; margin:24px 0;}
+.card{background:var(--bg2); border:1px solid var(--line); border-radius:11px;
+  padding:19px 21px; transition:transform .15s ease, border-color .15s ease;}
+.card:hover{transform:translateY(-2px); border-color:var(--accent);}
+.card h3{margin:0 0 8px; font-size:1.06em;}
+.card p{margin:0; color:var(--muted); font-size:14px; line-height:1.65;}
+
+.pager{display:flex; justify-content:space-between; gap:14px; margin-top:34px;
+  padding-top:20px; border-top:1px solid var(--line);}
+.pager a{flex:1; padding:11px 16px; background:var(--bg3); border:1px solid var(--line);
+  border-radius:9px; font-size:14px; color:var(--fg2);}
+.pager a:hover{border-color:var(--accent); color:var(--accent); text-decoration:none;}
+.pager a.next{text-align:right;}
+.pager a.disabled{opacity:.35; pointer-events:none;}
+
+.author-line{color:var(--muted); font-size:14px;}
+.author-line a{font-weight:600;}
+.footer{display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 24px;
+  margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:13.5px;}
+
+/* ============ 移动端 ============ */
+@media (max-width:900px){
+  nav{display:none;}
+  main{padding:18px 12px 60px;}
+  article{padding:22px 17px; border-radius:8px;}
+  #themeBtn{top:10px; right:10px; width:38px; height:38px;}
+}
+
+/* ===== 代码高亮（按主题隔离） ===== */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="dark"] .codehilite .hll { background-color: #49483e }
+[data-theme="dark"] .codehilite { background: #272822; color: #F8F8F2 }
+[data-theme="dark"] .codehilite .c { color: #959077 } /* Comment */
+[data-theme="dark"] .codehilite .err { color: #ED007E; background-color: #1E0010 } /* Error */
+[data-theme="dark"] .codehilite .esc { color: #F8F8F2 } /* Escape */
+[data-theme="dark"] .codehilite .g { color: #F8F8F2 } /* Generic */
+[data-theme="dark"] .codehilite .k { color: #66D9EF } /* Keyword */
+[data-theme="dark"] .codehilite .l { color: #AE81FF } /* Literal */
+[data-theme="dark"] .codehilite .n { color: #F8F8F2 } /* Name */
+[data-theme="dark"] .codehilite .o { color: #FF4689 } /* Operator */
+[data-theme="dark"] .codehilite .x { color: #F8F8F2 } /* Other */
+[data-theme="dark"] .codehilite .p { color: #F8F8F2 } /* Punctuation */
+[data-theme="dark"] .codehilite .ch { color: #959077 } /* Comment.Hashbang */
+[data-theme="dark"] .codehilite .cm { color: #959077 } /* Comment.Multiline */
+[data-theme="dark"] .codehilite .cp { color: #959077 } /* Comment.Preproc */
+[data-theme="dark"] .codehilite .cpf { color: #959077 } /* Comment.PreprocFile */
+[data-theme="dark"] .codehilite .c1 { color: #959077 } /* Comment.Single */
+[data-theme="dark"] .codehilite .cs { color: #959077 } /* Comment.Special */
+[data-theme="dark"] .codehilite .gd { color: #FF4689 } /* Generic.Deleted */
+[data-theme="dark"] .codehilite .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+[data-theme="dark"] .codehilite .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="dark"] .codehilite .gr { color: #FF4689 } /* Generic.Error */
+[data-theme="dark"] .codehilite .gh { color: #F8F8F2 } /* Generic.Heading */
+[data-theme="dark"] .codehilite .gi { color: #A6E22E } /* Generic.Inserted */
+[data-theme="dark"] .codehilite .go { color: #66D9EF } /* Generic.Output */
+[data-theme="dark"] .codehilite .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+[data-theme="dark"] .codehilite .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+[data-theme="dark"] .codehilite .gu { color: #959077 } /* Generic.Subheading */
+[data-theme="dark"] .codehilite .gt { color: #66D9EF } /* Generic.Traceback */
+[data-theme="dark"] .codehilite .kc { color: #66D9EF } /* Keyword.Constant */
+[data-theme="dark"] .codehilite .kd { color: #66D9EF } /* Keyword.Declaration */
+[data-theme="dark"] .codehilite .kn { color: #FF4689 } /* Keyword.Namespace */
+[data-theme="dark"] .codehilite .kp { color: #66D9EF } /* Keyword.Pseudo */
+[data-theme="dark"] .codehilite .kr { color: #66D9EF } /* Keyword.Reserved */
+[data-theme="dark"] .codehilite .kt { color: #66D9EF } /* Keyword.Type */
+[data-theme="dark"] .codehilite .ld { color: #E6DB74 } /* Literal.Date */
+[data-theme="dark"] .codehilite .m { color: #AE81FF } /* Literal.Number */
+[data-theme="dark"] .codehilite .s { color: #E6DB74 } /* Literal.String */
+[data-theme="dark"] .codehilite .na { color: #A6E22E } /* Name.Attribute */
+[data-theme="dark"] .codehilite .nb { color: #A6E22E } /* Name.Builtin */
+[data-theme="dark"] .codehilite .nc { color: #A6E22E } /* Name.Class */
+[data-theme="dark"] .codehilite .no { color: #66D9EF } /* Name.Constant */
+[data-theme="dark"] .codehilite .nd { color: #A6E22E } /* Name.Decorator */
+[data-theme="dark"] .codehilite .ni { color: #F8F8F2 } /* Name.Entity */
+[data-theme="dark"] .codehilite .ne { color: #A6E22E } /* Name.Exception */
+[data-theme="dark"] .codehilite .nf { color: #A6E22E } /* Name.Function */
+[data-theme="dark"] .codehilite .nl { color: #F8F8F2 } /* Name.Label */
+[data-theme="dark"] .codehilite .nn { color: #F8F8F2 } /* Name.Namespace */
+[data-theme="dark"] .codehilite .nx { color: #A6E22E } /* Name.Other */
+[data-theme="dark"] .codehilite .py { color: #F8F8F2 } /* Name.Property */
+[data-theme="dark"] .codehilite .nt { color: #FF4689 } /* Name.Tag */
+[data-theme="dark"] .codehilite .nv { color: #F8F8F2 } /* Name.Variable */
+[data-theme="dark"] .codehilite .ow { color: #FF4689 } /* Operator.Word */
+[data-theme="dark"] .codehilite .pm { color: #F8F8F2 } /* Punctuation.Marker */
+[data-theme="dark"] .codehilite .w { color: #F8F8F2 } /* Text.Whitespace */
+[data-theme="dark"] .codehilite .mb { color: #AE81FF } /* Literal.Number.Bin */
+[data-theme="dark"] .codehilite .mf { color: #AE81FF } /* Literal.Number.Float */
+[data-theme="dark"] .codehilite .mh { color: #AE81FF } /* Literal.Number.Hex */
+[data-theme="dark"] .codehilite .mi { color: #AE81FF } /* Literal.Number.Integer */
+[data-theme="dark"] .codehilite .mo { color: #AE81FF } /* Literal.Number.Oct */
+[data-theme="dark"] .codehilite .sa { color: #E6DB74 } /* Literal.String.Affix */
+[data-theme="dark"] .codehilite .sb { color: #E6DB74 } /* Literal.String.Backtick */
+[data-theme="dark"] .codehilite .sc { color: #E6DB74 } /* Literal.String.Char */
+[data-theme="dark"] .codehilite .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+[data-theme="dark"] .codehilite .sd { color: #E6DB74 } /* Literal.String.Doc */
+[data-theme="dark"] .codehilite .s2 { color: #E6DB74 } /* Literal.String.Double */
+[data-theme="dark"] .codehilite .se { color: #AE81FF } /* Literal.String.Escape */
+[data-theme="dark"] .codehilite .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+[data-theme="dark"] .codehilite .si { color: #E6DB74 } /* Literal.String.Interpol */
+[data-theme="dark"] .codehilite .sx { color: #E6DB74 } /* Literal.String.Other */
+[data-theme="dark"] .codehilite .sr { color: #E6DB74 } /* Literal.String.Regex */
+[data-theme="dark"] .codehilite .s1 { color: #E6DB74 } /* Literal.String.Single */
+[data-theme="dark"] .codehilite .ss { color: #E6DB74 } /* Literal.String.Symbol */
+[data-theme="dark"] .codehilite .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+[data-theme="dark"] .codehilite .fm { color: #A6E22E } /* Name.Function.Magic */
+[data-theme="dark"] .codehilite .vc { color: #F8F8F2 } /* Name.Variable.Class */
+[data-theme="dark"] .codehilite .vg { color: #F8F8F2 } /* Name.Variable.Global */
+[data-theme="dark"] .codehilite .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+[data-theme="dark"] .codehilite .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+[data-theme="dark"] .codehilite .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="light"] .codehilite .hll { background-color: #ffffcc }
+[data-theme="light"] .codehilite { background: #f0f0f0; }
+[data-theme="light"] .codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+[data-theme="light"] .codehilite .err { border: 1px solid #F00 } /* Error */
+[data-theme="light"] .codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+[data-theme="light"] .codehilite .o { color: #666 } /* Operator */
+[data-theme="light"] .codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+[data-theme="light"] .codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+[data-theme="light"] .codehilite .cp { color: #007020 } /* Comment.Preproc */
+[data-theme="light"] .codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+[data-theme="light"] .codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+[data-theme="light"] .codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+[data-theme="light"] .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+[data-theme="light"] .codehilite .ge { font-style: italic } /* Generic.Emph */
+[data-theme="light"] .codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="light"] .codehilite .gr { color: #F00 } /* Generic.Error */
+[data-theme="light"] .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+[data-theme="light"] .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+[data-theme="light"] .codehilite .go { color: #888 } /* Generic.Output */
+[data-theme="light"] .codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+[data-theme="light"] .codehilite .gs { font-weight: bold } /* Generic.Strong */
+[data-theme="light"] .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+[data-theme="light"] .codehilite .gt { color: #04D } /* Generic.Traceback */
+[data-theme="light"] .codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+[data-theme="light"] .codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+[data-theme="light"] .codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+[data-theme="light"] .codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+[data-theme="light"] .codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+[data-theme="light"] .codehilite .kt { color: #902000 } /* Keyword.Type */
+[data-theme="light"] .codehilite .m { color: #40A070 } /* Literal.Number */
+[data-theme="light"] .codehilite .s { color: #4070A0 } /* Literal.String */
+[data-theme="light"] .codehilite .na { color: #4070A0 } /* Name.Attribute */
+[data-theme="light"] .codehilite .nb { color: #007020 } /* Name.Builtin */
+[data-theme="light"] .codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+[data-theme="light"] .codehilite .no { color: #60ADD5 } /* Name.Constant */
+[data-theme="light"] .codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+[data-theme="light"] .codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+[data-theme="light"] .codehilite .ne { color: #007020 } /* Name.Exception */
+[data-theme="light"] .codehilite .nf { color: #06287E } /* Name.Function */
+[data-theme="light"] .codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+[data-theme="light"] .codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+[data-theme="light"] .codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+[data-theme="light"] .codehilite .nv { color: #BB60D5 } /* Name.Variable */
+[data-theme="light"] .codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+[data-theme="light"] .codehilite .w { color: #BBB } /* Text.Whitespace */
+[data-theme="light"] .codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+[data-theme="light"] .codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+[data-theme="light"] .codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+[data-theme="light"] .codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+[data-theme="light"] .codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+[data-theme="light"] .codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+[data-theme="light"] .codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+[data-theme="light"] .codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+[data-theme="light"] .codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+[data-theme="light"] .codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+[data-theme="light"] .codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+[data-theme="light"] .codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+[data-theme="light"] .codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+[data-theme="light"] .codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+[data-theme="light"] .codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+[data-theme="light"] .codehilite .sr { color: #235388 } /* Literal.String.Regex */
+[data-theme="light"] .codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+[data-theme="light"] .codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+[data-theme="light"] .codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+[data-theme="light"] .codehilite .fm { color: #06287E } /* Name.Function.Magic */
+[data-theme="light"] .codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+[data-theme="light"] .codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+[data-theme="light"] .codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+[data-theme="light"] .codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+[data-theme="light"] .codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+[data-theme="dark"] .codehilite, [data-theme="dark"] .codehilite pre{background:transparent;}
+</style>
+</head>
+<body>
+<button id="themeBtn" title="切换深色 / 浅色">🌙</button>
+<div class="layout">
+<nav><div class="brand">C++ 入门课程</div>
+<a href="../README.html">课程说明</a>
+<div class="group">附录</div>
+<a href="../附录/术语表.html">术语表</a>
+<a href="../附录/零基础起飞.html">零基础起飞</a>
+<div class="group">讲义</div>
+<a href="../讲义/第01章-预备知识.html">第01章-预备知识</a>
+<a href="../讲义/第02章-开始学习C++.html">第02章-开始学习C++</a>
+<a href="../讲义/第03章-处理数据.html">第03章-处理数据</a>
+<a href="../讲义/第04章A-数组与字符串.html">第04章A-数组与字符串</a>
+<a href="../讲义/第04章B-结构共用体枚举.html">第04章B-结构共用体枚举</a>
+<a href="../讲义/第04章C-指针与自由存储空间.html">第04章C-指针与自由存储空间</a>
+<a href="../讲义/第04章D-指针算术与数组替代品.html">第04章D-指针算术与数组替代品</a>
+<a href="../讲义/第05章-循环和关系表达式.html" class="active">第05章-循环和关系表达式</a>
+<a href="../讲义/第06章-分支语句和逻辑运算符.html">第06章-分支语句和逻辑运算符</a>
+<div class="group">练习</div>
+<a href="../练习/第01章-练习.html">第01章-练习</a>
+<a href="../练习/第02章-练习.html">第02章-练习</a>
+<a href="../练习/第03章-练习.html">第03章-练习</a>
+<a href="../练习/第04章A-练习.html">第04章A-练习</a>
+<a href="../练习/第04章B-练习.html">第04章B-练习</a>
+<a href="../练习/第04章C-练习.html">第04章C-练习</a>
+<a href="../练习/第04章D-练习.html">第04章D-练习</a>
+<a href="../练习/第05章-练习.html">第05章-练习</a>
+<a href="../练习/第06章-练习.html">第06章-练习</a>
+<div class="group">参考答案</div>
+<a href="../参考答案/第01章/复习题答案.html">第01章 · 复习题答案</a>
+<a href="../参考答案/第01章/错误分类实验-答案.html">第01章 · 错误分类实验-答案</a>
+<a href="../参考答案/第01章/摸底测试/说明.html">第01章/摸底测试 · 说明</a>
+<a href="../参考答案/第02章/复习题答案.html">第02章 · 复习题答案</a>
+<a href="../参考答案/第03章/复习题答案.html">第03章 · 复习题答案</a>
+<a href="../参考答案/第04章A/复习题答案.html">第04章A · 复习题答案</a>
+<a href="../参考答案/第04章B/复习题答案.html">第04章B · 复习题答案</a>
+<a href="../参考答案/第04章C/复习题答案.html">第04章C · 复习题答案</a>
+<a href="../参考答案/第04章D/复习题答案.html">第04章D · 复习题答案</a>
+<a href="../参考答案/第05章/复习题答案.html">第05章 · 复习题答案</a>
+<a href="../参考答案/第06章/复习题答案.html">第06章 · 复习题答案</a>
+</nav>
+<main><article>
+<div class="toc-box"><strong>本页目录</strong><div class="toc">
+<ul>
+<li><a href="#0-本课怎么学">0. 本课怎么学</a></li>
+<li><a href="#1-循环让同一套动作反复发生">1. 循环：让同一套动作反复发生</a><ul>
+<li><a href="#循环体语句和代码块">循环体、语句和代码块</a></li>
+</ul>
+</li>
+<li><a href="#2-关系表达式条件怎样得到真假">2. 关系表达式：条件怎样得到真假</a></li>
+<li><a href="#3-先用旧值还是先得到新值">3. ++：先用旧值，还是先得到新值</a><ul>
+<li><a href="#接回上一课的指针">接回上一课的指针</a></li>
+<li><a href="#副作用与求值顺序">副作用与求值顺序</a></li>
+<li><a href="#复合赋值与逗号5195111">复合赋值与逗号（5.1.9–5.1.11）</a></li>
+</ul>
+</li>
+<li><a href="#4-字符串比较内容与遍历边界">4. 字符串：比较内容与遍历边界</a></li>
+<li><a href="#5-while-和-dowhile选择检查时机">5. while 和 do...while：选择检查时机</a><ul>
+<li><a href="#原书的计时和类型别名522">原书的计时和类型别名（5.2.2）</a></li>
+</ul>
+</li>
+<li><a href="#6-范围-for从每个元素取值">6. 范围 for：从每个元素取值</a></li>
+<li><a href="#7-文本输入先区分读什么再判断读到了吗">7. 文本输入：先区分“读什么”，再判断“读到了吗”</a></li>
+<li><a href="#8-嵌套循环与二维数组">8. 嵌套循环与二维数组</a></li>
+<li><a href="#9-这课的检查清单">9. 这课的检查清单</a></li>
+</ul>
+</div>
+</div><div class="hintbar">遇到看不懂的专有名词？→ <a href="../附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="../附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-5-章讲义循环和关系表达式">第 5 章讲义：循环和关系表达式</h1>
+<blockquote>
+<p><strong>教材</strong>：《C++ Primer Plus（第 6 版）》第 5 章，PDF 第 <strong>143–182 页</strong>（书页 125–164）；正文 143–180，复习题 181，编程练习 181–182。
+<strong>先修</strong>：变量、输入输出、数组、字符串；L06–L07 的指针用于解释 <code>*p++</code>，暂时不需要函数或类。
+<strong>目标</strong>：能按执行顺序推演循环，写出不越界的遍历，区别字符输入方式，用二维数组统计数据。
+<strong>材料说明</strong>：章节顺序按原书 5.1–5.6；讲解和示例由课程重新编写。原书程序清单 5.1–5.20 用于对照；涉及求值顺序时按本课程的 <strong>C++17</strong> 编译环境说明。</p>
+</blockquote>
+<h2 id="0-本课怎么学">0. 本课怎么学</h2>
+<p>这一章信息较多，建议分三次：循环基础；表达式与字符串；输入与二维数组。每次先预测输出，再编译验证。</p>
+<table>
+<thead>
+<tr>
+<th>原书范围（PDF 页）</th>
+<th>先解决的问题</th>
+<th>课程示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5.1，143–163</td>
+<td>重复几次？条件何时检查？表达式何时修改变量？</td>
+<td><a href="../示例代码/05_循环和关系表达式/01_for_trace.cpp">01 执行顺序</a>、<a href="../示例代码/05_循环和关系表达式/02_factorials.cpp">02 阶乘</a>、<a href="../示例代码/05_循环和关系表达式/03_expressions.cpp">03 自增与指针</a>、<a href="../示例代码/05_循环和关系表达式/04_strings.cpp">04 字符串</a></td>
+</tr>
+<tr>
+<td>5.2–5.3，163–169</td>
+<td>次数未知怎么办？要先做一次怎么办？</td>
+<td><a href="../示例代码/05_循环和关系表达式/05_loop_forms.cpp">05 三种循环</a></td>
+</tr>
+<tr>
+<td>5.4，170</td>
+<td>遍历每个元素，能否不手写下标？</td>
+<td><a href="../示例代码/05_循环和关系表达式/06_range_for.cpp">06 范围循环</a></td>
+</tr>
+<tr>
+<td>5.5，170–177</td>
+<td>空格算字符吗？输入什么时候结束？</td>
+<td><a href="../示例代码/05_循环和关系表达式/07_char_token.cpp">07 提取字符</a>、<a href="../示例代码/05_循环和关系表达式/08_char_get.cpp">08 保留空白</a>、<a href="../示例代码/05_循环和关系表达式/09_get_eof.cpp">09 无参数 get</a></td>
+</tr>
+<tr>
+<td>5.6，177–180</td>
+<td>同时按行、列统计怎么办？</td>
+<td><a href="../示例代码/05_循环和关系表达式/10_matrix.cpp">10 二维数组</a></td>
+</tr>
+</tbody>
+</table>
+<p>在课程根目录，一次编译一个有 <code>main</code> 的文件：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">-Wall</span> <span class="n">-Wextra</span> <span class="n">-pedantic</span> <span class="n">示例代码</span><span class="p">/</span><span class="n">05_循环和关系表达式</span><span class="p">/</span><span class="n">01_for_trace</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">example</span><span class="p">.</span><span class="n">exe</span>
+<span class="p">./</span><span class="n">example</span><span class="p">.</span><span class="n">exe</span>
+</code></pre></div>
+
+<p>编程练习写在 自己新建的 <code>my_code/</code>；做完再看<a href="../参考答案/第05章/复习题答案.html">参考答案</a>。</p>
+<h2 id="1-循环让同一套动作反复发生">1. 循环：让同一套动作反复发生</h2>
+<p>打印五次问候，可以抄五条输出语句。但换成一千次，或次数来自用户输入，复制就行不通。<strong>循环</strong>就是“重复执行某段代码，直到条件不成立”。像跑步：每跑一圈，检查是否够了，再决定下一圈。</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>for (初始化; 条件; 更新)</code> 的顺序是：<strong>初始化一次 → 检查条件 → 执行循环体 → 更新 → 再检查</strong>。不能把更新当作第一次循环之前发生。</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th style="text-align: right;"><code>i</code></th>
+<th>条件 <code>i &lt; 3</code></th>
+<th>动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>初始化、首次检查</td>
+<td style="text-align: right;">0</td>
+<td>真</td>
+<td>输出 0</td>
+</tr>
+<tr>
+<td>更新后检查</td>
+<td style="text-align: right;">1</td>
+<td>真</td>
+<td>输出 1</td>
+</tr>
+<tr>
+<td>更新后检查</td>
+<td style="text-align: right;">2</td>
+<td>真</td>
+<td>输出 2</td>
+</tr>
+<tr>
+<td>更新后检查</td>
+<td style="text-align: right;">3</td>
+<td>假</td>
+<td>退出，不再输出</td>
+</tr>
+</tbody>
+</table>
+<p>在初始化处声明的 <code>i</code>，只能在这个循环的条件、更新、循环体中使用。若要退出后读它，应先在循环外声明。<strong>作用域</strong>就是名字能被使用的区域，像某个房间里的标签只在房间内有效。</p>
+<p>数组 <code>int a[3]</code> 的下标是 0、1、2，所以遍历条件是 <code>i &lt; 3</code>，写 <code>i &lt;= 3</code> 会访问不存在的 <code>a[3]</code>。若每次加 3，条件 <code>i != 10</code> 可能永远不变成假；想控制上界通常应写 <code>i &lt; 10</code>。</p>
+<h3 id="循环体语句和代码块">循环体、语句和代码块</h3>
+<p>循环直接控制<strong>一条语句</strong>。花括号把多条语句打包成一条复合语句；缩进只是给人看的。</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"!</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>for (...);</code> 中的分号是一个空语句，循环体便为空，后面的代码不属于循环。块内新声明的变量退出块就不可使用；尽量避免在内层再声明同名变量遮住外层变量。</p>
+<p><code>x + 6</code> 只是计算一个值，不修改 <code>x</code>；<code>x = x + 6</code> 或 <code>x += 6</code> 才修改它。表达式算出值，语句要求程序做一步动作；不能看到运算就以为变量发生了变化。</p>
+<h2 id="2-关系表达式条件怎样得到真假">2. 关系表达式：条件怎样得到真假</h2>
+<p><code>&lt;</code>、<code>&lt;=</code>、<code>&gt;</code>、<code>&gt;=</code>、<code>==</code>、<code>!=</code> 比较两个值，结果类型是 <code>bool</code>。例如 <code>3 &lt; 5</code> 为 <code>true</code>，<code>3 == 5</code> 为 <code>false</code>。默认输出 <code>bool</code> 是 1 或 0；<code>std::boolalpha</code> 可以输出文字 <code>true</code> / <code>false</code>。</p>
+<p>数字用作条件时，0 转为假，非零转为真。<code>if</code> 的详细用法在下一课，本课先理解循环条件。</p>
+<p><strong><code>=</code> 是赋值，<code>==</code> 才是比较。</strong> <code>while (x = 5)</code> 会不断把 5 赋给 <code>x</code>，条件一直为真。编译器警告值得检查，不要为了消除警告给错误赋值加括号。</p>
+<p><code>for (;;) { ... }</code> 省略了条件，它相当于一直为真。先不要在不清楚退出方式时写这种循环。</p>
+<h2 id="3-先用旧值还是先得到新值">3. <code>++</code>：先用旧值，还是先得到新值</h2>
+<p><code>++</code> 把变量加 1；<code>--</code> 减 1。单独作为语句时，<code>++n;</code> 与 <code>n++;</code> 都把 <code>n</code> 加 1。区别在于<strong>这个表达式提供给周围代码的值</strong>。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="o">++</span><span class="p">;</span><span class="w">  </span><span class="c1">// a 得到旧值 4，n 变成 5</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">++</span><span class="n">n</span><span class="p">;</span><span class="w">  </span><span class="c1">// n 先变成 6，b 得到新值 6</span>
+</code></pre></div>
+
+<p>若 <code>j = 5</code>，条件 <code>++j &lt; 9</code> 先把 <code>j</code> 加 1再比较；<code>j++ &lt; 9</code> 使用旧值比较，但进入循环体前这次加 1已经完成。不要把“返回旧值”理解成“变量要等很久才修改”。</p>
+<h3 id="接回上一课的指针">接回上一课的指针</h3>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>*p++</code></td>
+<td>按 <code>*(p++)</code> 解释：取原来所指的值，再让指针移到下一元素</td>
+</tr>
+<tr>
+<td><code>(*p)++</code></td>
+<td>增加当前元素；指针不移动</td>
+</tr>
+<tr>
+<td><code>*++p</code></td>
+<td>先移动指针，再取新位置的值</td>
+</tr>
+</tbody>
+</table>
+<p>这些操作仍要遵守数组边界。示例 03 把每种操作拆成单独语句，方便画出指针的位置。</p>
+<h3 id="副作用与求值顺序">副作用与求值顺序</h3>
+<p><strong>副作用</strong>是表达式除了算出值，还修改了程序状态，比如 <code>n++</code> 修改 <code>n</code>。知道运算符优先级，只能知道表达式怎样分组，不能据此断定所有子表达式从左到右执行。</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 错误示意，只分析，不运行：</span>
+<span class="c1">// int result = i++ + ++i;</span>
+</code></pre></div>
+
+<p>上面两个修改没有规定的先后顺序，行为未定义，不能把某次运行的输出当作规则。把修改拆成多条语句最容易核对。原书 5.1.6 使用较早的标准背景，C++17 改变了部分求值顺序规则，因此不能把书中的赋值示例一概套用到所有标准；本课不靠复杂自增表达式完成实际任务。<a href="https://eel.is/c++draft/intro.execution">标准的求值顺序规则</a></p>
+<h3 id="复合赋值与逗号5195111">复合赋值与逗号（5.1.9–5.1.11）</h3>
+<p><code>+=</code>、<code>-=</code>、<code>*=</code>、<code>/=</code>、<code>%=</code> 把运算与赋值合起来。对于这里的简单整数变量，<code>total += value</code> 等价于 <code>total = total + value</code>；整数 <code>/=</code> 仍是整数除法，<code>%=</code> 用于整数。</p>
+<p>逗号运算符先执行左边，再执行右边，整个表达式的值取右边：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w"> </span><span class="c1">// x 为 3，y 为 5</span>
+</code></pre></div>
+
+<p><code>int a = 1, b = 2;</code> 的逗号分隔声明，不是上面的逗号运算符。逗号可以放在 <code>for</code> 的更新部分同时更新两个变量，但初学时先用循环体内的两条语句，容易检查。</p>
+<h2 id="4-字符串比较内容与遍历边界">4. 字符串：比较内容与遍历边界</h2>
+<p>两个字符数组用 <code>==</code>，通常会先转换成指针，比较的是地址，<strong>没有逐个比较字符</strong>。C 风格字符串比较内容，用 <code>&lt;cstring&gt;</code> 的 <code>std::strcmp(a, b)</code>：0 表示相等，小于 0 / 大于 0 表示顺序；不要依赖结果恰好是 −1 或 1。</p>
+<p><code>std::string</code> 已经提供内容比较，可以写 <code>word == "done"</code>，也可以用 <code>&lt;</code> 比较字典顺序。字符串的字典顺序不是字符串中数字的数值顺序；例如 <code>"10" &lt; "2"</code>。</p>
+<p>反向遍历容易在空字符串时写错。<code>size()</code> 返回无符号长度，直接写 <code>word.size() - 1</code> 可能在长度为 0 时下溢。采用下面的形式：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">word</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="o">--</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">word</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>长度为 0，一次也不进入；长度为 3，访问下标 2、1、0。示例 04 用 <code>getline</code> 允许空行和空格。这里处理的是单字节 ASCII 文本；反转 UTF-8 中文的字节不能得到正确的中文字序。</p>
+<h2 id="5-while-和-dowhile选择检查时机">5. <code>while</code> 和 <code>do...while</code>：选择检查时机</h2>
+<p><strong><code>while</code></strong> 先检查条件，真才执行；它适合“读到结束”“累计直到达到目标”等次数事先未知的事情。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">' '</span><span class="p">;</span>
+<span class="w">    </span><span class="o">--</span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="c1">// 缺少这一步，条件可能永远为真</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><strong><code>do...while</code></strong> 先执行循环体，再检查条件，正常执行时至少进入一次。像先问一次菜单，再决定要不要继续。结尾有必需的分号。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">do</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</code></pre></div>
+
+<p>上面仍打印一次 0；对应 <code>while (n &gt; 0)</code> 则一次也不打印。三种循环并非互相替代的口号：固定次数优先考虑 <code>for</code>，输入驱动优先考虑 <code>while</code>，必须先做一次再判断时考虑 <code>do...while</code>。</p>
+<h3 id="原书的计时和类型别名522">原书的计时和类型别名（5.2.2）</h3>
+<p><code>&lt;ctime&gt;</code> 中的 <code>std::clock()</code>、<code>std::clock_t</code> 与 <code>CLOCKS_PER_SEC</code> 用于估算程序消耗的处理器时间：两次读数的差除以每秒刻度，得到秒数；应检查 <code>clock()</code> 是否返回失败值。它不保证等同于现实经过的钟表时间。原书用循环等待演示 <code>while</code>，会持续占用处理器，不适合用作日常等待方案。</p>
+<p><code>typedef std::clock_t Tick;</code> 为已有类型取一个别名，像给同一人添昵称，没有创造新的不同类型；现代写法可用 <code>using Tick = std::clock_t;</code>。这些是阅读补充，不要求写计时程序。</p>
+<h2 id="6-范围-for从每个元素取值">6. 范围 <code>for</code>：从每个元素取值</h2>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">scores</span><span class="p">[]{</span><span class="mi">70</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">};</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">scores</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>冒号右边是要遍历的容器或数组；左边的变量依次得到元素。这里 <code>score</code> 是副本，修改它不会改数组。若写 <code>int&amp; score</code>，它是当前元素的别名，修改它会改数组；这就是<strong>引用</strong>的最小用法，完整规则留到 L12。</p>
+<p>需要下标、跳过部分元素或同时操作两组数据时，普通 <code>for</code> 仍合适。范围循环不是“更短就永远更好”。</p>
+<h2 id="7-文本输入先区分读什么再判断读到了吗">7. 文本输入：先区分“读什么”，再判断“读到了吗”</h2>
+<table>
+<thead>
+<tr>
+<th>输入方法</th>
+<th>空格、制表符、换行</th>
+<th>成功判断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>std::cin &gt;&gt; ch</code>（<code>char</code>）</td>
+<td>默认跳过</td>
+<td>把提取表达式用作条件</td>
+</tr>
+<tr>
+<td><code>std::cin.get(ch)</code></td>
+<td>保留</td>
+<td>把 <code>get(ch)</code> 的返回流用作条件</td>
+</tr>
+<tr>
+<td><code>std::cin.get()</code></td>
+<td>保留</td>
+<td>返回字符或 EOF 标记，先检查再转换</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">ch</span><span class="p">;</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ch</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>循环条件尝试读取一个字符，成功才进循环体，<strong>不会在读取失败后重复使用旧的 <code>ch</code></strong>。<code>get(ch)</code> 与 <code>get()</code> 同名但参数和返回值不同，这是原书 5.5.3 引出的函数重载；这里只需按调用形式区别。</p>
+<p><strong>EOF</strong> 表示输入结束，不是正文里某个可见字符。无参数 <code>get()</code> 返回的类型需要同时容纳字符和结束标记；若先保存到 <code>char</code>，可能丢掉区别。示例 09 用 <code>std::char_traits&lt;char&gt;::int_type</code> 接住返回值，与 <code>eof()</code> 比较，确认有字符后才转成 <code>char</code>。原书使用 <code>int</code> 与 <code>EOF</code> 演示同一思路，别直接硬编码 −1。</p>
+<p>不要写 <code>while (!std::cin.eof())</code> 再在循环体内读：<strong>EOF 状态通常在尝试读取后才更新</strong>，检查过早会多做一次。输入失败还可能是类型不匹配，不只有 EOF；下一课详细讲处理。</p>
+<p>示例 07、08 以 <code>#</code> 为结束哨兵（专门约定的结束字符，不计入统计）；09 读到 EOF。给 07、08 输入 <code>A b</code>、换行、<code>#</code>，07 数到 2，08 数到 4：一个空格和一个换行也算字符。</p>
+<p>示例条件中的 <code>&amp;&amp;</code> 表示“并且”：先成功读到字符，再检查它不是哨兵，才进入循环体。若读取失败，后面的字符比较不会执行；完整的逻辑运算和短路规则在 L09 展开。</p>
+<p>Windows 交互终端通常可以在空行按 <code>Ctrl+Z</code>、再回车产生 EOF，具体由终端决定。也可以用文件输入获得可重复的结果：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">-Wall</span> <span class="n">-Wextra</span> <span class="n">-pedantic</span> <span class="n">示例代码</span><span class="p">/</span><span class="n">05_循环和关系表达式</span><span class="p">/</span><span class="n">09_get_eof</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">example</span><span class="p">.</span><span class="n">exe</span>
+<span class="n">cmd</span> <span class="p">/</span><span class="n">c</span> <span class="s2">"example.exe &lt; 示例代码\05_循环和关系表达式\text_sample.txt"</span>
+</code></pre></div>
+
+<p>PowerShell 自己不支持这种 <code>&lt;</code> 输入重定向，所以这里由 <code>cmd</code> 执行。统计文本字符时，本课按文本流读出的字节计数；Windows 文本模式会把文件中的 CRLF 换行转换为 <code>\n</code>，结果不一定是磁盘文件字节数。</p>
+<h2 id="8-嵌套循环与二维数组">8. 嵌套循环与二维数组</h2>
+<p><strong>嵌套</strong>就是一个循环体里面再放一个循环。像班级点名：外层选班级，内层逐个点这个班的学生。每换一个班，内层要从第一个学生重新开始。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">sales</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">]{{</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">}};</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">row</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">row_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">col</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">row_total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">sales</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">row_total</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span><span class="w"> </span><span class="c1">// 60、150</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>int sales[2][3]</code> 是两个“含三个 <code>int</code> 的数组”组成的数组。第一个下标选行，第二个选列；这里行只允许 0–1，列只允许 0–2。花括号可以按行初始化，缺少的元素会被置零。</p>
+<p><code>row_total</code> 在外层循环体里初始化，每行重新从 0 开始；如果放到外面却不重置，第二次输出会是前两行累计。要算每一列，则外层遍历列，内层遍历行，仍访问 <code>sales[row][col]</code>，不能为了换遍历顺序就随意交换下标。</p>
+<h2 id="9-这课的检查清单">9. 这课的检查清单</h2>
+<ul>
+<li>[ ] 能逐步说出 <code>for</code> 的初始化、条件、循环体、更新顺序。</li>
+<li>[ ] 能解释 <code>&lt; length</code>、<code>&lt;= length</code> 和空循环体的区别。</li>
+<li>[ ] 不靠猜编译器输出解释未定义行为。</li>
+<li>[ ] 空字符串反向遍历不产生非法下标。</li>
+<li>[ ] 能根据是否保留空白选输入方法，并把读取成功放在循环条件。</li>
+<li>[ ] 能独立写二维数组的行合计与列合计。</li>
+</ul>
+<p>下一步做<a href="../练习/第05章-练习.html">练习</a>。原书 5.8、5.9 的位置见练习末尾；学习进度以实际完成和批改为准。</p>
+<div class="pager"><a class="prev" href="../讲义/第04章D-指针算术与数组替代品.html">← 上一页：第04章D-指针算术与数组替代品</a><a class="next" href="../讲义/第06章-分支语句和逻辑运算符.html">下一页：第06章-分支语句和逻辑运算符 →</a></div>
+<footer class="footer">
+<span><a href="../index.html">← 返回总目录</a></span>
+<span>课程作者：<a href="https://lksme.dpdns.org/" rel="author">凉开水</a></span>
+</footer>
+</article></main>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('themeBtn');
+  function sync(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    btn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    btn.title = (t === 'dark') ? '切换到浅色' : '切换到深色';
+  }
+  btn.addEventListener('click', function(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    t = (t === 'dark') ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    try{ localStorage.setItem('cppcourse-theme', t); }catch(e){}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>
