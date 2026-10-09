@@ -387,40 +387,191 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <a href="../参考答案/第06章/复习题答案.html">第06章 · 复习题答案</a>
 </nav>
 <main><article>
-<div class="toc-box"><strong>本页目录</strong><div class="toc">
+<details class="toc-box"><summary>本页目录（60 项，点击展开）</summary><div class="toc">
 <ul>
-<li><a href="#0-本课怎么学">0. 本课怎么学</a></li>
-<li><a href="#1-循环让同一套动作反复发生">1. 循环：让同一套动作反复发生</a><ul>
-<li><a href="#循环体语句和代码块">循环体、语句和代码块</a></li>
+<li><a href="#0-本课怎么学">0. 本课怎么学</a><ul>
+<li><a href="#01-这课接在什么地方">0.1 这课接在什么地方</a></li>
+<li><a href="#02-先认几个词">0.2 先认几个词</a></li>
+<li><a href="#03-怎样安排学习">0.3 怎样安排学习</a></li>
+<li><a href="#04-完整程序与代码片段要分清">0.4 完整程序与代码片段要分清</a></li>
 </ul>
 </li>
-<li><a href="#2-关系表达式条件怎样得到真假">2. 关系表达式：条件怎样得到真假</a></li>
+<li><a href="#1-循环让同一套动作反复发生">1. 循环：让同一套动作反复发生</a><ul>
+<li><a href="#11-先看没有循环会怎样">1.1 先看没有循环会怎样</a></li>
+<li><a href="#12-把-for-的一行分成四块">1.2 把 for 的一行分成四块</a></li>
+<li><a href="#13-电脑不是按源码排版从上往下读一次">1.3 电脑不是按源码排版“从上往下读一次”</a></li>
+<li><a href="#14-为什么常从-0-开始不从-1-开始">1.4 为什么常从 0 开始，不从 1 开始</a></li>
+<li><a href="#15-变量活在哪循环的作用域">1.5 变量活在哪：循环的作用域</a></li>
+<li><a href="#16-步长每轮不一定只加-1">1.6 步长：每轮不一定只加 1</a></li>
+<li><a href="#循环体语句和代码块">循环体、语句和代码块</a></li>
+<li><a href="#17-循环里最常见的实际工作累计总和">1.7 循环里最常见的实际工作：累计总和</a></li>
+<li><a href="#18-接到数组让下标替你选数据">1.8 接到数组：让下标替你选数据</a></li>
+<li><a href="#19-阶乘累乘的初值为什么换成-1">1.9 阶乘：累乘的初值为什么换成 1</a></li>
+</ul>
+</li>
+<li><a href="#2-关系表达式条件怎样得到真假">2. 关系表达式：条件怎样得到真假</a><ul>
+<li><a href="#21-条件不是一段中文必须能算出真假">2.1 条件不是一段中文，必须能算出真假</a></li>
+<li><a href="#22-看见-01不代表条件在返回次数">2.2 看见 0、1，不代表条件在“返回次数”</a></li>
+<li><a href="#23-和-只差一个字符程序任务却变了">2.3 = 和 ==：只差一个字符，程序任务却变了</a></li>
+</ul>
+</li>
 <li><a href="#3-先用旧值还是先得到新值">3. ++：先用旧值，还是先得到新值</a><ul>
+<li><a href="#31-它为什么出现在循环的更新位置">3.1 它为什么出现在循环的更新位置</a></li>
+<li><a href="#32-自增放进条件推演要多记一步">3.2 自增放进条件，推演要多记一步</a></li>
 <li><a href="#接回上一课的指针">接回上一课的指针</a></li>
 <li><a href="#副作用与求值顺序">副作用与求值顺序</a></li>
 <li><a href="#复合赋值与逗号5195111">复合赋值与逗号（5.1.9–5.1.11）</a></li>
+<li><a href="#33-复合赋值先从你已经会的加法读起">3.3 复合赋值先从你已经会的加法读起</a></li>
 </ul>
 </li>
-<li><a href="#4-字符串比较内容与遍历边界">4. 字符串：比较内容与遍历边界</a></li>
+<li><a href="#4-字符串比较内容与遍历边界">4. 字符串：比较内容与遍历边界</a><ul>
+<li><a href="#41-相同的文字和相同的地址不是一个问题">4.1 “相同的文字”和“相同的地址”不是一个问题</a></li>
+<li><a href="#42-strcmp-的返回值怎么读">4.2 strcmp 的返回值怎么读</a></li>
+<li><a href="#43-stdstring-为什么可以直接用">4.3 std::string 为什么可以直接用 ==</a></li>
+<li><a href="#44-正向访问先认长度再认下标">4.4 正向访问：先认长度，再认下标</a></li>
+<li><a href="#45-反向访问空字符串要先想清楚">4.5 反向访问：空字符串要先想清楚</a></li>
+</ul>
+</li>
 <li><a href="#5-while-和-dowhile选择检查时机">5. while 和 do...while：选择检查时机</a><ul>
+<li><a href="#51-什么情况下不能提前知道次数">5.1 什么情况下不能提前知道次数</a></li>
+<li><a href="#52-结束不了先检查条件会不会改变">5.2 结束不了，先检查“条件会不会改变”</a></li>
+<li><a href="#53-dowhile-把检查放到动作之后">5.3 do...while 把检查放到动作之后</a></li>
 <li><a href="#原书的计时和类型别名522">原书的计时和类型别名（5.2.2）</a></li>
 </ul>
 </li>
-<li><a href="#6-范围-for从每个元素取值">6. 范围 for：从每个元素取值</a></li>
-<li><a href="#7-文本输入先区分读什么再判断读到了吗">7. 文本输入：先区分“读什么”，再判断“读到了吗”</a></li>
-<li><a href="#8-嵌套循环与二维数组">8. 嵌套循环与二维数组</a></li>
-<li><a href="#9-这课的检查清单">9. 这课的检查清单</a></li>
+<li><a href="#6-范围-for从每个元素取值">6. 范围 for：从每个元素取值</a><ul>
+<li><a href="#61-为什么又多了一种-for">6.1 为什么又多了一种 for</a></li>
+<li><a href="#62-值变量拿一张复印件出来处理">6.2 值变量：拿一张复印件出来处理</a></li>
+<li><a href="#63-引用变量给原元素添一个临时名字">6.3 引用变量：给原元素添一个临时名字</a></li>
+</ul>
+</li>
+<li><a href="#7-文本输入先区分读什么再判断读到了吗">7. 文本输入：先区分“读什么”，再判断“读到了吗”</a><ul>
+<li><a href="#71-输入流和缓冲区先画一条队伍">7.1 输入流和缓冲区：先画一条队伍</a></li>
+<li><a href="#72-cin-ch它默认先跳过空白">7.2 cin &gt;&gt; ch：它默认先跳过空白</a></li>
+<li><a href="#73-getch把空白也作为正文取出来">7.3 get(ch)：把空白也作为正文取出来</a></li>
+<li><a href="#74-哨兵读到了但约定不再处理它">7.4 哨兵：读到了，但约定不再处理它</a></li>
+<li><a href="#75-eof来源结束不是有人敲了-eof">7.5 EOF：来源结束，不是有人敲了 E、O、F</a></li>
+<li><a href="#76-无参数-get-为什么不能先装进-char">7.6 无参数 get() 为什么不能先装进 char</a></li>
+<li><a href="#77-让文本输入实验能重复">7.7 让文本输入实验能重复</a></li>
+</ul>
+</li>
+<li><a href="#8-嵌套循环与二维数组">8. 嵌套循环与二维数组</a><ul>
+<li><a href="#81-先从表格开始不从括号开始">8.1 先从表格开始，不从括号开始</a></li>
+<li><a href="#82-为什么一层循环不够">8.2 为什么一层循环不够</a></li>
+<li><a href="#83-每行合计哪些变量放里哪些放外">8.3 每行合计，哪些变量放里、哪些放外</a></li>
+<li><a href="#84-列合计访问顺序变了下标含义没变">8.4 列合计：访问顺序变了，下标含义没变</a></li>
+<li><a href="#85-初始化与长度的两个小规则">8.5 初始化与长度的两个小规则</a></li>
+<li><a href="#86-打图形也是嵌套循环">8.6 打图形也是嵌套循环</a></li>
+</ul>
+</li>
+<li><a href="#9-这课的检查清单">9. 这课的检查清单</a><ul>
+<li><a href="#91-遇到循环错误按这个顺序查">9.1 遇到循环错误，按这个顺序查</a></li>
+<li><a href="#92-三个层次的完成标准">9.2 三个层次的完成标准</a></li>
+</ul>
+</li>
 </ul>
 </div>
-</div><div class="hintbar">遇到看不懂的专有名词？→ <a href="../附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="../附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-5-章讲义循环和关系表达式">第 5 章讲义：循环和关系表达式</h1>
+</details><div class="hintbar">遇到看不懂的专有名词？→ <a href="../附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="../附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-5-章讲义循环和关系表达式零基础详细版">第 5 章讲义：循环和关系表达式（零基础详细版）</h1>
 <blockquote>
 <p><strong>教材</strong>：《C++ Primer Plus（第 6 版）》第 5 章，PDF 第 <strong>143–182 页</strong>（书页 125–164）；正文 143–180，复习题 181，编程练习 181–182。
-<strong>先修</strong>：变量、输入输出、数组、字符串；L06–L07 的指针用于解释 <code>*p++</code>，暂时不需要函数或类。
+<strong>先修</strong>：变量、输入输出、数组、字符串；第 4 章 C–D 的指针用于解释 <code>*p++</code>，暂时不需要函数或类。
 <strong>目标</strong>：能按执行顺序推演循环，写出不越界的遍历，区别字符输入方式，用二维数组统计数据。
 <strong>材料说明</strong>：章节顺序按原书 5.1–5.6；讲解和示例由课程重新编写。原书程序清单 5.1–5.20 用于对照；涉及求值顺序时按本课程的 <strong>C++17</strong> 编译环境说明。</p>
 </blockquote>
 <h2 id="0-本课怎么学">0. 本课怎么学</h2>
-<p>这一章信息较多，建议分三次：循环基础；表达式与字符串；输入与二维数组。每次先预测输出，再编译验证。</p>
+<h3 id="01-这课接在什么地方">0.1 这课接在什么地方</h3>
+<p>前几课解决的是“数据放在哪里”：一个变量放一个值，数组放一排值，结构把一条记录的几个值放在一起。</p>
+<p>现在要解决一个新的问题：<strong>有了一排数据，怎样把每一项都处理一遍？</strong></p>
+<p>例如你存了 30 个同学的成绩。你不应该为每个人抄一条加法语句，而应该告诉程序：从第一个开始，做相同的动作，直到最后一个。这就是本章的循环。</p>
+<p>这一课不要求你“背下来三种循环的格式”就结束。更重要的是能在纸上回答：</p>
+<ol>
+<li>程序现在走到哪一行？</li>
+<li>变量现在是多少？</li>
+<li>下一步为什么回到前面，或为什么离开循环？</li>
+</ol>
+<p><strong>会回答这三句，才算读懂了循环。</strong> 看见 <code>for</code> 并不等于已经理解它。</p>
+<h3 id="02-先认几个词">0.2 先认几个词</h3>
+<table>
+<thead>
+<tr>
+<th>词</th>
+<th>先用一句话理解</th>
+<th>类比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>循环</td>
+<td>根据条件重复做一段动作</td>
+<td>按要求跑若干圈</td>
+</tr>
+<tr>
+<td>循环体</td>
+<td>每次重复时真正执行的代码</td>
+<td>每一圈要做的动作</td>
+</tr>
+<tr>
+<td>条件</td>
+<td>一个能判定真假的问题</td>
+<td>“还没跑够吗？”</td>
+</tr>
+<tr>
+<td>迭代</td>
+<td>执行一轮循环</td>
+<td>跑一圈</td>
+</tr>
+<tr>
+<td>遍历</td>
+<td>按一定顺序访问一组数据</td>
+<td>挨个打开一排储物柜</td>
+</tr>
+<tr>
+<td>累加器</td>
+<td>保存到目前为止的总和的变量</td>
+<td>不断往里面放东西的篮子</td>
+</tr>
+<tr>
+<td>哨兵</td>
+<td>专门约定用来结束输入的值</td>
+<td>队伍末尾的结束牌</td>
+</tr>
+<tr>
+<td>EOF</td>
+<td>输入来源已经到头</td>
+<td>文件最后一页也翻完了</td>
+</tr>
+</tbody>
+</table>
+<p>不用一次背完。下面每个词用到时都会再解释；“迭代”也没有比“重复一轮”多出神秘含义。</p>
+<h3 id="03-怎样安排学习">0.3 怎样安排学习</h3>
+<p>建议分三次：循环基础；表达式与字符串；输入与二维数组。每次读完一小节就停下来，先预测输出，再编译验证，不必一次读完一整章。</p>
+<table>
+<thead>
+<tr>
+<th>一次学习</th>
+<th>读本讲义</th>
+<th>你要带走的能力</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一次</td>
+<td>第 1、2 节</td>
+<td>能写固定次数循环，知道为什么下标会越界</td>
+</tr>
+<tr>
+<td>第二次</td>
+<td>第 3–6 节</td>
+<td>能区分新值/旧值，选择合适的循环，遍历字符串和数组</td>
+</tr>
+<tr>
+<td>第三次</td>
+<td>第 7、8 节</td>
+<td>能读到输入结束，用两个循环处理二维表格</td>
+</tr>
+</tbody>
+</table>
+<p>教材仍是本课依据；这里把操作过程拆开讲，读懂后回去对照原书相应小节。</p>
 <table>
 <thead>
 <tr>
@@ -462,9 +613,82 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <span class="p">./</span><span class="n">example</span><span class="p">.</span><span class="n">exe</span>
 </code></pre></div>
 
-<p>编程练习写在 自己新建的 <code>my_code/</code>；做完再看<a href="../参考答案/第05章/复习题答案.html">参考答案</a>。</p>
+<p>编程练习写在自己新建的 <code>my_code/</code>；做完再看<a href="../参考答案/第05章/复习题答案.html">参考答案</a>。</p>
+<h3 id="04-完整程序与代码片段要分清">0.4 完整程序与代码片段要分清</h3>
+<p><code>示例代码/05_循环和关系表达式/</code> 中每个 <code>.cpp</code> 都是完整程序，可以单独编译。本讲义中很多小框只展示需要讨论的几行，不一定有头文件和 <code>main</code>，不能把任意小框原封不动存成 <code>.cpp</code> 就期待它运行。</p>
+<p>想试一个片段，可以先在 <code>my_code/loop_test.cpp</code> 中写这个骨架：</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// 把要测试的语句放在这里。</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>如果片段使用 <code>std::string</code>，再加 <code>#include &lt;string&gt;</code>。不要把多个示例一起编译：每个都有自己的 <code>main</code>，放在一起会出现多个入口的链接错误。</p>
+<p>编译命令中的 <code>-o example.exe</code> 表示把结果存成 <code>example.exe</code>；下一行才是真正运行它。只看到“编译没有报错”，还不能说明输出符合预期。</p>
+<blockquote>
+<p><strong>实验记录的方法</strong>：先写“我预测会打印什么”，再运行，最后写“哪一步预测错了”。不要只记“运行成功”。</p>
+</blockquote>
 <h2 id="1-循环让同一套动作反复发生">1. 循环：让同一套动作反复发生</h2>
 <p>打印五次问候，可以抄五条输出语句。但换成一千次，或次数来自用户输入，复制就行不通。<strong>循环</strong>就是“重复执行某段代码，直到条件不成立”。像跑步：每跑一圈，检查是否够了，再决定下一圈。</p>
+<h3 id="11-先看没有循环会怎样">1.1 先看没有循环会怎样</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Hello</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Hello</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Hello</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+</code></pre></div>
+
+<p>这里输出三次，因为有三条输出语句。如果用户要五次，你得再改源码。循环让你写一次动作，把重复次数交给变量和条件控制。</p>
+<p>把上面的三条改成下面的三次循环，输出的问候相同，但写法开始具有“次数可变”的能力：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Hello</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>先不要急着看懂 <code>++i</code>。把它暂时读成“让 i 增加 1”，第 3 节再拆开讲。</p>
+<h3 id="12-把-for-的一行分成四块">1.2 把 <code>for</code> 的一行分成四块</h3>
+<div class="codehilite"><pre><span></span><code>for (int i = 0;    i &lt; 3;    ++i) {
+     └─ 起点 ─┘  └─ 判断 ─┘ └更新┘
+    要重复的动作
+}
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>在这里是什么意思</th>
+<th>什么时候执行</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int i = 0</code></td>
+<td>创建一个整数计数变量，让它从 0 开始</td>
+<td>进入循环时只执行一次</td>
+</tr>
+<tr>
+<td><code>i &lt; 3</code></td>
+<td>问“i 还小于 3 吗？”</td>
+<td>每次准备执行循环体之前</td>
+</tr>
+<tr>
+<td><code>++i</code></td>
+<td>把 i 加 1</td>
+<td>本轮循环体执行完之后</td>
+</tr>
+<tr>
+<td><code>{ ... }</code></td>
+<td>每轮真正要做的动作</td>
+<td>条件为真才执行</td>
+</tr>
+</tbody>
+</table>
+<p>圆括号中的两处分号分隔三个部分；花括号中的分号结束一条条语句。它们位置不同，作用也不同。</p>
+<p><code>i</code> 只是程序员取的名字。你也可以叫 <code>round</code>、<code>index</code>，名字不会使变量自动变成计数器；它能计数，是因为你给它起点并每次加 1。</p>
+<h3 id="13-电脑不是按源码排版从上往下读一次">1.3 电脑不是按源码排版“从上往下读一次”</h3>
+<p>现在把循环体改成输出 i，方便看见变量怎样变化：</p>
 <div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
 <span class="p">}</span>
@@ -507,8 +731,105 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </tr>
 </tbody>
 </table>
+<p>也可以把路线画出来：</p>
+<div class="codehilite"><pre><span></span><code>创建 i，写入 0
+      |
+      v
+检查 i &lt; 3 -------- 假 --------&gt; 循环后的下一条语句
+      |
+      真
+      v
+执行循环体：打印 i
+      |
+      v
+执行 ++i
+      |
+      +-----------------------&gt; 回到条件检查
+</code></pre></div>
+
+<p>注意三个经常猜错的地方：</p>
+<ul>
+<li>创建 i <strong>不在每一轮重新执行</strong>，否则 i 每轮都变回 0。</li>
+<li>第一轮打印的是 0，更新还没发生，不是 1。</li>
+<li>i 已经变成 3 时还会检查一次条件，但不会进入循环体。</li>
+</ul>
+<p>所以“循环体执行 3 次”和“条件检查 4 次”可以同时正确。示例 01 会统计这两个数；它的条件里用逗号额外计数，第 3 节解释逗号后再回头读，不必在第一遍模仿这个技巧。</p>
+<blockquote>
+<p><strong>动手实验 A</strong>：在自己的副本里，把 3 改成 1。打印什么？再改成 0。是否至少打印一次？先手写路线，再运行。</p>
+</blockquote>
+<h3 id="14-为什么常从-0-开始不从-1-开始">1.4 为什么常从 0 开始，不从 1 开始</h3>
+<p>循环不强制从 0 开始。要打印“第 1 圈、第 2 圈、第 3 圈”，可以这样写：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">round</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"round "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>从 0 开始常见，是因为数组下标从 0 开始：长度为 3 的数组有下标 0、1、2。</p>
+<div class="codehilite"><pre><span></span><code>元素个数：    3
+合法下标：    0       1       2
+数组元素： [ 70 ]  [ 80 ]  [ 90 ]
+                         这里之后没有第 3 号元素
+</code></pre></div>
+
+<p>因此两组搭配都可以得到三次循环：</p>
+<table>
+<thead>
+<tr>
+<th>起点</th>
+<th>条件</th>
+<th>循环体中看到的计数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>i = 0</code></td>
+<td><code>i &lt; 3</code></td>
+<td>0、1、2</td>
+</tr>
+<tr>
+<td><code>i = 1</code></td>
+<td><code>i &lt;= 3</code></td>
+<td>1、2、3</td>
+</tr>
+</tbody>
+</table>
+<p>问题不在“能不能用 &lt;=”，而在<strong>起点、条件和实际访问的下标是否对应</strong>。用后一种 i 直接访问长度为 3 的 <code>a[i]</code>，就错过了 a[0] 并访问 a[3]。</p>
+<h3 id="15-变量活在哪循环的作用域">1.5 变量活在哪：循环的作用域</h3>
 <p>在初始化处声明的 <code>i</code>，只能在这个循环的条件、更新、循环体中使用。若要退出后读它，应先在循环外声明。<strong>作用域</strong>就是名字能被使用的区域，像某个房间里的标签只在房间内有效。</p>
 <p>数组 <code>int a[3]</code> 的下标是 0、1、2，所以遍历条件是 <code>i &lt; 3</code>，写 <code>i &lt;= 3</code> 会访问不存在的 <code>a[3]</code>。若每次加 3，条件 <code>i != 10</code> 可能永远不变成假；想控制上界通常应写 <code>i &lt; 10</code>。</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// std::cout &lt;&lt; i; // 不要取消注释：这里已经没有这个名字可用。</span>
+</code></pre></div>
+
+<p>如果确实需要知道退出时的值，就在外面创建变量：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"after loop="</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span><span class="w"> </span><span class="c1">// 3</span>
+</code></pre></div>
+
+<p>第一处分号前没有内容，因为初始化已在循环外完成；分号本身还必须保留。默认把计数变量放在循环里更容易管理，只有确实需要时才扩大它的作用域。</p>
+<h3 id="16-步长每轮不一定只加-1">1.6 步长：每轮不一定只加 1</h3>
+<p><strong>步长</strong>就是相邻两轮之间计数变量改变多少，像楼梯一次跨几级。</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">11</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">' '</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>输出是 <code>0 3 6 9</code>，随后 n 变成 12。循环不会强制让 n 最后恰好等于 11；它只根据条件判断要不要下一轮。</p>
+<p>若误写 <code>n != 11</code>，序列会是 0、3、6、9、12……，跳过 11，条件一直没按预期变假；继续下去还可能发生整数溢出。不要用“它迟早会到达上界”替代推演。</p>
+<p>往回数也可以：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="o">--</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">' '</span><span class="p">;</span><span class="w"> </span><span class="c1">// 3 2 1</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<blockquote>
+<p><strong>动手实验 B</strong>：打印 2、4、6、8、10。先写起点、条件、更新三个部分，再写输出。怎样做到包含 10，却不多打印 12？</p>
+</blockquote>
 <h3 id="循环体语句和代码块">循环体、语句和代码块</h3>
 <p>循环直接控制<strong>一条语句</strong>。花括号把多条语句打包成一条复合语句；缩进只是给人看的。</p>
 <div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -519,19 +840,272 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <p><code>for (...);</code> 中的分号是一个空语句，循环体便为空，后面的代码不属于循环。块内新声明的变量退出块就不可使用；尽量避免在内层再声明同名变量遮住外层变量。</p>
 <p><code>x + 6</code> 只是计算一个值，不修改 <code>x</code>；<code>x = x + 6</code> 或 <code>x += 6</code> 才修改它。表达式算出值，语句要求程序做一步动作；不能看到运算就以为变量发生了变化。</p>
+<h3 id="17-循环里最常见的实际工作累计总和">1.7 循环里最常见的实际工作：累计总和</h3>
+<p>先不用数组，计算 1+2+3：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span><span class="w"> </span><span class="c1">// 6</span>
+</code></pre></div>
+
+<p>把 <code>total = total + n</code> 读成：“取出旧 total，加上这一轮的 n，再把结果存回 total。”等号是放回去的动作，不是数学里的恒等关系。</p>
+<table>
+<thead>
+<tr>
+<th>本轮 n</th>
+<th style="text-align: right;">本轮开始的 total</th>
+<th>计算</th>
+<th style="text-align: right;">本轮结束的 total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td style="text-align: right;">0</td>
+<td>0+1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align: right;">1</td>
+<td>1+2</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>3</td>
+<td style="text-align: right;">3</td>
+<td>3+3</td>
+<td style="text-align: right;">6</td>
+</tr>
+</tbody>
+</table>
+<p>这时 total 就叫累加器。为什么从 0 开始？因为 0 加一个数，还是那个数，没有凭空多一笔数据。</p>
+<p>把 total 放进循环体，每轮重新设成 0，会发生什么？</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="c1">// 每轮创建新的 total，之前的累计没有保留下来。</span>
+<span class="w">    </span><span class="n">total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">' '</span><span class="p">;</span><span class="w"> </span><span class="c1">// 1 2 3，不是累计的 1 3 6。</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><strong>要保留跨轮结果，累加器要在循环之前初始化。</strong> 第 8 节按行统计时，你又会遇到“什么需要跨轮保留，什么应该每行重置”。</p>
+<h3 id="18-接到数组让下标替你选数据">1.8 接到数组：让下标替你选数据</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">scores</span><span class="p">[</span><span class="mi">3</span><span class="p">]{</span><span class="mi">70</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">};</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">scores</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="p">}</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"total="</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"average="</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">3.0</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+</code></pre></div>
+
+<p>先看循环体：i 为 0 时取 scores[0]，为 1 时取 scores[1]，为 2 时取 scores[2]。循环本身不知道“这是成绩”，数据意义由你的变量和任务决定。</p>
+<p>这里总和 240，平均 80。用 3.0 是为了浮点除法；如果改成总和不能整除的三个成绩，<code>total / 3</code> 的整数除法会丢掉小数。这个坑来自 第 3 章，不会因为用了循环就消失。</p>
+<h3 id="19-阶乘累乘的初值为什么换成-1">1.9 阶乘：累乘的初值为什么换成 1</h3>
+<p>原书程序清单 5.4 引出阶乘：<code>5!</code> 表示 1×2×3×4×5，不是 C++ 中可以直接写的一个运算符。</p>
+<div class="codehilite"><pre><span></span><code>0! = 1（约定）
+1! = 1
+2! = 1 × 2 = 2
+3! = 2 × 3 = 6
+4! = 6 × 4 = 24
+5! = 24 × 5 = 120
+</code></pre></div>
+
+<p>它的规律是“当前阶乘 = 前一个阶乘 × 当前整数”。示例 02 用数组保存每一步：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">facts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">facts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">facts</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>为什么不是 <code>facts[0]=0</code>？因为任何数乘 0 都是 0，后面所有结果都会被变成 0。求和从 0 开始，求积从 1 开始，这两个初值要根据运算的含义来选。</p>
+<p>阶乘增长很快，<code>long long</code> 也不是无限大的整数。示例只算到 10!；练习把上界扩到 100 时使用 <code>long double</code>，换来更大范围，同时接受浮点精度限制。</p>
+<blockquote>
+<p><strong>本节小检查</strong>：不用运行，解释“循环体执行三次，条件检查四次”“数组长度 3，下标最大 2”“total 要放在循环外”这三句话。如果解释不出，回到执行表，不要急着学新语法。</p>
+</blockquote>
 <h2 id="2-关系表达式条件怎样得到真假">2. 关系表达式：条件怎样得到真假</h2>
+<h3 id="21-条件不是一段中文必须能算出真假">2.1 条件不是一段中文，必须能算出真假</h3>
+<p>电脑不认识“差不多做够了”“下一个同学应该还有数据”。你必须把要求写成明确的表达式。</p>
+<p>例如“i 小于 3”写成 <code>i &lt; 3</code>。“小于”这个符号连起两个值，计算结果只有两种：成立或不成立。C++ 用 <code>bool</code> 保存这种结果，两个值叫 <code>true</code> 和 <code>false</code>。</p>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>读法</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a &lt; b</code></td>
+<td>a 小于 b</td>
+<td>2&lt;3 为真</td>
+</tr>
+<tr>
+<td><code>a &lt;= b</code></td>
+<td>a 小于或等于 b</td>
+<td>3&lt;=3 为真</td>
+</tr>
+<tr>
+<td><code>a &gt; b</code></td>
+<td>a 大于 b</td>
+<td>2&gt;3 为假</td>
+</tr>
+<tr>
+<td><code>a &gt;= b</code></td>
+<td>a 大于或等于 b</td>
+<td>3&gt;=3 为真</td>
+</tr>
+<tr>
+<td><code>a == b</code></td>
+<td>a 等于 b 吗</td>
+<td>3==3 为真</td>
+</tr>
+<tr>
+<td><code>a != b</code></td>
+<td>a 不等于 b 吗</td>
+<td>3!=3 为假</td>
+</tr>
+</tbody>
+</table>
+<p><code>&lt;=</code> 是两个字符组成的一个运算符，不能在中间插空格写成 <code>&lt; =</code>。<code>!=</code> 也一样。</p>
 <p><code>&lt;</code>、<code>&lt;=</code>、<code>&gt;</code>、<code>&gt;=</code>、<code>==</code>、<code>!=</code> 比较两个值，结果类型是 <code>bool</code>。例如 <code>3 &lt; 5</code> 为 <code>true</code>，<code>3 == 5</code> 为 <code>false</code>。默认输出 <code>bool</code> 是 1 或 0；<code>std::boolalpha</code> 可以输出文字 <code>true</code> / <code>false</code>。</p>
 <p>数字用作条件时，0 转为假，非零转为真。<code>if</code> 的详细用法在下一课，本课先理解循环条件。</p>
+<h3 id="22-看见-01不代表条件在返回次数">2.2 看见 0、1，不代表条件在“返回次数”</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span><span class="w">  </span><span class="c1">// 1</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span><span class="w"> </span><span class="c1">// 0</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">boolalpha</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span><span class="w">  </span><span class="c1">// true</span>
+</code></pre></div>
+
+<p>括号让 <code>cout</code> 先输出比较结果，避免输出运算与比较运算混在一起。1/0 只是默认的 bool 显示形式，条件没有告诉你“还要做一轮还是零轮”；它只告诉循环“这一次是否可以进去”。</p>
+<p>下面的 n 就不是 bool，而是 int，但循环条件会把它转换成真假：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">' '</span><span class="p">;</span>
+<span class="w">    </span><span class="o">--</span><span class="n">n</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>依次看到 3、2、1，最后 n 为 0 时退出。这里能结束，是因为 n 会到 0，不是因为“数字条件只能判断正数”。−1 也是非零，也会转换为真。初学时 <code>while(n &gt; 0)</code> 比 <code>while(n)</code> 更明确地表达这个倒数任务。</p>
+<h3 id="23-和-只差一个字符程序任务却变了">2.3 <code>=</code> 和 <code>==</code>：只差一个字符，程序任务却变了</h3>
 <p><strong><code>=</code> 是赋值，<code>==</code> 才是比较。</strong> <code>while (x = 5)</code> 会不断把 5 赋给 <code>x</code>，条件一直为真。编译器警告值得检查，不要为了消除警告给错误赋值加括号。</p>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>是否修改 x</th>
+<th>提供给周围代码的值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x = 5</code></td>
+<td>是，存入 5</td>
+<td>赋值后的 x，即 5</td>
+</tr>
+<tr>
+<td><code>x == 5</code></td>
+<td>否</td>
+<td>比较结果 true 或 false</td>
+</tr>
+</tbody>
+</table>
+<p>所以赋值也能被写到条件位置，不一定直接编译失败；它可能只是与你的意图不符。赋进去的 5 是非零，转为真，循环自然停不下来。</p>
+<blockquote>
+<p><strong>安全实验</strong>：只写 <code>int x=2; std::cout &lt;&lt; (x=5);</code> 和另一个独立片段的 <code>(x==5)</code>，比较 x 最后的值。不要为了“试一下”运行已经知道会无限循环的 while。</p>
+</blockquote>
 <p><code>for (;;) { ... }</code> 省略了条件，它相当于一直为真。先不要在不清楚退出方式时写这种循环。</p>
 <h2 id="3-先用旧值还是先得到新值">3. <code>++</code>：先用旧值，还是先得到新值</h2>
+<h3 id="31-它为什么出现在循环的更新位置">3.1 它为什么出现在循环的更新位置</h3>
+<p>计数器每轮加 1，经常需要 <code>i = i + 1;</code>。<code>++i;</code> 是完成这件事的简洁写法。类似地，<code>--i;</code> 完成减 1。</p>
+<p>先把两件事分开：<strong>变量最终变成多少</strong>，和<strong>表达式这一次交给别人什么值</strong>。后置/前置的区别在第二件事上。</p>
 <p><code>++</code> 把变量加 1；<code>--</code> 减 1。单独作为语句时，<code>++n;</code> 与 <code>n++;</code> 都把 <code>n</code> 加 1。区别在于<strong>这个表达式提供给周围代码的值</strong>。</p>
 <div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
 <span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="o">++</span><span class="p">;</span><span class="w">  </span><span class="c1">// a 得到旧值 4，n 变成 5</span>
 <span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">++</span><span class="n">n</span><span class="p">;</span><span class="w">  </span><span class="c1">// n 先变成 6，b 得到新值 6</span>
 </code></pre></div>
 
+<p>逐步记账：</p>
+<table>
+<thead>
+<tr>
+<th>正在执行的语句</th>
+<th style="text-align: right;">执行前 n</th>
+<th style="text-align: right;">这次表达式提供的值</th>
+<th style="text-align: right;">执行后 n</th>
+<th>接收变量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int a = n++;</code></td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5</td>
+<td>a=4</td>
+</tr>
+<tr>
+<td><code>int b = ++n;</code></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">6</td>
+<td>b=6</td>
+</tr>
+</tbody>
+</table>
+<p>像给队员发号码：后置是“把旧号码递给你，自己的号码加 1”；前置是“自己的号码先加 1，把新号码递给你”。两种都真的修改号码，不能把后置理解为“只取值，不修改”。</p>
+<p>如果整个语句就是 <code>n++;</code>，旧值没有被任何变量接收，但 n 仍加 1。在普通 <code>for</code> 的更新位置，返回旧值还是新值都没有被使用，所以两种写法在这里得到相同的计数变化。</p>
+<h3 id="32-自增放进条件推演要多记一步">3.2 自增放进条件，推演要多记一步</h3>
 <p>若 <code>j = 5</code>，条件 <code>++j &lt; 9</code> 先把 <code>j</code> 加 1再比较；<code>j++ &lt; 9</code> 使用旧值比较，但进入循环体前这次加 1已经完成。不要把“返回旧值”理解成“变量要等很久才修改”。</p>
+<p>以这一段为例，只用于练习读代码，实际编程可以写得更直接：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">++</span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">9</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">j</span><span class="o">++</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">' '</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>j 怎样变化</th>
+<th>发生什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>首次条件</td>
+<td>5→6</td>
+<td>6&lt;9 为真，进入</td>
+</tr>
+<tr>
+<td>首次输出</td>
+<td>6→7</td>
+<td>输出旧值 6</td>
+</tr>
+<tr>
+<td>第二次条件</td>
+<td>7→8</td>
+<td>8&lt;9 为真，进入</td>
+</tr>
+<tr>
+<td>第二次输出</td>
+<td>8→9</td>
+<td>输出旧值 8</td>
+</tr>
+<tr>
+<td>第三次条件</td>
+<td>9→10</td>
+<td>10&lt;9 为假，退出</td>
+</tr>
+</tbody>
+</table>
+<p>输出两个数字，j 却变了五次，最终为 10。<strong>条件表达式自己也可能修改变量</strong>，不能只看循环体里有几个 ++。</p>
+<blockquote>
+<p><strong>动手实验</strong>：先预测 <code>int n=4; int a=n++; int b=++n;</code> 的三个最终值，再跑示例 03。只改一个 ++ 的位置，重新画表。不要同时改三处之后猜是哪处造成变化。</p>
+</blockquote>
 <h3 id="接回上一课的指针">接回上一课的指针</h3>
 <table>
 <thead>
@@ -556,6 +1130,24 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </tbody>
 </table>
 <p>这些操作仍要遵守数组边界。示例 03 把每种操作拆成单独语句，方便画出指针的位置。</p>
+<p>先回忆指针：<code>p</code> 保存的是地址，<code>*p</code> 才是这个地址指向的元素。把示例中的数组画出来：</p>
+<div class="codehilite"><pre><span></span><code>开始：  [10] [20] [30]
+         p
+
+first = *p++：first 得到 10；p 移到第二个元素
+        [10] [20] [30]
+              p
+
+(*p)++：把第二个元素加 1；p 不动
+        [10] [21] [30]
+              p
+
+third = *++p：p 先移到第三个，再取值 30
+        [10] [21] [30]
+                   p
+</code></pre></div>
+
+<p>为什么 <code>*p++</code> 是给 p 加 1？后置 ++ 比一元 * 结合得更紧，解析为 <code>*(p++)</code>。给所指元素加 1，要用括号明确写出 <code>(*p)++</code>。读不顺时就拆成两条语句；知道这种写法的意思，不代表每个遍历都必须用它。</p>
 <h3 id="副作用与求值顺序">副作用与求值顺序</h3>
 <p><strong>副作用</strong>是表达式除了算出值，还修改了程序状态，比如 <code>n++</code> 修改 <code>n</code>。知道运算符优先级，只能知道表达式怎样分组，不能据此断定所有子表达式从左到右执行。</p>
 <div class="codehilite"><pre><span></span><code><span class="c1">// 错误示意，只分析，不运行：</span>
@@ -571,9 +1163,73 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </code></pre></div>
 
 <p><code>int a = 1, b = 2;</code> 的逗号分隔声明，不是上面的逗号运算符。逗号可以放在 <code>for</code> 的更新部分同时更新两个变量，但初学时先用循环体内的两条语句，容易检查。</p>
+<h3 id="33-复合赋值先从你已经会的加法读起">3.3 复合赋值先从你已经会的加法读起</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="n">total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="c1">// total = total + 3，得到 13</span>
+<span class="n">total</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="c1">// total = total - 2，得到 11</span>
+<span class="n">total</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="c1">// total = total * 2，得到 22</span>
+<span class="n">total</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="c1">// 整数除法，得到 5</span>
+<span class="n">total</span><span class="w"> </span><span class="o">%=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="c1">// 5 除以 3 的余数，得到 2</span>
+</code></pre></div>
+
+<p>这些不是“新的数学”，只是把“算完写回原变量”缩写了。先会读 <code>total = total + value</code>，再用 <code>+=</code>。</p>
+<p>逗号示例 <code>int y=(x=3, x+2);</code> 也可以拆成：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+</code></pre></div>
+
+<p>示例 01 的 <code>(++checks, i &lt; 3)</code> 同理：每次检查时先增加 checks，再把 <code>i&lt;3</code> 的真假作为整个条件结果。因此连最后那次失败检查也被计数。</p>
+<blockquote>
+<p><strong>阅读层次</strong>：循环计数、自增、复合赋值需要会写；指针组合表达式、逗号需要会读；复杂求值顺序先学会识别危险写法，不需要背所有标准规则。</p>
+</blockquote>
 <h2 id="4-字符串比较内容与遍历边界">4. 字符串：比较内容与遍历边界</h2>
+<h3 id="41-相同的文字和相同的地址不是一个问题">4.1 “相同的文字”和“相同的地址”不是一个问题</h3>
+<p>回忆 第 4 章 A：<code>char a[]="hi";</code> 是一个字符数组，内容是 <code>'h'</code>、<code>'i'</code>、<code>'\0'</code>。最后的零字符表示字符串到这里结束，不是显示出来的数字 0。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">a</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hi"</span><span class="p">;</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">b</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hi"</span><span class="p">;</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>a 的数组： [h] [i] [\0]    一块自己的存储空间
+b 的数组： [h] [i] [\0]    另一块自己的存储空间
+
+逐个看字符：相同
+问“是不是同一个位置”：不同
+</code></pre></div>
+
+<p>像两个不同的文件都写着 hello：文件内容一样，不代表它们就是同一个文件。</p>
 <p>两个字符数组用 <code>==</code>，通常会先转换成指针，比较的是地址，<strong>没有逐个比较字符</strong>。C 风格字符串比较内容，用 <code>&lt;cstring&gt;</code> 的 <code>std::strcmp(a, b)</code>：0 表示相等，小于 0 / 大于 0 表示顺序；不要依赖结果恰好是 −1 或 1。</p>
 <p><code>std::string</code> 已经提供内容比较，可以写 <code>word == "done"</code>，也可以用 <code>&lt;</code> 比较字典顺序。字符串的字典顺序不是字符串中数字的数值顺序；例如 <code>"10" &lt; "2"</code>。</p>
+<h3 id="42-strcmp-的返回值怎么读">4.2 <code>strcmp</code> 的返回值怎么读</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="n">strcmp</span><span class="p">(</span><span class="s">"hi"</span><span class="p">,</span><span class="w"> </span><span class="s">"hi"</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w">  </span><span class="c1">// 内容相同</span>
+<span class="n">std</span><span class="o">::</span><span class="n">strcmp</span><span class="p">(</span><span class="s">"hi"</span><span class="p">,</span><span class="w"> </span><span class="s">"ho"</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="w">   </span><span class="c1">// 第一个不同字符 i 排在 o 前面</span>
+<span class="n">std</span><span class="o">::</span><span class="n">strcmp</span><span class="p">(</span><span class="s">"ho"</span><span class="p">,</span><span class="w"> </span><span class="s">"hi"</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w">   </span><span class="c1">// 第一个不同字符 o 排在 i 后面</span>
+</code></pre></div>
+
+<p><code>strcmp</code> 需要有效的、以 <code>\0</code> 结束的 C 风格字符串。如果数组没有结束符，它不会自动知道数组容量，可能一直往后读，所以不能随便把任意 char 数组交给它。</p>
+<p>0 表示相等，这点和条件“非零为真”容易混：</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 清楚地问“内容相等吗”：</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">same</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">strcmp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</code></pre></div>
+
+<p>直接拿 <code>strcmp(a,b)</code> 当条件，反而是在内容不同时为真。写出 <code>==0</code>，自己的意图更清楚。</p>
+<h3 id="43-stdstring-为什么可以直接用">4.3 <code>std::string</code> 为什么可以直接用 <code>==</code></h3>
+<div class="codehilite"><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hi"</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hi"</span><span class="p">;</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">same</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">second</span><span class="p">;</span><span class="w"> </span><span class="c1">// true，比较内容</span>
+</code></pre></div>
+
+<p><code>std::string</code> 是标准库提供的一种字符串类型，它已经实现了这些比较操作。现在只需会用，不需要先学会“运算符重载”的实现；后面第 11 章再解释类型怎样定义自己的运算。</p>
+<p>字典顺序逐个字符找第一个不同位置。<code>"10"</code> 与 <code>"2"</code> 的第一位是 <code>'1'</code> 和 <code>'2'</code>，比较在这里就分出先后，不会自动把全文转换成整数 10 和 2。</p>
+<h3 id="44-正向访问先认长度再认下标">4.4 正向访问：先认长度，再认下标</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">word</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"cat"</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">word</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">word</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">' '</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>word.size()</code> 是长度 3，合法下标是 0、1、2，依次读到 c、a、t。<code>std::size_t</code> 是用于表示大小和下标的无符号整数类型，常来自 <code>&lt;cstddef&gt;</code>；名字看起来长，仍然只是一个整数类型。</p>
+<p><strong>长度不等于最后一个下标。</strong> 对非空字符串，最后下标是长度减 1；对空字符串，根本没有“最后一个字符”。</p>
+<h3 id="45-反向访问空字符串要先想清楚">4.5 反向访问：空字符串要先想清楚</h3>
 <p>反向遍历容易在空字符串时写错。<code>size()</code> 返回无符号长度，直接写 <code>word.size() - 1</code> 可能在长度为 0 时下溢。采用下面的形式：</p>
 <div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">word</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="o">--</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">word</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
@@ -581,7 +1237,56 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </code></pre></div>
 
 <p>长度为 0，一次也不进入；长度为 3，访问下标 2、1、0。示例 04 用 <code>getline</code> 允许空行和空格。这里处理的是单字节 ASCII 文本；反转 UTF-8 中文的字节不能得到正确的中文字序。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">进入条件检查时的 i</th>
+<th><code>i &gt; 0</code></th>
+<th style="text-align: right;">实际访问的 <code>i-1</code></th>
+<th>字符</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">3</td>
+<td>真</td>
+<td style="text-align: right;">2</td>
+<td>t</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td>真</td>
+<td style="text-align: right;">1</td>
+<td>a</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td>真</td>
+<td style="text-align: right;">0</td>
+<td>c</td>
+</tr>
+<tr>
+<td style="text-align: right;">0</td>
+<td>假</td>
+<td style="text-align: right;">不访问</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>这相当于从“末尾后一格”开始，每轮读取前一格。先保证 i 大于 0，再做 i−1，就不会把 0 减 1 用作下标。</p>
+<p>无符号整数不能用负数当倒数终点。这样的思路有问题：</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 只分析，不运行：</span>
+<span class="c1">// for (std::size_t i = word.size()-1; i &gt;= 0; --i) { ... }</span>
+</code></pre></div>
+
+<p>因为无符号 i 总是大于等于 0；减到 0 后再减会变成很大的无符号值，而不是 −1。不是把条件写得“包含 0”就安全了。</p>
+<blockquote>
+<p><strong>动手实验</strong>：运行示例 04，输入 <code>cat</code>、空行、<code>a b</code>。每次先写出要访问的下标列表。再解释为什么反转一个中文字符串不属于本例的保证范围。</p>
+</blockquote>
 <h2 id="5-while-和-dowhile选择检查时机">5. <code>while</code> 和 <code>do...while</code>：选择检查时机</h2>
+<h3 id="51-什么情况下不能提前知道次数">5.1 什么情况下不能提前知道次数</h3>
+<p>打印十行，次数已知；但“用户会输入多少个数”通常不知道。你可以规定输入 0 结束，或者一直读到 EOF。循环要根据正在发生的事情决定是否继续，<code>while</code> 很适合表达它。</p>
+<p>先从一个已知会结束的例子看语法，再换成输入任务：</p>
 <p><strong><code>while</code></strong> 先检查条件，真才执行；它适合“读到结束”“累计直到达到目标”等次数事先未知的事情。</p>
 <div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
 <span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -590,6 +1295,30 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <span class="p">}</span>
 </code></pre></div>
 
+<p>拆开看：</p>
+<ul>
+<li><code>while</code> 是关键字，表示“只要下面的条件成立就重复”。</li>
+<li><code>(n &gt; 0)</code> 每次进入循环体前检查。</li>
+<li>花括号里是这一轮动作；这里的 <code>--n</code> 由你写，while 不会自动替你加减变量。</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>n=3 → 检查真 → 打印3 → n=2
+    → 检查真 → 打印2 → n=1
+    → 检查真 → 打印1 → n=0
+    → 检查假 → 离开
+</code></pre></div>
+
+<p><code>for</code> 把起点、条件、更新集中在一行；<code>while</code> 只规定条件，起点和更新放在别处。它们都不是会自动懂你目标的计数机器。</p>
+<h3 id="52-结束不了先检查条件会不会改变">5.2 结束不了，先检查“条件会不会改变”</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 错误示意，不运行：</span>
+<span class="c1">// int n = 3;</span>
+<span class="c1">// while (n &gt; 0) {</span>
+<span class="c1">//     std::cout &lt;&lt; n;</span>
+<span class="c1">// }</span>
+</code></pre></div>
+
+<p>循环体没有修改 n，条件一直看见 3，当然一直为真。找无限循环时，不要先责怪输出或编译器，先问：<strong>有什么动作能让条件从真变假？那个动作真的执行了吗？</strong></p>
+<p>常见原因包括更新漏写、更新方向反了、while 后多了分号，以及更新藏在没有进入的分支里。第 6 章的 continue 也可能跳过更新。</p>
+<h3 id="53-dowhile-把检查放到动作之后">5.3 <code>do...while</code> 把检查放到动作之后</h3>
 <p><strong><code>do...while</code></strong> 先执行循环体，再检查条件，正常执行时至少进入一次。像先问一次菜单，再决定要不要继续。结尾有必需的分号。</p>
 <div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="k">do</span><span class="w"> </span><span class="p">{</span>
@@ -598,10 +1327,22 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </code></pre></div>
 
 <p>上面仍打印一次 0；对应 <code>while (n &gt; 0)</code> 则一次也不打印。三种循环并非互相替代的口号：固定次数优先考虑 <code>for</code>，输入驱动优先考虑 <code>while</code>，必须先做一次再判断时考虑 <code>do...while</code>。</p>
+<p>把 n 初始为 0 的两个流程摆在一起：</p>
+<div class="codehilite"><pre><span></span><code>while：   检查 0&gt;0 → 假 → 直接离开，没输出
+do：      先输出 0 → 检查 0&gt;0 → 假 → 离开
+</code></pre></div>
+
+<p><code>do</code> 后的花括号是动作，末尾的 <code>while(...)</code> 是是否再做一次的问题。写完右花括号还没结束整个语句，最后那个分号必须有。</p>
+<p>它常用于先显示一次菜单、先尝试一次操作等任务。若“没有数据就绝不应处理”，选择先检查的循环，不要为了保证执行一次而使用 do。</p>
+<blockquote>
+<p><strong>动手实验</strong>：跑示例 05，比较 <code>zero while:</code> 后没有数字、<code>zero do:</code> 后有 0。再把 n 初值设为 1，逐条看条件检查的时机，而不只是看最终都输出了哪些数字。</p>
+</blockquote>
 <h3 id="原书的计时和类型别名522">原书的计时和类型别名（5.2.2）</h3>
 <p><code>&lt;ctime&gt;</code> 中的 <code>std::clock()</code>、<code>std::clock_t</code> 与 <code>CLOCKS_PER_SEC</code> 用于估算程序消耗的处理器时间：两次读数的差除以每秒刻度，得到秒数；应检查 <code>clock()</code> 是否返回失败值。它不保证等同于现实经过的钟表时间。原书用循环等待演示 <code>while</code>，会持续占用处理器，不适合用作日常等待方案。</p>
 <p><code>typedef std::clock_t Tick;</code> 为已有类型取一个别名，像给同一人添昵称，没有创造新的不同类型；现代写法可用 <code>using Tick = std::clock_t;</code>。这些是阅读补充，不要求写计时程序。</p>
 <h2 id="6-范围-for从每个元素取值">6. 范围 <code>for</code>：从每个元素取值</h2>
+<h3 id="61-为什么又多了一种-for">6.1 为什么又多了一种 for</h3>
+<p>如果目标只是“把所有成绩逐个输出”，你不关心当前下标，只关心当前成绩。范围 for 替你进行逐项访问，不必手写长度判断，像对一篮水果说“每个都称一次”。</p>
 <div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">scores</span><span class="p">[]{</span><span class="mi">70</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">};</span>
 <span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">scores</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
@@ -609,8 +1350,45 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </code></pre></div>
 
 <p>冒号右边是要遍历的容器或数组；左边的变量依次得到元素。这里 <code>score</code> 是副本，修改它不会改数组。若写 <code>int&amp; score</code>，它是当前元素的别名，修改它会改数组；这就是<strong>引用</strong>的最小用法，完整规则留到 L12。</p>
+<h3 id="62-值变量拿一张复印件出来处理">6.2 值变量：拿一张复印件出来处理</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">scores</span><span class="p">[]{</span><span class="mi">70</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">};</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">scores</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">score</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">' '</span><span class="p">;</span><span class="w"> </span><span class="c1">// 75 85 95</span>
+<span class="p">}</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w">        </span><span class="c1">// 原数组首项仍是 70</span>
+</code></pre></div>
+
+<p>这里每轮创建的 score 接收当前元素的值，像拿出一张成绩单复印件。改复印件不会改原件，所以“循环里打印了加分后的数字”和“数组真的被修改”是两回事。</p>
+<h3 id="63-引用变量给原元素添一个临时名字">6.3 引用变量：给原元素添一个临时名字</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="o">&amp;</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">scores</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">score</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>这里的 <code>&amp;</code> 出现在类型后的声明位置，表示引用，不是表达式里的“取地址”。这一轮的 score 是原元素的别名，修改它就是修改那个元素。</p>
+<div class="codehilite"><pre><span></span><code>值变量：    scores[0]=70 → 复制到 score → score改成75，原件仍70
+引用变量：  score 就是 scores[0] 的另一个名字 → 原件改成75
+</code></pre></div>
+
+<p>先把这个差别说清楚即可，完整的引用规则在 L12 学习。示例 06 先改副本，再改引用，所以能直接比较两种效果。</p>
+<blockquote>
+<p><strong>动手实验</strong>：把引用循环中的 <code>int&amp;</code> 改成 <code>int</code>，只改这一个地方。预测最后的数组输出；运行后解释为什么改掉一个符号就改变了数据是否被保存。</p>
+</blockquote>
 <p>需要下标、跳过部分元素或同时操作两组数据时，普通 <code>for</code> 仍合适。范围循环不是“更短就永远更好”。</p>
 <h2 id="7-文本输入先区分读什么再判断读到了吗">7. 文本输入：先区分“读什么”，再判断“读到了吗”</h2>
+<h3 id="71-输入流和缓冲区先画一条队伍">7.1 输入流和缓冲区：先画一条队伍</h3>
+<p><strong>输入流</strong>是一条按顺序送来数据的通道。<code>std::cin</code> 通常连接键盘所在的终端，也可以通过重定向从文件取得数据。</p>
+<p><strong>缓冲区</strong>可以先理解为“已经输入、但程序还没读走的字符队伍”。你敲 <code>A b</code> 再回车，等待读取的内容可画成：</p>
+<div class="codehilite"><pre><span></span><code>下一个先读的位置
+  |
+  v
+[A] [空格] [b] [换行 \n]
+</code></pre></div>
+
+<p>回车也带来一个换行符。它不是屏幕上可见的字母，但仍是输入中的字符。读取一次会按所用规则从这条队伍取走数据；不能把每次读取都想成“重新让用户输入一整份”。</p>
+<p>第 4 章 A 中“读完数字后 getline 得到空行”的问题也来自这条队伍：数字读取留下了换行，下一个整行读取先遇见它。</p>
+<h3 id="72-cin-ch它默认先跳过空白">7.2 <code>cin &gt;&gt; ch</code>：它默认先跳过空白</h3>
 <table>
 <thead>
 <tr>
@@ -638,24 +1416,231 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </tbody>
 </table>
 <div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">ch</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">ch</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ch</span><span class="p">;</span>
+</code></pre></div>
+
+<p>ch 的类型是 char，所以这里只想提取一个字符。输入 <code>A b\n</code>，第一次得到 A；第二次先跳过空格，得到 b；第三次跳过换行，继续等待后面的非空白字符。</p>
+<p>这适合读取一个菜单命令，不适合“数文章有几个空格”“原样复制文字”，因为空白已经被跳过了。</p>
+<h3 id="73-getch把空白也作为正文取出来">7.3 <code>get(ch)</code>：把空白也作为正文取出来</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">ch</span><span class="p">;</span>
 <span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ch</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>循环条件尝试读取一个字符，成功才进循环体，<strong>不会在读取失败后重复使用旧的 <code>ch</code></strong>。<code>get(ch)</code> 与 <code>get()</code> 同名但参数和返回值不同，这是原书 5.5.3 引出的函数重载；这里只需按调用形式区别。</p>
+<p>逐轮对照同一份 <code>A b\n</code>：</p>
+<table>
+<thead>
+<tr>
+<th>第几次成功读取</th>
+<th><code>cin &gt;&gt; ch</code> 得到</th>
+<th><code>cin.get(ch)</code> 得到</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>A</td>
+<td>A</td>
+</tr>
+<tr>
+<td>2</td>
+<td>b</td>
+<td>空格</td>
+</tr>
+<tr>
+<td>3</td>
+<td>需要下一个非空白字符</td>
+<td>b</td>
+</tr>
+<tr>
+<td>4</td>
+<td>—</td>
+<td>换行</td>
+</tr>
+</tbody>
+</table>
+<p><code>get(ch)</code> 的 ch 是输出参数：读到的字符被存入它。<code>get(ch)</code> 自己返回的是输入流对象，因此放到 while 条件里的问题是“读取成功了吗”，<strong>不是“这个字符的数字值是不是非零”</strong>。</p>
+<p>这一步很重要：即使某个读取成功的字符值是 0，也不应该因此认定流读取失败。我们检查的是流状态，字符内容是另一件事。</p>
+<h3 id="74-哨兵读到了但约定不再处理它">7.4 哨兵：读到了，但约定不再处理它</h3>
+<p>可以规定 <code>#</code> 表示结束。把“已经读到字符”和“不是结束牌”两个条件连起来：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">ch</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">ch</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="sc">'#'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="o">++</span><span class="n">count</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
+</code></pre></div>
+
+<p>输入 <code>A b\n#</code> 时：A、空格、b、换行分别进循环体，count 从 0 到 4；读到 # 时，第二个条件为假，# 不进循环体，不计数。</p>
+<p>这里 <code>&amp;&amp;</code> 表示“并且”。它先检查读取成功；读取失败后不会再去比较一个并非新读到的 ch。完整规则在下一课讲，这里先按“先读到，再检查内容”理解。</p>
+<p>若正文中需要保存 #，这种哨兵协议就不合适，应采用 EOF 或其他明确的格式。结束方式是你与输入使用者的约定，不是所有文本程序都会自动认 #。</p>
+<h3 id="75-eof来源结束不是有人敲了-eof">7.5 EOF：来源结束，不是有人敲了 E、O、F</h3>
 <p><strong>EOF</strong> 表示输入结束，不是正文里某个可见字符。无参数 <code>get()</code> 返回的类型需要同时容纳字符和结束标记；若先保存到 <code>char</code>，可能丢掉区别。示例 09 用 <code>std::char_traits&lt;char&gt;::int_type</code> 接住返回值，与 <code>eof()</code> 比较，确认有字符后才转成 <code>char</code>。原书使用 <code>int</code> 与 <code>EOF</code> 演示同一思路，别直接硬编码 −1。</p>
 <p>不要写 <code>while (!std::cin.eof())</code> 再在循环体内读：<strong>EOF 状态通常在尝试读取后才更新</strong>，检查过早会多做一次。输入失败还可能是类型不匹配，不只有 EOF；下一课详细讲处理。</p>
+<p>键盘终端可以一直等待下一次输入，文件则有明确末尾。读取到文件末尾后还要再读，流才知道“这次没有任何字符可交给你”。</p>
+<p>这就是为什么读取动作放在条件里：</p>
+<div class="codehilite"><pre><span></span><code>尝试读一个字符
+   |
+   +-- 成功：处理这次的新字符 → 再尝试读取
+   |
+   +-- 失败：不处理旧变量 → 离开循环
+</code></pre></div>
+
+<p>错误的 <code>while(!eof())</code> 顺序是“先问上次有没有到头，再尝试这次读取”。例如文件只有 AB：</p>
+<table>
+<thead>
+<tr>
+<th>轮次</th>
+<th>读取前 EOF 状态</th>
+<th>这次读取</th>
+<th>若无检查就 count++</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>尚未到头</td>
+<td>成功读到 A</td>
+<td>计一次</td>
+</tr>
+<tr>
+<td>2</td>
+<td>尚未到头</td>
+<td>成功读到 B</td>
+<td>再计一次</td>
+</tr>
+<tr>
+<td>3</td>
+<td>尚未记录结束</td>
+<td>读取失败，发现末尾</td>
+<td>错误地再计一次</td>
+</tr>
+</tbody>
+</table>
+<p>因此它可能把两个字符数成三个。不要拿“我已经先检查过了”代替检查这一次读取是否成功。</p>
+<h3 id="76-无参数-get-为什么不能先装进-char">7.6 无参数 <code>get()</code> 为什么不能先装进 char</h3>
+<p>下面两个函数调用名字相同，但使用方式不同：</p>
+<div class="codehilite"><pre><span></span><code>cin.get(ch)：把字符放进 ch，调用的返回结果是流
+cin.get()：没有 ch 可写，把字符或结束标记作为返回结果交出来
+</code></pre></div>
+
+<p>后者必须用能容纳“所有字符值”和“另一个结束标记”的类型。原书用 int 接住，再与 <code>&lt;cstdio&gt;</code> 提供的 EOF 比较。本课示例 09 用标准字符流提供的类型和标记：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">Traits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">char_traits</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="n">Traits</span><span class="o">::</span><span class="n">int_type</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+<span class="k">while</span><span class="w"> </span><span class="p">((</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="p">.</span><span class="n">get</span><span class="p">())</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">Traits</span><span class="o">::</span><span class="n">eof</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">ch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Traits</span><span class="o">::</span><span class="n">to_char_type</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">ch</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>名字比较长，第一遍把它按四步读：</p>
+<ol>
+<li>给标准库的一组字符规则起个简短名字 Traits。</li>
+<li>value 用它提供的、能够保留结束标记的整数类型。</li>
+<li>尝试读取，先问结果是不是结束标记。</li>
+<li>确定有字符后，再转成 char 输出。</li>
+</ol>
+<p><code>put(ch)</code> 向输出流送出一个字符。这里引入这些名字是为了完整说明无参数版本；你自己的初学程序优先使用 <code>while(cin.get(ch))</code>，不需要先学模板才能完成字符统计。</p>
+<h3 id="77-让文本输入实验能重复">7.7 让文本输入实验能重复</h3>
 <p>示例 07、08 以 <code>#</code> 为结束哨兵（专门约定的结束字符，不计入统计）；09 读到 EOF。给 07、08 输入 <code>A b</code>、换行、<code>#</code>，07 数到 2，08 数到 4：一个空格和一个换行也算字符。</p>
-<p>示例条件中的 <code>&amp;&amp;</code> 表示“并且”：先成功读到字符，再检查它不是哨兵，才进入循环体。若读取失败，后面的字符比较不会执行；完整的逻辑运算和短路规则在 L09 展开。</p>
+<p>示例条件中的 <code>&amp;&amp;</code> 表示“并且”：先成功读到字符，再检查它不是哨兵，才进入循环体。若读取失败，后面的字符比较不会执行；完整的逻辑运算和短路规则在 第 6 章 展开。</p>
 <p>Windows 交互终端通常可以在空行按 <code>Ctrl+Z</code>、再回车产生 EOF，具体由终端决定。也可以用文件输入获得可重复的结果：</p>
 <div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">-Wall</span> <span class="n">-Wextra</span> <span class="n">-pedantic</span> <span class="n">示例代码</span><span class="p">/</span><span class="n">05_循环和关系表达式</span><span class="p">/</span><span class="n">09_get_eof</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">example</span><span class="p">.</span><span class="n">exe</span>
 <span class="n">cmd</span> <span class="p">/</span><span class="n">c</span> <span class="s2">"example.exe &lt; 示例代码\05_循环和关系表达式\text_sample.txt"</span>
 </code></pre></div>
 
 <p>PowerShell 自己不支持这种 <code>&lt;</code> 输入重定向，所以这里由 <code>cmd</code> 执行。统计文本字符时，本课按文本流读出的字节计数；Windows 文本模式会把文件中的 CRLF 换行转换为 <code>\n</code>，结果不一定是磁盘文件字节数。</p>
+<p>不要用“按键次数”推算字符数：回车是否产生正文换行、结束控制键怎样处理，与终端和文本模式有关。固定一份文本文件后再测试，才能准确对比两种读取方法。</p>
+<p>也不要把汉字数直接与 char 数量画等号：UTF-8 的一个汉字通常占多个字节，本课统计的是流送来的字节字符。英文实验先把空白、读取成功和结束条件理解清楚，再学多字节编码。</p>
+<blockquote>
+<p><strong>本节检查</strong>：输入 <code>A b\n#</code>，为什么示例 07 是 2，08 是 4？没有 # 而输入直接结束，为什么仍能停止？能回答这两句，再去做单词计数练习。</p>
+</blockquote>
 <h2 id="8-嵌套循环与二维数组">8. 嵌套循环与二维数组</h2>
+<h3 id="81-先从表格开始不从括号开始">8.1 先从表格开始，不从括号开始</h3>
+<p>假设我们记录两家店连续三天的销量：</p>
+<table>
+<thead>
+<tr>
+<th>店铺 / 天</th>
+<th style="text-align: right;">第 0 天</th>
+<th style="text-align: right;">第 1 天</th>
+<th style="text-align: right;">第 2 天</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第 0 家店</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr>
+<td>第 1 家店</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">60</td>
+</tr>
+</tbody>
+</table>
+<p>一维数组像一排柜子，只用一个编号。二维数组像几排柜子：先选第几排，再选排里的第几个，因此要两个下标。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">sales</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">]{{</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">}};</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>本例中的意思</th>
+<th style="text-align: right;">值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sales[0][0]</code></td>
+<td>第 0 家店、第 0 天</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td><code>sales[0][2]</code></td>
+<td>第 0 家店、第 2 天</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr>
+<td><code>sales[1][0]</code></td>
+<td>第 1 家店、第 0 天</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr>
+<td><code>sales[1][2]</code></td>
+<td>第 1 家店、第 2 天</td>
+<td style="text-align: right;">60</td>
+</tr>
+</tbody>
+</table>
+<p>两个 3 和 2 不能随意交换：<code>sales[2][0]</code> 的第一下标越界，虽然第二下标 0 合法。</p>
+<h3 id="82-为什么一层循环不够">8.2 为什么一层循环不够</h3>
 <p><strong>嵌套</strong>就是一个循环体里面再放一个循环。像班级点名：外层选班级，内层逐个点这个班的学生。每换一个班，内层要从第一个学生重新开始。</p>
+<p>只写 <code>for(row=0;row&lt;2;++row)</code>，每轮只确定了店铺，没确定当天的数据。我们需要在每家店内部，再走三天：</p>
+<div class="codehilite"><pre><span></span><code>外层 row=0
+    内层 col=0 → 访问 [0][0]
+    内层 col=1 → 访问 [0][1]
+    内层 col=2 → 访问 [0][2]
+    内层 col=3 → 条件为假，内层结束
+
+外层 row=1
+    重新创建 col=0 → 访问 [1][0]
+    内层 col=1   → 访问 [1][1]
+    内层 col=2   → 访问 [1][2]
+    内层 col=3   → 条件为假，内层结束
+
+外层 row=2 → 条件为假，全部结束
+</code></pre></div>
+
+<p>内层循环不是只在第一次外层迭代执行一次；<strong>每次外层进入，都重新执行整个内层循环</strong>。本例循环体里的数据处理共 2×3=6 次。</p>
+<h3 id="83-每行合计哪些变量放里哪些放外">8.3 每行合计，哪些变量放里、哪些放外</h3>
 <div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">sales</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">]{{</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">}};</span>
 <span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">row</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">row_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
@@ -668,7 +1653,125 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <p><code>int sales[2][3]</code> 是两个“含三个 <code>int</code> 的数组”组成的数组。第一个下标选行，第二个选列；这里行只允许 0–1，列只允许 0–2。花括号可以按行初始化，缺少的元素会被置零。</p>
 <p><code>row_total</code> 在外层循环体里初始化，每行重新从 0 开始；如果放到外面却不重置，第二次输出会是前两行累计。要算每一列，则外层遍历列，内层遍历行，仍访问 <code>sales[row][col]</code>，不能为了换遍历顺序就随意交换下标。</p>
+<div class="codehilite"><pre><span></span><code>第 0 行：row_total 从0开始 → 10 → 30 → 60
+第 1 行：row_total 从0开始 → 40 → 90 → 150
+</code></pre></div>
+
+<p>若把 row_total 放在外面只初始化一次：</p>
+<div class="codehilite"><pre><span></span><code>第 0 行结束：60
+第 1 行开始：接着60 → 100 → 150 → 210
+</code></pre></div>
+
+<p>210 是总计，不是第二行本身的合计。变量没有算错加法，<strong>错的是你让它保存了不该保留的上一行结果</strong>。</p>
+<p>要同时计算行合计和总计，可以放两个变量：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">               </span><span class="c1">// 全表保留，只初始化一次</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">row</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">row_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">       </span><span class="c1">// 每行重新开始</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">col</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">row_total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">sales</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">row_total</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="84-列合计访问顺序变了下标含义没变">8.4 列合计：访问顺序变了，下标含义没变</h3>
+<p>第 0 天要把两家店相加，得到 50；第 1 天为 70；第 2 天为 90：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">col</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">col_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">row</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">col_total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">sales</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">col_total</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>外层现在选天，内层选店铺，但数组仍然是 <code>sales[店铺][天]</code>。遍历顺序可以变，数据定义不能跟着被误读。</p>
+<h3 id="85-初始化与长度的两个小规则">8.5 初始化与长度的两个小规则</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">zeros</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">]{};</span><span class="w">                 </span><span class="c1">// 所有元素为 0</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">partial</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">]{{</span><span class="mi">1</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">}};</span><span class="w">    </span><span class="c1">// 每行没给出的元素为 0</span>
+</code></pre></div>
+
+<p>partial 的内容是第一行 <code>1 0 0</code>，第二行 <code>2 3 0</code>。花括号按行分组，有助于核对对应关系。</p>
+<p>普通内置数组的长度应是编译期常量。本课用固定的 2、3；不要把用户读入的 n 直接放到 <code>int data[n][3]</code> 中当作标准 C++ 的通用写法。有些编译器扩展允许这种形式，但 <code>-pedantic</code> 会提醒；动态长度可以以后用合适的容器处理。</p>
+<blockquote>
+<p><strong>动手实验</strong>：在示例 10 的副本里，把 sales[1][2] 从 60 改成 0。第二行合计、第三列合计、全表总计各减多少？你应该先手算三个结果，再运行。</p>
+</blockquote>
+<h3 id="86-打图形也是嵌套循环">8.6 打图形也是嵌套循环</h3>
+<p>二维数据不是嵌套循环的唯一用途。例如打印两行、每行三个星号：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">row</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">col</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'*'</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>***
+***
+</code></pre></div>
+
+<p>换行应在内层结束后发生：打印完一整行再换行。如果把换行放进内层，会变成一个星号占一行。练习中的右对齐三角形再加一个想法：每行打印的点号数与星号数随 row 改变，合起来仍等于总宽度。</p>
 <h2 id="9-这课的检查清单">9. 这课的检查清单</h2>
+<h3 id="91-遇到循环错误按这个顺序查">9.1 遇到循环错误，按这个顺序查</h3>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>先检查哪里</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一次都没输出</td>
+<td>第一次条件是否已经为假</td>
+<td>先检查的循环可以零次</td>
+</tr>
+<tr>
+<td>多做或少做一次</td>
+<td>起点、<code>&lt;</code> / <code>&lt;=</code>、更新位置</td>
+<td>边界决定哪些轮次进入</td>
+</tr>
+<tr>
+<td>一直停不下来</td>
+<td>更新有没有执行、方向是否对</td>
+<td>条件必须有机会变假</td>
+</tr>
+<tr>
+<td>数组结果怪或崩溃</td>
+<td>每个下标有没有超范围</td>
+<td>编译器通常不替你检查 []</td>
+</tr>
+<tr>
+<td>累计只剩最后一项</td>
+<td>累加器是不是每轮重新设为0</td>
+<td>之前的结果被抹掉</td>
+</tr>
+<tr>
+<td>字符数偏少</td>
+<td>是否用了跳过空白的 <code>&gt;&gt;</code></td>
+<td>空格和换行被跳过</td>
+</tr>
+<tr>
+<td>字符数多一次</td>
+<td>是否先检查 <code>!eof()</code> 再读</td>
+<td>失败的那次也被处理</td>
+</tr>
+<tr>
+<td>第二行合计变成总计</td>
+<td>行合计有没有按行重置</td>
+<td>上一行数据被继续累加</td>
+</tr>
+</tbody>
+</table>
+<p>找错误时挑一个最小输入，比如三个数、两个字符、一个空字符串。能手算的输入最适合看出哪一轮不对；一上来输入 100 个值，反而难追踪。</p>
+<h3 id="92-三个层次的完成标准">9.2 三个层次的完成标准</h3>
+<ol>
+<li><strong>会读</strong>：能给定初值，在纸上推演每一轮。</li>
+<li><strong>会改</strong>：改变上界、步长或一个元素，预测结果如何变化。</li>
+<li><strong>会写</strong>：没有示例也能写出区间求和、单词计数和二维统计。</li>
+</ol>
+<p>只做到第一层就去抄参考答案，很容易把“看得懂”误认为“自己写得出”。做练习时先写下输入、循环条件和要保留的变量，再补语法。</p>
 <ul>
 <li>[ ] 能逐步说出 <code>for</code> 的初始化、条件、循环体、更新顺序。</li>
 <li>[ ] 能解释 <code>&lt; length</code>、<code>&lt;= length</code> 和空循环体的区别。</li>

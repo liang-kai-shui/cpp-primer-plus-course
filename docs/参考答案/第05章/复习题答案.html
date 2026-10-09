@@ -389,10 +389,31 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <main><article>
 <div class="toc-box"><strong>本页目录</strong><div class="toc">
 <ul>
-<li><a href="#任务-1实验应看到什么">任务 1：实验应看到什么</a></li>
-<li><a href="#任务-2逐步推演">任务 2：逐步推演</a></li>
+<li><a href="#怎么用这份答案">怎么用这份答案</a></li>
+<li><a href="#任务-1实验应看到什么">任务 1：实验应看到什么</a><ul>
+<li><a href="#热身a条件决定进入次数">热身A：条件决定进入次数</a></li>
+<li><a href="#热身b空循环与普通代码块">热身B：空循环与普通代码块</a></li>
+<li><a href="#热身c累计值从哪里带进下一轮">热身C：累计值从哪里带进下一轮</a></li>
+<li><a href="#热身d副本与别名">热身D：副本与别名</a></li>
+<li><a href="#热身e读取和统计是两步">热身E：读取和统计是两步</a></li>
+</ul>
+</li>
+<li><a href="#任务-2逐步推演">任务 2：逐步推演</a><ul>
+<li><a href="#b再拆成表格条件里的自增也会发生">B再拆成表格：条件里的自增也会发生</a></li>
+<li><a href="#c为什么只执行一次却加了1">C为什么只执行一次却加了1</a></li>
+</ul>
+</li>
 <li><a href="#任务-3修正">任务 3：修正</a></li>
-<li><a href="#任务-4代码与思路">任务 4：代码与思路</a></li>
+<li><a href="#任务-4代码与思路">任务 4：代码与思路</a><ul>
+<li><a href="#a-闭区间求和逐轮加进同一个总量">A. 闭区间求和：逐轮加进同一个总量</a></li>
+<li><a href="#b-阶乘表第i项从第i1项接过来">B. 阶乘表：第i项从第i−1项接过来</a></li>
+<li><a href="#c-增长比较每过一年更新三件事">C. 增长比较：每过一年，更新三件事</a></li>
+<li><a href="#d-三年销量两种累计量的寿命不同">D. 三年销量：两种累计量的寿命不同</a></li>
+<li><a href="#e-单词计数哨兵检查必须在计数之前">E. 单词计数：哨兵检查必须在计数之前</a></li>
+<li><a href="#f-三角形外层管行内层管每行的两段">F. 三角形：外层管行，内层管每行的两段</a></li>
+<li><a href="#自己检查不只是看有没有报错">自己检查，不只是看有没有报错</a></li>
+</ul>
+</li>
 <li><a href="#任务-5过关要点">任务 5：过关要点</a></li>
 </ul>
 </div>
@@ -400,6 +421,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <blockquote>
 <p>对应<a href="../../练习/第05章-练习.html">本课程练习</a>，题号与原书 5.8 不同；代码独立编写，并非原书附录 J 的转录。</p>
 </blockquote>
+<h2 id="怎么用这份答案">怎么用这份答案</h2>
+<p>先对照自己的预测，再看逐步解释。如果输出不同，先找<strong>第一次发生差异的那一轮</strong>，不要把整份参考程序复制过去。</p>
+<p>完整代码在任务4的链接中。这里补的是“为什么这样写”，并列出常见的另一种写法；程序不必逐字符一样，只要逻辑和边界处理符合题目。</p>
 <h2 id="任务-1实验应看到什么">任务 1：实验应看到什么</h2>
 <ol>
 <li>01 的循环体执行 3 次，条件检查 4 次；<code>i &lt; 0</code> 时为 0 次、1 次。最后一次条件为假也算检查。</li>
@@ -410,6 +434,122 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li>输入 <code>A b\n#</code>，07 数到 2，08 数到 4；09 不使用哨兵，<code>#</code> 也是普通正文字符。统计单位是从文本流读出的单字节字符，不是 UTF-8 汉字数量。</li>
 <li>行合计 60、150；列合计 50、70、90；总计 210。行合计的初值应位于每次外层迭代中。</li>
 </ol>
+<h3 id="热身a条件决定进入次数">热身A：条件决定进入次数</h3>
+<table>
+<thead>
+<tr>
+<th>改动</th>
+<th>输出</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>从0开始，i&lt;1</td>
+<td><code>0</code></td>
+<td>i更新为1后条件为假</td>
+</tr>
+<tr>
+<td>从0开始，i&lt;0</td>
+<td>无正文</td>
+<td>第一次检查就失败</td>
+</tr>
+<tr>
+<td>从0开始，i&lt;=3</td>
+<td><code>0 1 2 3</code></td>
+<td>等于3时仍成立</td>
+</tr>
+<tr>
+<td>从1开始，i&lt;=3</td>
+<td><code>1 2 3</code></td>
+<td>起点不再包括0</td>
+</tr>
+</tbody>
+</table>
+<p>长度3的数组只有下标0、1、2。单纯输出i=3合法，并不意味着访问a[3]合法。实验验证的是循环次数，数组边界还需要单独检查。</p>
+<h3 id="热身b空循环与普通代码块">热身B：空循环与普通代码块</h3>
+<p>第一段输出三次Hello；第二段只输出一次。</p>
+<div class="codehilite"><pre><span></span><code>for (...);    ← 这个分号已经构成空循环体
+{ ... }       ← 循环结束后才执行的独立代码块
+</code></pre></div>
+
+<p>花括号靠缩进摆在for下面，并不会变成它的循环体。编译器可能提示空体或缩进误导；即使某版本没有警告，也不改变执行规则。</p>
+<h3 id="热身c累计值从哪里带进下一轮">热身C：累计值从哪里带进下一轮</h3>
+<table>
+<thead>
+<tr>
+<th>当前n</th>
+<th>循环外初始化：进入→离开</th>
+<th>每轮内部初始化：进入→离开</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0→1</td>
+<td>0→1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>1→3</td>
+<td>0→2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>3→6</td>
+<td>0→3</td>
+</tr>
+</tbody>
+</table>
+<p>因此分别输出 <code>1 3 6</code> 和 <code>1 2 3</code>。累计变量放在循环外，上一轮留下的值才能继续使用；内部版本每轮重新创建并清零。</p>
+<h3 id="热身d副本与别名">热身D：副本与别名</h3>
+<p>示例中的原数组为70、80、90。第一轮值循环输出copy=75、85、95，但原数组仍是70、80、90。第二轮用引用才真正改成75、85、95。</p>
+<p>将第二轮也改为 <code>int score</code> 后，最终数组仍是70、80、90。不要被循环体内打印的75误导：那可能只是副本的值。</p>
+<p><code>int&amp; score</code> 中的&amp;说明“score是一个已有int的别名”；<code>&amp;scores[0]</code> 中的&amp;是表达式，取得元素地址。它们在不同语法位置，含义不同。</p>
+<h3 id="热身e读取和统计是两步">热身E：读取和统计是两步</h3>
+<table>
+<thead>
+<tr>
+<th>输入字符</th>
+<th>07的逐词字符提取</th>
+<th>08的get读取</th>
+<th>是否计数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>读到</td>
+<td>读到</td>
+<td>两者计数</td>
+</tr>
+<tr>
+<td>空格</td>
+<td>跳过</td>
+<td>读到</td>
+<td>只有08计数</td>
+</tr>
+<tr>
+<td>b</td>
+<td>读到</td>
+<td>读到</td>
+<td>两者计数</td>
+</tr>
+<tr>
+<td>换行</td>
+<td>跳过</td>
+<td>读到</td>
+<td>只有08计数</td>
+</tr>
+<tr>
+<td>#</td>
+<td>读到</td>
+<td>读到</td>
+<td>两者都先结束，不计数</td>
+</tr>
+</tbody>
+</table>
+<p>因此07为2、08为4。立即#得到0；直接EOF也得到0。09没有#规则，它把成功读到的#当普通字符统计。比较文件输入时必须控制文件末尾是否有换行。</p>
 <h2 id="任务-2逐步推演">任务 2：逐步推演</h2>
 <ul>
 <li>A：<code>0 3 6 9</code>；更新到 12 后条件为假。</li>
@@ -418,6 +558,44 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li>D：<code>2 4 6</code>。<code>x</code> 是副本；要修改数组可用 <code>int&amp; x</code>。</li>
 <li>空字符串：初值 i 为 0，<code>i &gt; 0</code> 为假，没有任何元素访问；不先计算 <code>size()-1</code>。</li>
 </ul>
+<h3 id="b再拆成表格条件里的自增也会发生">B再拆成表格：条件里的自增也会发生</h3>
+<table>
+<thead>
+<tr>
+<th>条件前j</th>
+<th><code>++j</code>后j</th>
+<th>是否小于9</th>
+<th>体内打印</th>
+<th>体内<code>j++</code>后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>6</td>
+<td>是</td>
+<td>6</td>
+<td>7</td>
+</tr>
+<tr>
+<td>7</td>
+<td>8</td>
+<td>是</td>
+<td>8</td>
+<td>9</td>
+</tr>
+<tr>
+<td>9</td>
+<td>10</td>
+<td>否</td>
+<td>不进入</td>
+<td>保持10</td>
+</tr>
+</tbody>
+</table>
+<p>最后一次条件虽然失败，条件里的++j已经执行。因此final是10。日常代码更建议让更新位置清楚；这题用来读懂表达式，不要求照着写复杂循环。</p>
+<h3 id="c为什么只执行一次却加了1">C为什么只执行一次却加了1</h3>
+<p>do先执行体，输出8。之后 <code>k++&lt;5</code> 使用旧值8比较，结果为假；后置自增仍然将k改为9。两个问题要分开问：“比较使用哪个值？”和“变量最终变成哪个值？”</p>
 <h2 id="任务-3修正">任务 3：修正</h2>
 <ol>
 <li><code>i &lt;= 3</code> 会写 <code>a[3]</code>，越界；改为 <code>i &lt; 3</code>。</li>
@@ -468,7 +646,205 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </tr>
 </tbody>
 </table>
-<p>参考代码使用本章循环；必要的非法输入分支用下一章的 <code>if</code>，意思是“条件成立才执行这个块”，可先看 L09 的第一节。这部分用于明确失败时的行为，不必把输入错误也当成正常数据统计。</p>
+<p>参考代码使用本章循环；必要的非法输入分支用下一章的 <code>if</code>，意思是“条件成立才执行这个块”，可先看 第 6 章 的第一节。这部分用于明确失败时的行为，不必把输入错误也当成正常数据统计。</p>
+<h3 id="a-闭区间求和逐轮加进同一个总量">A. 闭区间求和：逐轮加进同一个总量</h3>
+<p>完整程序：<a href="代码/ex1.cpp">ex1.cpp</a>。核心框架是：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lower</span><span class="p">;</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">upper</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>这段假设lower、upper已经读入并通过题目范围检查；不能把检查删去后宣称它适用于任意int上下界。</p>
+<ul>
+<li>lower和upper保存输入，value负责遍历，不必破坏原来的边界。</li>
+<li>total从0开始，因为还没加任何数；放在外面，因为要跨轮保留。</li>
+<li><code>&lt;=</code>包含上界。2到4逐轮总和是2、5、9。</li>
+<li>5到5只有一轮；−2到2逐轮总和是−2、−3、−3、−2、0。</li>
+<li>用long long是为了让允许范围内的累计结果装得下。类型要按结果范围选，不只看单个输入有多小。</li>
+</ul>
+<p>常见错误是把total每轮清零、用 <code>&lt;</code> 漏掉上界，或先算再检查下界是否大于上界。先用小区间定位问题，再跑大边界。</p>
+<h3 id="b-阶乘表第i项从第i1项接过来">B. 阶乘表：第i项从第i−1项接过来</h3>
+<p>完整程序：<a href="代码/ex2.cpp">ex2.cpp</a>。</p>
+<div class="codehilite"><pre><span></span><code><span class="n">facts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">facts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">facts</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>i</th>
+<th>前一项</th>
+<th>乘数</th>
+<th>当前项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2</td>
+<td>3</td>
+<td>6</td>
+</tr>
+<tr>
+<td>4</td>
+<td>6</td>
+<td>4</td>
+<td>24</td>
+</tr>
+</tbody>
+</table>
+<p>固定数组101项覆盖下标0到100。n=0时计算循环零次，但输出仍应包含facts[0]。n=3输出1、1、2、6，分别对应0!、1!、2!、3!。</p>
+<p>为什么不用int？阶乘增长很快，远早于100!就超出普通整数范围。long double用于保存数量级，不代表它可以精确保存100!的每一个整数位。使用科学计数法输出是合理的。</p>
+<p>若起始项设为0，后续全部为0；若计算从i=0开始，就会读到不存在的facts[-1]。这两处不是改输出格式能修好的。</p>
+<h3 id="c-增长比较每过一年更新三件事">C. 增长比较：每过一年，更新三件事</h3>
+<p>完整程序：<a href="代码/ex3.cpp">ex3.cpp</a>。参考代码使用do...while，让第一年必定发生：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">do</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">simple</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">10.0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">compound</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mf">1.05</span><span class="p">;</span>
+<span class="w">    </span><span class="o">++</span><span class="n">year</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">compound</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">simple</span><span class="p">);</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>年份</th>
+<th>A</th>
+<th>B</th>
+<th>继续吗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>100</td>
+<td>100</td>
+<td>先进入第一年</td>
+</tr>
+<tr>
+<td>1</td>
+<td>110</td>
+<td>105</td>
+<td>是</td>
+</tr>
+<tr>
+<td>2</td>
+<td>120</td>
+<td>110.25</td>
+<td>是</td>
+</tr>
+<tr>
+<td>26</td>
+<td>360</td>
+<td>约355.57</td>
+<td>是</td>
+</tr>
+<tr>
+<td>27</td>
+<td>370</td>
+<td>约373.35</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<p>A的增量来自<strong>初始100</strong>，所以每年固定加10；B的增量来自<strong>当前值</strong>，所以每年乘1.05。若把A也写成乘1.10，就变成另一道题，B也不会按本题结果超过。</p>
+<p>初始相等不能直接判定问题完成；题目问经历增长后第一次严格超过。相等仍要继续，所以条件含等号。</p>
+<h3 id="d-三年销量两种累计量的寿命不同">D. 三年销量：两种累计量的寿命不同</h3>
+<p>完整程序：<a href="代码/ex4.cpp">ex4.cpp</a>。</p>
+<div class="codehilite"><pre><span></span><code>grand_total=0            ← 三年共用一次
+每一年：
+    year_total=0         ← 本年重新开始
+    每个月：
+        读sales[year][month]
+        year_total加上它
+    输出year_total
+    grand_total加上year_total
+最后输出grand_total
+</code></pre></div>
+
+<p>每月都加进year_total以后，不要又把同一个月直接加进grand_total，再在年末加year_total，否则统计两遍。</p>
+<p>第一年每月1得到12；第二年每月2得到24；第三年每月3得到36；三年总计72。若年合计误放在最外面且不清零，就可能输出12、36、72，显示的是逐年累计而不是各年的合计。</p>
+<p>year从0到2，month从0到11，共读取3×12=36格。人的“第1年”对应下标0，显示提示时可以用year+1，但访问数组仍用year。</p>
+<h3 id="e-单词计数哨兵检查必须在计数之前">E. 单词计数：哨兵检查必须在计数之前</h3>
+<p>完整程序：<a href="代码/ex5.cpp">ex5.cpp</a>。参考条件将两个要求连在一起：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">while</span><span class="w"> </span><span class="p">((</span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">word</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">word</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">"done"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="o">++</span><span class="n">count</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>先判断读取是否成功；失败时短路，既不比较旧word，也不进入体内。成功后再看是不是done。</p>
+<table>
+<thead>
+<tr>
+<th>输入步骤</th>
+<th>读取结果</th>
+<th>是否为done</th>
+<th>count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>one</td>
+<td>成功</td>
+<td>否</td>
+<td>1</td>
+</tr>
+<tr>
+<td>two</td>
+<td>成功</td>
+<td>否</td>
+<td>2</td>
+</tr>
+<tr>
+<td>done</td>
+<td>成功</td>
+<td>是</td>
+<td>保持2，结束</td>
+</tr>
+<tr>
+<td>three</td>
+<td>不再尝试</td>
+<td>—</td>
+<td>保持2</td>
+</tr>
+</tbody>
+</table>
+<p>也可以用 <code>while(cin&gt;&gt;word)</code>，体内先if检查哨兵、break，再++count。更展开的写法便于初学者看顺序，结果同样正确。</p>
+<p>Done和done!不等于done；逐词提取会跳过空白，但不会自动忽略大小写和标点。</p>
+<h3 id="f-三角形外层管行内层管每行的两段">F. 三角形：外层管行，内层管每行的两段</h3>
+<p>完整程序：<a href="代码/ex6.cpp">ex6.cpp</a>。</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">row</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">dots</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">dots</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">row</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">dots</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'.'</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">stars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">stars</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">row</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">stars</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'*'</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>row是从1开始的“第几行”，不是数组下标。每行 <code>(n-row)+row=n</code> 个字符，所以右边界对齐。</p>
+<p>n=3为：</p>
+<div class="codehilite"><pre><span></span><code>..*
+.**
+***
+</code></pre></div>
+
+<p>n=1时打印点的循环零次，打印一个星，再换行。换行必须在两个内层循环之后；若每打印一个点都换行，就不再是三角形。</p>
+<h3 id="自己检查不只是看有没有报错">自己检查，不只是看有没有报错</h3>
+<p>选一题说明：一组普通输入、一组边界输入、一组拒绝输入分别验证了什么。比如闭区间求和的5/5验证“一次循环”，9/2验证输入顺序无效，x验证读取失败。不同测试检查不同路径，不能互相替代。</p>
 <h2 id="任务-5过关要点">任务 5：过关要点</h2>
 <ol>
 <li>从 <code>size()</code> 开始，条件 <code>i &gt; 0</code>，读取 <code>s[i-1]</code>，访问前保证 i 大于 0。</li>

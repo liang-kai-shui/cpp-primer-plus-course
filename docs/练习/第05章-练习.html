@@ -389,11 +389,20 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <main><article>
 <div class="toc-box"><strong>本页目录</strong><div class="toc">
 <ul>
+<li><a href="#开始前先做小实验再做整题">开始前：先做小实验，再做整题</a></li>
 <li><a href="#课前带着问题读原书">课前：带着问题读原书</a></li>
-<li><a href="#任务-1跑示例也要改条件">任务 1：跑示例，也要改条件</a></li>
+<li><a href="#任务-1跑示例也要改条件">任务 1：跑示例，也要改条件</a><ul>
+<li><a href="#热身实验-a少一次多一次和零次">热身实验 A：少一次、多一次和零次</a></li>
+<li><a href="#热身实验-b缩进没有替你加花括号">热身实验 B：缩进没有替你加花括号</a></li>
+<li><a href="#热身实验-c篮子是不是每轮都被倒空了">热身实验 C：篮子是不是每轮都被倒空了</a></li>
+<li><a href="#热身实验-d修改复印件还是修改原件">热身实验 D：修改复印件，还是修改原件</a></li>
+<li><a href="#热身实验-e字母空格回车都摆进表格">热身实验 E：字母、空格、回车都摆进表格</a></li>
+</ul>
+</li>
 <li><a href="#任务-2先预测不看运行结果">任务 2：先预测，不看运行结果</a></li>
 <li><a href="#任务-3找错误只分析危险语句">任务 3：找错误，只分析危险语句</a></li>
 <li><a href="#任务-4编程每题都有边界测试">任务 4：编程（每题都有边界测试）</a><ul>
+<li><a href="#每道题先写这四句话">每道题先写这四句话</a></li>
 <li><a href="#a-闭区间求和-ex1cpp">A. 闭区间求和 · ex1.cpp</a></li>
 <li><a href="#b-阶乘表-ex2cpp">B. 阶乘表 · ex2.cpp</a></li>
 <li><a href="#c-两种增长方式-ex3cpp">C. 两种增长方式 · ex3.cpp</a></li>
@@ -406,11 +415,41 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#原书继续练选做">原书继续练（选做）</a></li>
 </ul>
 </div>
-</div><h1 id="第-5-章练习循环和关系表达式">第 5 章练习：循环和关系表达式</h1>
+</div><h1 id="第-5-章练习循环和关系表达式分步练习版">第 5 章练习：循环和关系表达式（分步练习版）</h1>
 <blockquote>
 <p><strong>怎么交</strong>：笔记填在本文件，程序放 自己新建的 <code>my_code/</code>，每题独立一个 <code>.cpp</code>。
 <strong>材料说明</strong>：概念题和实验由课程自编；编程题明确标记与原书的对应关系，增加输入检查和测试要求，不是逐字转抄原题。先读<a href="../讲义/第05章-循环和关系表达式.html">讲义</a>，完成后再看<a href="../参考答案/第05章/复习题答案.html">参考答案</a>。</p>
 </blockquote>
+<h2 id="开始前先做小实验再做整题">开始前：先做小实验，再做整题</h2>
+<p>这章不要求第一遍就独立写出几十行程序。顺序是：<strong>读执行过程 → 跑示例 → 只改一处 → 解释变化 → 自己写小任务</strong>。</p>
+<ul>
+<li>示例文件保留原样，自己的改动放在 自己新建的 <code>my_code/</code> 副本里。</li>
+<li>不知道怎么写，就先写中文步骤和变量表，不要打开答案整段复制。</li>
+<li>本章的部分编程题需要 <code>if</code> 检查错误输入；还没学到时，可以先实现题目约定的正常输入，再读 第 6 章 第 1 节补上校验。最终提交要包含这两部分。</li>
+<li>编译、运行、结果正确是三个检查，不能只记“没有报错”。</li>
+</ul>
+<p>每个实验按这个小表记录：</p>
+<table>
+<thead>
+<tr>
+<th>我改了哪里</th>
+<th>输入或初值</th>
+<th>我的预测</th>
+<th>实际结果</th>
+<th>哪一步解释了差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>不必写很长的感想。写清“i变成3时条件为假，所以不进入”比“循环很神奇”更有用。</p>
 <h2 id="课前带着问题读原书">课前：带着问题读原书</h2>
 <ul>
 <li>[ ] PDF 143–150（5.1）：画出一次 <code>for</code> 的顺序，找程序清单 5.4 的阶乘递推。</li>
@@ -435,6 +474,84 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li>07–09：比较空格、换行、<code>#</code> 与 EOF；不要把哨兵统计进去。</li>
 <li>10：核对两行合计、三列合计、总计。将一个元素改成 0，手算变化。</li>
 </ol>
+<h3 id="热身实验-a少一次多一次和零次">热身实验 A：少一次、多一次和零次</h3>
+<p>在自己的完整程序里试下面的循环：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">' '</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>按顺序只改一个地方：</p>
+<ol>
+<li>上界3改成1，预测输出。</li>
+<li>上界3改成0，预测输出。</li>
+<li>恢复上界3，把 <code>&lt;</code> 改成 <code>&lt;=</code>，预测输出。</li>
+<li>把起点改为1、条件保持 <code>&lt;=3</code>，再预测。</li>
+</ol>
+<p>这里仅输出i，不访问数组，因此第3步是安全的实验。然后解释：若把同样的 <code>i&lt;=3</code> 用于长度为3的数组，为什么不能再实际运行越界写入？</p>
+<div class="codehilite"><pre><span></span><code>四次预测与实际输出：
+1.
+2.
+3.
+4.
+数组下标的区别：
+</code></pre></div>
+
+<h3 id="热身实验-b缩进没有替你加花括号">热身实验 B：缩进没有替你加花括号</h3>
+<p>分别把这两段放进 main：</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 第一段</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Hello</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 第二段，注意那个分号</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">);</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Hello</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>两段各输出几次Hello？第二段的花括号是否仍是循环体？编译器是否警告？记录真实警告，不要求不同版本的文字完全一致。</p>
+<p>这是空 for 的安全实验；不要把它照搬成条件不改变的空 while，那可能永远停不下来。</p>
+<div class="codehilite"><pre><span></span><code>第一段：
+第二段：
+我看到的警告：
+用一句话解释分号的作用：
+</code></pre></div>
+
+<h3 id="热身实验-c篮子是不是每轮都被倒空了">热身实验 C：篮子是不是每轮都被倒空了</h3>
+<p>先求1到3的总和，再把 <code>int total=0;</code> 从循环外移进循环体，只在体内输出它。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">' '</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>不要把最后一条输出放到变量已经离开作用域的位置。比较两种版本的累计过程，每轮写下total进入和离开时的值。</p>
+<div class="codehilite"><pre><span></span><code>循环外初始化版本：
+循环内初始化版本：
+为什么第二种保不住前面的结果：
+</code></pre></div>
+
+<h3 id="热身实验-d修改复印件还是修改原件">热身实验 D：修改复印件，还是修改原件</h3>
+<p>跑示例06，记录两次修改的结果。然后在副本中，把 <code>for(int&amp; score : scores)</code> 改成 <code>for(int score : scores)</code>。</p>
+<p>先不要运行，回答：数组最后应保存原值，还是加过5的值？哪个循环中的变量只是副本？解释 <code>&amp;</code> 在这处声明里与 <code>&amp;scores[0]</code> 的取地址用法为何不同。</p>
+<div class="codehilite"><pre><span></span><code>我的预测：
+实际数组：
+我对副本与别名的解释：
+</code></pre></div>
+
+<h3 id="热身实验-e字母空格回车都摆进表格">热身实验 E：字母、空格、回车都摆进表格</h3>
+<p>给示例07、08分别输入同一份 <code>A b</code>、回车、#。把每个成功读取到的字符按顺序写下来，圈出被统计的那些。</p>
+<div class="codehilite"><pre><span></span><code>原始输入队伍：A、空格、b、换行、#
+07读到了哪些非空白字符：
+08读到了哪些字符：
+#是否计入：
+为什么两个统计不同：
+</code></pre></div>
+
+<p>最后试立即输入#和直接EOF。若使用文本文件，写清它末尾有没有换行，不要用两份不同文件比较结果。</p>
 <h2 id="任务-2先预测不看运行结果">任务 2：先预测，不看运行结果</h2>
 <p>下面每段互相独立。</p>
 <div class="codehilite"><pre><span></span><code><span class="c1">// A</span>
@@ -474,21 +591,136 @@ D：
 </ol>
 <p>逐项写明：哪里错、可能的后果、怎样修改。不要实际运行越界或未定义行为来验证。</p>
 <h2 id="任务-4编程每题都有边界测试">任务 4：编程（每题都有边界测试）</h2>
+<h3 id="每道题先写这四句话">每道题先写这四句话</h3>
+<ol>
+<li>输入是什么？例如两个整数，还是一个个单词？</li>
+<li>要留下什么结果？例如总和、次数，还是整个数组？</li>
+<li>每轮做一件什么事？什么情况下不能继续？</li>
+<li>哪些值应该在循环外初始化，哪些要每轮重新开始？</li>
+</ol>
+<p>可以先写出不完整的框架，再逐步补全。不要为了少写两行，把读取、赋值、自增都塞进一个表达式。</p>
+<div class="codehilite"><pre><span></span><code>题号：
+输入：
+变量及初值：
+每轮动作：
+停止条件：
+输出：
+</code></pre></div>
+
 <h3 id="a-闭区间求和-ex1cpp">A. 闭区间求和 · <code>ex1.cpp</code></h3>
 <p>对应原书 5.9 第 1 题，课程增加范围检查：读入下界和上界，均为整数且在 −100000 到 100000 之间，下界不得大于上界；用循环计算包含两端的和。用 <code>long long</code> 累加；非法输入结束并说明原因。</p>
 <p>测试：<code>2 9</code> → 44；<code>5 5</code> → 5；<code>-2 2</code> → 0；<code>9 2</code>、<code>x</code> → 拒绝。不要先调用求和公式，先练循环。</p>
+<p><strong>怎么起步：先把 2 到 4 算明白。</strong></p>
+<ol>
+<li>先只读入两个整数，打印它们，确认没有把上下界读反。</li>
+<li>在纸上写 <code>2+3+4</code>。循环变量从哪里开始、到哪里停止？这里包含上界，用 <code>&lt;=</code>。</li>
+<li>建一个 <code>long long total=0;</code>，放在循环外。每轮把当前整数加进去。</li>
+<li>暂时在循环体里输出“当前数、当前总和”，应依次看到 2/2、3/5、4/9。确认后删去调试输出。</li>
+<li>加上读取失败、范围无效、下界大于上界的检查。失败后结束，不能继续用未成功读取的值。</li>
+</ol>
+<p><strong>卡住时想一想：</strong> 上下界相等时也有一个数，循环应执行一次；负数也能相加，不需要换一套循环。</p>
+<div class="codehilite"><pre><span></span><code>我选的变量与类型：
+2到4的逐轮总和：
+下界等于上界时，循环执行次数：
+一个失败测试及实际提示：
+</code></pre></div>
+
 <h3 id="b-阶乘表-ex2cpp">B. 阶乘表 · <code>ex2.cpp</code></h3>
 <p>对应原书 5.9 第 2 题，课程改为用户指定上界：输入整数 <code>n</code>（0–100），用 <code>std::array&lt;long double, 101&gt;</code> 保存 0! 到 n!，逐行输出。约定 0!=1，递推为 <code>facts[i] = facts[i-1] * i</code>；不要用整数保存 100!。</p>
 <p>测试：0、1、5、100、101、非法输入。100! 约为 <code>9.332622 × 10^157</code>；浮点数有精度限制，不要求输出所有整数位完全精确。</p>
+<p><strong>怎么起步：先手写前三个位置。</strong></p>
+<table>
+<thead>
+<tr>
+<th>下标 i</th>
+<th>保存的含义</th>
+<th>由什么得到</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0!</td>
+<td>约定为1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1!</td>
+<td>前一个结果乘1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2!</td>
+<td>前一个结果乘2</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>建立固定容量101的数组。容量是能装多少项，n是这次要算到哪里，两者不是同一个意思。</li>
+<li>先给 <code>facts[0]</code> 赋1。接着让i从1到n，使用前一项算当前项。</li>
+<li>计算和输出可以各用一个循环。输出从0开始，别漏掉0!。</li>
+<li>用n=0验证：计算循环应零次，输出循环仍输出一项。</li>
+<li>最后检查n的范围及输入失败。n=100的最后合法下标是100，不是101。</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>n=3时，我填出的四项：
+n=0时，两个循环各执行多少次：
+若facts[0]误写成0，会发生什么：
+</code></pre></div>
+
 <h3 id="c-两种增长方式-ex3cpp">C. 两种增长方式 · <code>ex3.cpp</code></h3>
 <p>对应原书 5.9 第 4 题，独立改写：两人初始各有 100 个点数。A 每年增加初始点数的 10%；B 每年增加当前点数的 5%。用循环找 B 第一次严格超过 A 的年份，并输出当时两人的点数。点数只是数学模型。</p>
 <p>检查：第 1 年分别 110、105；第 27 年第一次超过。若两人恰好相等，是否该结束？</p>
+<p><strong>怎么起步：先只算一年，不急着找终点。</strong></p>
+<ol>
+<li>两个 <code>double</code> 变量都从100开始，年份从0开始。</li>
+<li>A每年增加固定的10；B在每轮把自己的当前值乘1.05。先输出第一年的110和105。</li>
+<li>将这三件事放进循环：更新A、更新B、年份加1。</li>
+<li>题目要找“第一次严格超过”。如果循环条件写成“B仍小于或等于A”，相等时就会继续。</li>
+<li>两人开始相等，但至少要过一年才谈增长。可以用 <code>do...while</code>，或先更新后检查；别用起始的“B小于A”挡住第一轮。</li>
+</ol>
+<p>调试时每年输出一行，重点看第26年和第27年，然后保留题目需要的最终输出。</p>
+<div class="codehilite"><pre><span></span><code>A每年的增量：
+B第二年的点数（先手算）：
+为什么初始相等不能直接结束：
+第26年和第27年的比较结果：
+</code></pre></div>
+
 <h3 id="d-三年销量表-ex4cpp">D. 三年销量表 · <code>ex4.cpp</code></h3>
 <p>对应原书 5.9 第 6 题：用 <code>int sales[3][12]</code> 接收三年每月的非负销量，输出每年合计和三年总计。输入失败或负数时报错结束；每年合计重新从 0 开始，用 <code>long long</code> 统计总量。</p>
 <p>测试：第一年每月 1、第二年每月 2、第三年每月 3 → 12、24、36，总计 72；36 个 0 → 全为 0；中途字母、负数 → 拒绝。无需背诵月份英语名称。</p>
+<p><strong>怎么起步：把二维表当作“三张十二格的账单”。</strong></p>
+<ol>
+<li>写出 <code>sales[year][month]</code> 的含义：year取0、1、2；month取0到11。</li>
+<li>先实现一年的12次读取与合计，用每月都是1测试。</li>
+<li>再增加外层的三年循环。每进入新一年，把该年的合计清零；三年总计只在所有循环外清零一次。</li>
+<li>每个数读入后立刻检查是否非负。中途失败时说明读到哪一年哪一月，更容易查错。</li>
+<li>可以输入时合计，也可以先存满再统计；两种都应真正使用题目要求的二维数组。</li>
+</ol>
+<p>先用缩小版2×3验证思路，再恢复3×12，能减少输入36个数时的重复劳动。</p>
+<div class="codehilite"><pre><span></span><code>外层循环变量表示：
+内层循环变量表示：
+每年合计的初始化位置：
+三年总计的初始化位置：
+我如何证明没有漏读或多读一格：
+</code></pre></div>
+
 <h3 id="e-单词计数-ex5cpp">E. 单词计数 · <code>ex5.cpp</code></h3>
 <p>对应原书 5.9 第 9 题：用 <code>std::string</code> 逐词输入，遇到恰好等于 <code>done</code> 的词结束，<code>done</code> 不计数；没有哨兵时 EOF 也能正常结束。大小写敏感，<code>Done</code> 和 <code>done!</code> 是普通词。</p>
 <p>测试：<code>one two done three</code> → 2；<code>done</code> → 0；<code>Done done! done</code> → 2；空输入 → 0。</p>
+<p><strong>怎么起步：先决定一个词能不能统计，再加次数。</strong></p>
+<ol>
+<li>准备一个 <code>std::string word</code> 和从0开始的计数器。</li>
+<li>每轮先尝试 <code>std::cin &gt;&gt; word</code>。没有成功就停止，别处理上次的word。</li>
+<li>成功读到后，先判断是否恰好是 <code>done</code>，若是就停止；否则计数加1。</li>
+<li>把处理顺序画成“读取成功 → 检查哨兵 → 计数”，对照 <code>one done two</code>：two应留在流里，不再处理。</li>
+<li>再测试立即EOF、立即done、大小写和带标点的词。</li>
+</ol>
+<p>这里用逐词输入，空格与换行都只是分隔符，不是要统计的词。</p>
+<div class="codehilite"><pre><span></span><code>one done two的读取过程：
+计数写在哨兵检查之前会错在哪里：
+Done、done!为什么不结束：
+</code></pre></div>
+
 <h3 id="f-右对齐三角形-ex6cpp">F. 右对齐三角形 · <code>ex6.cpp</code></h3>
 <p>对应原书 5.9 第 10 题：输入行数 n（1–30），用嵌套循环打印宽度为 n 的图形，每行左侧为点号，右侧为星号，第 r 行有 r 个星号。</p>
 <div class="codehilite"><pre><span></span><code>输入 4，输出：
@@ -499,6 +731,55 @@ D：
 </code></pre></div>
 
 <p>测试：1、4、30、0、31；每行字符总数必须等于 n。</p>
+<p><strong>怎么起步：先把每行的配方写成表格。</strong></p>
+<table>
+<thead>
+<tr>
+<th>n=4，当前行r</th>
+<th>点号数量n−r</th>
+<th>星号数量r</th>
+<th>总宽度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>3</td>
+<td>1</td>
+<td>4</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>4</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0</td>
+<td>4</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>外层循环控制r，从1到n。</li>
+<li>外层每一轮里，先用一个循环打印n−r个点，再用另一个循环打印r个星。</li>
+<li>两个内层循环都结束以后才换行。换行放进打印点的循环，会把一行拆散。</li>
+<li>不要在两个打印循环之间换行或加空格，题目只需要点和星。</li>
+<li>用n=1检查“零个点”的内层循环；用n=4检查每行总宽度。</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>我手画的n=3图形：
+换行位于哪层：
+n=1时，打印点的循环执行次数：
+</code></pre></div>
+
 <h2 id="任务-5不看资料的过关检查">任务 5：不看资料的过关检查</h2>
 <ol>
 <li>能否写一个安全的反向字符串遍历，空字符串也正确？</li>

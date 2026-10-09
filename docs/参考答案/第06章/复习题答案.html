@@ -389,11 +389,34 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <main><article>
 <div class="toc-box"><strong>本页目录</strong><div class="toc">
 <ul>
-<li><a href="#任务-1核对实验">任务 1：核对实验</a></li>
-<li><a href="#任务-2正确条件">任务 2：正确条件</a></li>
+<li><a href="#怎么用这份答案">怎么用这份答案</a></li>
+<li><a href="#任务-1核对实验">任务 1：核对实验</a><ul>
+<li><a href="#热身a三个边界要同时认清">热身A：三个边界要同时认清</a></li>
+<li><a href="#热身b独立问题与一次选择">热身B：独立问题与一次选择</a></li>
+<li><a href="#热身c短路表">热身C：短路表</a></li>
+<li><a href="#热身d沿着嵌套层数看退出位置">热身D：沿着嵌套层数看退出位置</a></li>
+<li><a href="#热身e读取成功不代表值合要求">热身E：读取成功不代表值合要求</a></li>
+<li><a href="#热身f最后一个数字不依赖换行才成立">热身F：最后一个数字不依赖换行才成立</a></li>
+</ul>
+</li>
+<li><a href="#任务-2正确条件">任务 2：正确条件</a><ul>
+<li><a href="#为什么那三种错误条件看起来像对的">为什么那三种错误条件看起来像对的</a></li>
+</ul>
+</li>
 <li><a href="#任务-3推演">任务 3：推演</a></li>
-<li><a href="#任务-4参考代码">任务 4：参考代码</a></li>
-<li><a href="#任务-5实现思路">任务 5：实现思路</a></li>
+<li><a href="#任务-4参考代码">任务 4：参考代码</a><ul>
+<li><a href="#a-字符转换一条输入队伍逐个处理">A. 字符转换：一条输入队伍，逐个处理</a></li>
+<li><a href="#b-十笔数据实际数量与数组容量分开">B. 十笔数据：实际数量与数组容量分开</a></li>
+<li><a href="#c-菜单退出命令改变循环的决定">C. 菜单：退出命令改变循环的决定</a></li>
+<li><a href="#d-分段计算以前走完的段加当前段">D. 分段计算：以前走完的段加当前段</a></li>
+<li><a href="#e-单词分类一次只增加一类">E. 单词分类：一次只增加一类</a></li>
+<li><a href="#f-文件计数只给成功读取的字符加1">F. 文件计数：只给成功读取的字符加1</a></li>
+</ul>
+</li>
+<li><a href="#任务-5实现思路">任务 5：实现思路</a><ul>
+<li><a href="#用0273追踪过关程序">用0、−2、7、3追踪过关程序</a></li>
+</ul>
+</li>
 <li><a href="#常见修正">常见修正</a></li>
 </ul>
 </div>
@@ -401,6 +424,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <blockquote>
 <p>对应<a href="../../练习/第06章-练习.html">本课程练习</a>，题号与原书 6.10 不同。先完成再核对；这里是课程独立编写的答案。</p>
 </blockquote>
+<h2 id="怎么用这份答案">怎么用这份答案</h2>
+<p>先找自己预计走哪条分支，再核对实际走哪条。输出不同时，追踪条件的真假，比照抄输出语句更有用。完整程序在后面的代码链接中，以下解析解释输入、检查和处理的顺序。</p>
 <h2 id="任务-1核对实验">任务 1：核对实验</h2>
 <ol>
 <li>范围外拒绝；0–59 未通过，60–79 C，80–89 B，90–100 A。先检查 &gt;=60 会让 95 落入 C。</li>
@@ -412,6 +437,125 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li>abc 造成提取失败，先 clear 恢复状态，再 ignore 丢弃到行尾。负数和 101 是读取成功但范围无效，不必清除失败状态。EOF 退出，不再反复询问。</li>
 <li>count=3、total=27.5、average 约 9.16667；空文件 count=0；<code>10 bad 20</code> 报告 Non-numeric data；<code>10 20 30</code> 无末尾换行仍数到 3，合计 60。</li>
 </ol>
+<h3 id="热身a三个边界要同时认清">热身A：三个边界要同时认清</h3>
+<table>
+<thead>
+<tr>
+<th>输入</th>
+<th>在0–100内</th>
+<th>输出等级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>59</td>
+<td>是</td>
+<td>未通过</td>
+</tr>
+<tr>
+<td>60、61</td>
+<td>是</td>
+<td>C</td>
+</tr>
+<tr>
+<td>89</td>
+<td>是</td>
+<td>B</td>
+</tr>
+<tr>
+<td>90、91、100</td>
+<td>是</td>
+<td>A</td>
+</tr>
+<tr>
+<td>101</td>
+<td>否</td>
+<td>拒绝，不进入等级判断</td>
+</tr>
+</tbody>
+</table>
+<p>95若先匹配 <code>score&gt;=60</code>，就会进入C分支；同一else if链命中一项后跳过其余项。所以等级下界应从高到低检查，不能随意调换。</p>
+<h3 id="热身b独立问题与一次选择">热身B：独立问题与一次选择</h3>
+<p>三个独立if输出 <code>pass good excellent</code>，因为95满足三项。改成同样顺序的else if链只输出pass。若只想输出最高等级，要先检查&gt;=90，再&gt;=80，最后&gt;=60。</p>
+<p>这里不是if或else if谁“更高级”，而是题目是否允许多个动作同时发生。例如“优秀且获奖”可能是两个独立判断；一个等级只能选一档，则用互斥链。</p>
+<h3 id="热身c短路表">热身C：短路表</h3>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>是否执行右侧</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>false &amp;&amp; 右侧</td>
+<td>否</td>
+<td>已不可能同时成立</td>
+</tr>
+<tr>
+<td>true &amp;&amp; 右侧</td>
+<td>是</td>
+<td>还要看右侧</td>
+</tr>
+<tr>
+<td>false</td>
+<td></td>
+<td>右侧</td>
+</tr>
+<tr>
+<td>true</td>
+<td></td>
+<td>右侧</td>
+</tr>
+</tbody>
+</table>
+<p>因此检查 <code>d!=0</code> 放在 <code>&amp;&amp;</code> 左边，d=0时右侧除法才不会被执行。交换顺序之后已经做了危险动作，后面的检查没有保护作用。</p>
+<h3 id="热身d沿着嵌套层数看退出位置">热身D：沿着嵌套层数看退出位置</h3>
+<p>普通case的break退出switch，下一次while仍会等命令。q/Q先把running改为false，再break离开switch；下一次检查while条件为假，整个菜单结束。</p>
+<p>若删除c/C动作后的break，匹配c后会继续执行p/P动作，显示学习提示和进度提示。这叫贯穿；它不是重新检测command是否等于p。</p>
+<h3 id="热身e读取成功不代表值合要求">热身E：读取成功不代表值合要求</h3>
+<table>
+<thead>
+<tr>
+<th>输入</th>
+<th>成功提取整数</th>
+<th>范围有效</th>
+<th>要clear吗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>abc</td>
+<td>否</td>
+<td>尚未得到新整数</td>
+<td>是，恢复后再丢弃错误行</td>
+</tr>
+<tr>
+<td>-1</td>
+<td>是</td>
+<td>否</td>
+<td>不因范围错误而clear</td>
+</tr>
+<tr>
+<td>101</td>
+<td>是</td>
+<td>否</td>
+<td>不因范围错误而clear</td>
+</tr>
+<tr>
+<td>80</td>
+<td>是</td>
+<td>是</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<p>clear恢复流状态；ignore丢弃仍留在输入中的坏文字。只clear会再次碰到abc；先ignore但不恢复失败状态，也无法按预期正常丢弃。EOF表示输入结束，应退出而不是要求无限重输。</p>
+<h3 id="热身f最后一个数字不依赖换行才成立">热身F：最后一个数字不依赖换行才成立</h3>
+<p>空文件0个；无末尾换行的 <code>10 20 30</code> 为3个；有换行的版本也是3个，因为数字提取跳过空白； <code>10 bad 20</code> 成功读到10之后停止并报告非数字内容。</p>
+<p>数值30可以在读到文件末尾时成功提取，此时可能只有eofbit，流转bool仍为真。把读取表达式放在while条件中能保留这次成功；预先检查good或eof会把“上次状态”和“本次是否读成”混在一起。</p>
+<p>相对文件名相对于运行时工作目录，而不是保证相对于cpp文件。找不到文件时先确认工作目录和输入路径；可以用绝对路径把这个问题排除。</p>
 <h2 id="任务-2正确条件">任务 2：正确条件</h2>
 <div class="codehilite"><pre><span></span><code><span class="n">score</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">100</span>
 <span class="n">command</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'q'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'Q'</span>
@@ -421,6 +565,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </code></pre></div>
 
 <p>数组检查依靠从左到右短路：下标不合法时不执行访问。链式比较先得到 0/1，不能表达区间；单独的 <code>'Q'</code> 是非零值，会令或条件总为真；先做除法再排除 0 无法保护除法。</p>
+<h3 id="为什么那三种错误条件看起来像对的">为什么那三种错误条件看起来像对的</h3>
+<ol>
+<li><code>60&lt;=score&lt;=100</code>先计算 <code>60&lt;=score</code> 得到false或true，也就是比较时的0或1。它们都&lt;=100，因此不能筛出正确区间。应把两个完整比较用&amp;&amp;相连。</li>
+<li><code>command=='q'||'Q'</code>右边不是“command等于Q”，只是字符常量Q；它是非零值，会转为true。应再次写出command的比较。</li>
+<li><code>12/d&gt;2&amp;&amp;d!=0</code>在到达d的检查前就做了除法；d=0时无法靠短路补救。应先排除0。</li>
+</ol>
+<p>数组条件也是同一思路：先保证index非负，再保证小于size，最后才访问values[index]。这里按题目约定两者都是int，避免把有符号负数与无符号长度直接混着比较。</p>
 <h2 id="任务-3推演">任务 3：推演</h2>
 <ul>
 <li>A 默认 bool 输出：<code>1 0 0</code>；第一项的左边为真，第二项的左边为假，都短路。</li>
@@ -469,6 +620,235 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </tr>
 </tbody>
 </table>
+<h3 id="a-字符转换一条输入队伍逐个处理">A. 字符转换：一条输入队伍，逐个处理</h3>
+<p>完整程序：<a href="代码/ex1.cpp">ex1.cpp</a>。处理顺序为：</p>
+<div class="codehilite"><pre><span></span><code>成功get一个字符
+    是@？结束
+    是数字？跳过本轮
+    是大写？转小写
+    是小写？转大写
+    其他？原样输出
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>原字符</th>
+<th>动作</th>
+<th>正文输出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>大写转小写</td>
+<td>a</td>
+</tr>
+<tr>
+<td>b</td>
+<td>小写转大写</td>
+<td>B</td>
+</tr>
+<tr>
+<td>1</td>
+<td>数字，continue</td>
+<td>无</td>
+</tr>
+<tr>
+<td>!</td>
+<td>保持</td>
+<td>!</td>
+</tr>
+<tr>
+<td>空格</td>
+<td>保持</td>
+<td>空格</td>
+</tr>
+<tr>
+<td>@</td>
+<td>break</td>
+<td>无，后面的tail不再读</td>
+</tr>
+</tbody>
+</table>
+<p>因此 <code>Ab1! @tail</code> 得到 <code>aB!</code>。必须用get保留空白；逐词字符提取 <code>&gt;&gt;ch</code>会跳过空格、换行。分类函数前的unsigned char转换使参数符合函数要求，不是为了把文字改成数字正文。</p>
+<p>不要把两次转换写成两个彼此独立的if：若先把A改为a，第二个if可能又把它变回A。参考代码用if/else if，让一个输入字符只走一个转换分支。</p>
+<h3 id="b-十笔数据实际数量与数组容量分开">B. 十笔数据：实际数量与数组容量分开</h3>
+<p>完整程序：<a href="代码/ex2.cpp">ex2.cpp</a>。</p>
+<table>
+<thead>
+<tr>
+<th>收到的数据</th>
+<th>存到下标</th>
+<th>count更新后</th>
+<th>total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td>0</td>
+<td>1</td>
+<td>10</td>
+</tr>
+<tr>
+<td>20</td>
+<td>1</td>
+<td>2</td>
+<td>30</td>
+</tr>
+<tr>
+<td>30</td>
+<td>2</td>
+<td>3</td>
+<td>60</td>
+</tr>
+<tr>
+<td>x</td>
+<td>不存，读取失败</td>
+<td>保持3</td>
+<td>保持60</td>
+</tr>
+</tbody>
+</table>
+<p>平均值60/3=20。第二次遍历只看下标0、1、2，严格大于20的是30，above为1。没收到的后七项不是数据，不参与平均值也不参加计数。</p>
+<p>参考代码的 <code>data[count++]=value</code>先用旧count作为下标，再加1；初学时可以拆开：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">data</span><span class="p">[</span><span class="n">count</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+<span class="o">++</span><span class="n">count</span><span class="p">;</span>
+<span class="n">total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+</code></pre></div>
+
+<p>这样更容易看出“先存进下一格，再增加已存数量”。循环条件先检查count&lt;容量，满十项后不会再读第十一项，也不会访问下标10。</p>
+<p>count=0时先输出没有数据再结束，避免除以0；一笔5平均5，高于平均的数量为0。负数或非有限数按题目规则报错，普通非数字则结束收集，两者的含义不同。</p>
+<h3 id="c-菜单退出命令改变循环的决定">C. 菜单：退出命令改变循环的决定</h3>
+<p>完整程序：<a href="代码/ex3.cpp">ex3.cpp</a>。</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>switch动作</th>
+<th>running</th>
+<th>之后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x</td>
+<td>未知命令提示</td>
+<td>true</td>
+<td>继续</td>
+</tr>
+<tr>
+<td>C</td>
+<td>课程信息</td>
+<td>true</td>
+<td>继续</td>
+</tr>
+<tr>
+<td>p</td>
+<td>进度信息</td>
+<td>true</td>
+<td>继续</td>
+</tr>
+<tr>
+<td>Q</td>
+<td>退出提示</td>
+<td>false</td>
+<td>结束while</td>
+</tr>
+</tbody>
+</table>
+<p>case可以连续放c、C标签，让两个输入共用动作。每个普通动作末尾的break只负责停止switch里的贯穿；running负责菜单是否还继续。EOF则让读取条件失败，直接结束。</p>
+<p>输入course会被逐个读成c、o、u、r、s、e；这里的界面约定单字符命令。如果想整行识别course，那是另一个输入协议，需要getline和整行匹配，不能只换提示文字。</p>
+<h3 id="d-分段计算以前走完的段加当前段">D. 分段计算：以前走完的段加当前段</h3>
+<p>完整程序：<a href="代码/ex4.cpp">ex4.cpp</a>。练习提示给出了按上界从小到大的思路；参考代码按下界从大到小判断，也是互斥的四种情况。两种方向都可以，但相应公式必须匹配。</p>
+<table>
+<thead>
+<tr>
+<th>点数所在区间</th>
+<th>计算</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0–5000</td>
+<td>0</td>
+</tr>
+<tr>
+<td>超过5000、不超过15000</td>
+<td>(点数−5000)×10%</td>
+</tr>
+<tr>
+<td>超过15000、不超过35000</td>
+<td>1000+(点数−15000)×15%</td>
+</tr>
+<tr>
+<td>超过35000</td>
+<td>4000+(点数−35000)×20%</td>
+</tr>
+</tbody>
+</table>
+<p>6000得到100；16000得到1150；38000得到4600。超过35000之后，前面的两段已贡献1000+3000=4000，只给新增部分乘20%。</p>
+<p>边界5000为0、15000为1000、35000为4000；取边界前后值应平滑连接，不会因换档突然把全部点数重算。</p>
+<p>这是题目定义的点数数学模型。负数或非数字表示停止；它们不是要套入公式的新数据。浮点提取的能力与有限值检查是两层，参考代码在成功提取后再做isfinite检查。</p>
+<h3 id="e-单词分类一次只增加一类">E. 单词分类：一次只增加一类</h3>
+<p>完整程序：<a href="代码/ex5.cpp">ex5.cpp</a>。</p>
+<table>
+<thead>
+<tr>
+<th>单词</th>
+<th>首字符</th>
+<th>分类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Apple</td>
+<td>A→a</td>
+<td>元音开头</td>
+</tr>
+<tr>
+<td>boat</td>
+<td>b</td>
+<td>其他字母开头</td>
+</tr>
+<tr>
+<td>42</td>
+<td>4</td>
+<td>其他开头</td>
+</tr>
+<tr>
+<td>!x</td>
+<td>!</td>
+<td>其他开头</td>
+</tr>
+<tr>
+<td>egg</td>
+<td>e</td>
+<td>元音开头</td>
+</tr>
+<tr>
+<td>q</td>
+<td>不分类</td>
+<td>终止标记</td>
+</tr>
+</tbody>
+</table>
+<p>结果2、1、2，共5个普通词。q的判断针对<strong>整词</strong>，所以queen仍是普通词；大小写哨兵按题目约定区分，Q不是小写q。</p>
+<p>成功的string逐词提取给出非空词，然后才取word[0]。先isalpha判断字母，再用tolower统一大小写，最后判断五个元音；非字母无需参加元音判断。</p>
+<p>不要把五个元音写成 <code>first=='a'||'e'||...</code>，每一项都要有完整比较。三个计数使用互斥分支，和应等于处理过的普通词数。</p>
+<h3 id="f-文件计数只给成功读取的字符加1">F. 文件计数：只给成功读取的字符加1</h3>
+<p>完整程序：<a href="代码/ex6.cpp">ex6.cpp</a>。核心是：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">ch</span><span class="p">;</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">in</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="o">++</span><span class="n">count</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>这里in是已经成功打开的ifstream；char变量只有读取成功后才代表本次新字符。没有读到字符就不会进入体内，不需要预先猜是否到了EOF。</p>
+<p><code>A b</code>无末尾换行为3；有一个文本换行为4；空文件为0。文件打不开则报错，不输出“空文件0”，因为没有读到文件与文件确实为空是两个结果。</p>
+<p>Windows文本模式可能把磁盘CRLF转换成一个换行；UTF-8中文字符可能占多个字节。因此这里说“文本流读到的字符数”，不把它宣称为磁盘字节数或中文文字个数。</p>
+<p>getline能保留文件名中的空格。本题从getline开始，不需先ignore；只有之前的数字/词提取留了换行时，才需要按输入流程处理它。</p>
 <h2 id="任务-5实现思路">任务 5：实现思路</h2>
 <p>参考完整程序：<a href="代码/pass_check.cpp">pass_check.cpp</a>。</p>
 <ol>
@@ -478,6 +858,52 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li>不需平均值，所以空文件直接显示数量 0、合计 0。</li>
 </ol>
 <p>本章的格式化数字读取接受数字前缀；检测完整文件的所有格式错误还需要更严格的解析。这里的练习约定普通整数，测试非数字项 <code>bad</code>，不把本程序宣称为任意文本的完整校验器。</p>
+<h3 id="用0273追踪过关程序">用0、−2、7、3追踪过关程序</h3>
+<table>
+<thead>
+<tr>
+<th>读取值</th>
+<th>分支</th>
+<th>count</th>
+<th>total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>保留，0也是非负数</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>-2</td>
+<td>continue，跳过本轮累计</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7</td>
+<td>保留</td>
+<td>2</td>
+<td>7</td>
+</tr>
+<tr>
+<td>3</td>
+<td>保留</td>
+<td>3</td>
+<td>10</td>
+</tr>
+<tr>
+<td>下一次读取失败于EOF</td>
+<td>不进入体内</td>
+<td>3</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<p>continue不关闭文件，也不终止整个循环。最后的3即使没有换行，也应在一次成功提取后被累计。</p>
+<p><code>1 bad 2</code>不是正常EOF：读到1之后在bad处提取失败，应该报告内容不合约定；2未被处理。空文件则是正常EOF，数量与合计都为0。</p>
+<p>能自己解释这张表，说明已把第5章的重复、第6章的选择和文件读取连在了一起。</p>
 <h2 id="常见修正">常见修正</h2>
 <ul>
 <li>不是所有重复失败都需要 <code>clear()</code>：值已读成功但超范围，应调整业务分支；流已失败才恢复状态。</li>

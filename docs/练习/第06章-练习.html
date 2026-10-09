@@ -389,11 +389,21 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <main><article>
 <div class="toc-box"><strong>本页目录</strong><div class="toc">
 <ul>
+<li><a href="#开始前每次只改一个决定">开始前：每次只改一个决定</a></li>
 <li><a href="#课前原书阅读清单">课前：原书阅读清单</a></li>
-<li><a href="#任务-1运行与改动">任务 1：运行与改动</a></li>
+<li><a href="#任务-1运行与改动">任务 1：运行与改动</a><ul>
+<li><a href="#热身实验-a边界两边各试一个数">热身实验 A：边界两边各试一个数</a></li>
+<li><a href="#热身实验-b多个if会不会都执行">热身实验 B：多个if会不会都执行</a></li>
+<li><a href="#热身实验-c右边到底有没有执行">热身实验 C：右边到底有没有执行</a></li>
+<li><a href="#热身实验-dbreak退出了哪一层">热身实验 D：break退出了哪一层</a></li>
+<li><a href="#热身实验-e输入失败与值不合要求">热身实验 E：输入失败与值不合要求</a></li>
+<li><a href="#热身实验-f文件末尾有没有换行">热身实验 F：文件末尾有没有换行</a></li>
+</ul>
+</li>
 <li><a href="#任务-2写条件不运行危险表达式">任务 2：写条件，不运行危险表达式</a></li>
 <li><a href="#任务-3预测和找错">任务 3：预测和找错</a></li>
 <li><a href="#任务-4编程">任务 4：编程</a><ul>
+<li><a href="#先写流程后写语法">先写流程，后写语法</a></li>
 <li><a href="#a-转换英文字符-ex1cpp">A. 转换英文字符 · ex1.cpp</a></li>
 <li><a href="#b-最多十笔数据-ex2cpp">B. 最多十笔数据 · ex2.cpp</a></li>
 <li><a href="#c-字符菜单-ex3cpp">C. 字符菜单 · ex3.cpp</a></li>
@@ -402,15 +412,42 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#f-文件字符计数-ex6cpp">F. 文件字符计数 · ex6.cpp</a></li>
 </ul>
 </li>
-<li><a href="#任务-5过关任务">任务 5：过关任务</a></li>
+<li><a href="#任务-5过关任务">任务 5：过关任务</a><ul>
+<li><a href="#过关任务的自查表">过关任务的自查表</a></li>
+</ul>
+</li>
 <li><a href="#原书继续练选做">原书继续练（选做）</a></li>
 </ul>
 </div>
-</div><h1 id="第-6-章练习分支语句和逻辑运算符">第 6 章练习：分支语句和逻辑运算符</h1>
+</div><h1 id="第-6-章练习分支语句和逻辑运算符分步练习版">第 6 章练习：分支语句和逻辑运算符（分步练习版）</h1>
 <blockquote>
-<p><strong>怎么交</strong>：解释写在本文件，程序写在 自己新建的 <code>my_code/</code>。先读<a href="../讲义/第06章-分支语句和逻辑运算符.html">讲义</a>，完成后再看<a href="../参考答案/第06章/复习题答案.html">参考答案</a>。
+<p><strong>怎么交</strong>：解释写在本文件，程序写在自己新建的 <code>my_code/</code>。先读<a href="../讲义/第06章-分支语句和逻辑运算符.html">讲义</a>，完成后再看<a href="../参考答案/第06章/复习题答案.html">参考答案</a>。
 <strong>材料说明</strong>：概念题、实验与过关题由课程自编；编程题按原书题号标出对应关系，增加边界测试和错误处理，措辞与参考实现独立编写。</p>
 </blockquote>
+<h2 id="开始前每次只改一个决定">开始前：每次只改一个决定</h2>
+<p>这章的重点是“程序何时选哪条路”。先写预测，再运行，最后解释命中了哪个条件。可以把讲义与练习分成三次：分支与逻辑、字符与菜单、输入与文件。</p>
+<p>示例保留原样，副本放 自己新建的 <code>my_code/</code>；每道编程题独立一个文件，不要把六个main拼在一起。</p>
+<table>
+<thead>
+<tr>
+<th>修改位置</th>
+<th>测试输入</th>
+<th>预计走的分支</th>
+<th>实际输出</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>遇到没有学过的库函数，先写下它在本题中的作用。例如 <code>isfinite</code> 是排除不能参与正常平均值计算的特殊浮点值，不要求此刻研究它的实现。</p>
 <h2 id="课前原书阅读清单">课前：原书阅读清单</h2>
 <ul>
 <li>[ ] PDF 183–188（6.1）：区分独立 if 与 else if，找出 else 匹配规则。</li>
@@ -436,6 +473,153 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li>07：逐行输入 <code>abc</code>、<code>-1</code>、<code>101</code>、<code>80</code>，最后 EOF；说明 clear 和 ignore 缺一会有什么问题。</li>
 <li>08、09：先写再读，检查 3 个数、合计 27.5。用记事本创建空文件、含 <code>10 bad 20</code> 的文件、末尾没有换行的 <code>10 20 30</code>；分别验证结果。</li>
 </ol>
+<h3 id="热身实验-a边界两边各试一个数">热身实验 A：边界两边各试一个数</h3>
+<p>用示例01的等级规则，填表后再运行。每个分界点测试“前一个、它本身、后一个”，比只测试95更容易发现错误。</p>
+<table>
+<thead>
+<tr>
+<th>输入</th>
+<th>是否在0–100内</th>
+<th>预计等级</th>
+<th>实际结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>59</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>60</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>61</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>89</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>90</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>91</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>100</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>101</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>在副本中，把由高到低的 <code>else if</code> 条件改成先判断 <code>score&gt;=60</code>。输入95，解释为什么后面的高等级条件没机会被检查。最后恢复原写法。</p>
+<h3 id="热身实验-b多个if会不会都执行">热身实验 B：多个if会不会都执行</h3>
+<p>在完整程序中运行这段，再把后两个if分别改为else if：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">95</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">score</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">60</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"pass "</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">score</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">80</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"good "</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">score</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">90</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"excellent "</span><span class="p">;</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>三个独立if的输出：
+改成一条else if链的输出：
+如果目标是只输出最高等级，我会怎样调整顺序：
+</code></pre></div>
+
+<h3 id="热身实验-c右边到底有没有执行">热身实验 C：右边到底有没有执行</h3>
+<p>在示例02中，先观察calls，再只修改左边真假。记录 <code>false&amp;&amp;右边</code>、<code>true&amp;&amp;右边</code>、<code>false||右边</code>、<code>true||右边</code>。</p>
+<div class="codehilite"><pre><span></span><code>&amp;&amp;在左边为____时跳过右边。
+||在左边为____时跳过右边。
+为什么除数检查要放在除法左边：
+</code></pre></div>
+
+<p>不要把 <code>d!=0</code> 移到除法之后再用d=0运行。危险表达式用纸上推演；验证保护逻辑用原来安全的顺序。</p>
+<h3 id="热身实验-dbreak退出了哪一层">热身实验 D：break退出了哪一层</h3>
+<p>跑示例05，输入 <code>c p q</code>。圈出每次命令经过的层：while → switch → case。</p>
+<p>在副本里仅删除c分支末尾的break，输入c观察是否还执行了后面的p分支；记录警告，再恢复break。这里没有危险内存访问，可以安全观察贯穿行为。</p>
+<div class="codehilite"><pre><span></span><code>c分支的break离开：
+q分支为什么还需要改变running：
+我删掉break后看到的动作：
+</code></pre></div>
+
+<h3 id="热身实验-e输入失败与值不合要求">热身实验 E：输入失败与值不合要求</h3>
+<p>逐行给示例07输入 <code>abc</code>、<code>-1</code>、<code>101</code>、<code>80</code>。读入abc失败；后三个都是成功读到整数，只是其中两个不在范围内。</p>
+<table>
+<thead>
+<tr>
+<th>输入</th>
+<th>能否读成整数</th>
+<th>是否在0–100内</th>
+<th>是否需要清除失败状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>abc</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>-1</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>101</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>80</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>不要把所有“不接受”都叫作输入流坏了。再给程序EOF，确认它能结束，不会无限打印“请重输”。</p>
+<h3 id="热身实验-f文件末尾有没有换行">热身实验 F：文件末尾有没有换行</h3>
+<p>先跑08，再跑09。执行文件不必与数据文件放在同一目录；数据文件的相对路径从<strong>程序当前工作目录</strong>开始。</p>
+<p>准备四份内容确切的小文件，不要凭记事本视觉判断有没有换行：</p>
+<ol>
+<li>空文件。</li>
+<li>恰好 <code>10 20 30</code>，末尾没有换行。</li>
+<li><code>10 20 30</code> 后有换行。</li>
+<li><code>10 bad 20</code>。</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>运行时工作目录：
+我输入的文件路径：
+四种文件各读到多少个数：
+哪一种需要报告非数字内容：
+为什么没有末尾换行也要保留30：
+</code></pre></div>
+
 <h2 id="任务-2写条件不运行危险表达式">任务 2：写条件，不运行危险表达式</h2>
 <ol>
 <li>分数在闭区间 [60,100] 内。</li>
@@ -463,27 +647,138 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <p>A、B 各输出什么？若 B 希望只输出 A，应怎样修正？另回答：<code>while (in &gt;&gt; value)</code> 与 <code>while (in.good()) { in &gt;&gt; value; ... }</code> 为什么不同？</p>
 <h2 id="任务-4编程">任务 4：编程</h2>
+<h3 id="先写流程后写语法">先写流程，后写语法</h3>
+<p>每题先写“输入 → 检查 → 处理 → 输出”的中文步骤。对循环题，再注明什么事件结束：达到容量、遇到哨兵、EOF，还是输入失败。</p>
+<div class="codehilite"><pre><span></span><code>题号：
+需要保存的变量及初值：
+每轮输入什么：
+哪些情况跳过本轮：
+哪些情况结束整个程序或循环：
+我准备的正常、边界、失败测试：
+</code></pre></div>
+
 <h3 id="a-转换英文字符-ex1cpp">A. 转换英文字符 · <code>ex1.cpp</code></h3>
 <p>对应原书 6.11 第 1 题：逐字符读取直到 <code>@</code> 或 EOF；英文大写转小写、小写转大写；数字字符不输出；空白和其他字符保持。<code>@</code> 本身不输出。用 cctype，并处理 unsigned char 参数。</p>
 <p>测试：<code>Ab1! @tail</code> → <code>aB!</code>；立即输入 @ → 无正文；空输入 → 无正文。不要把空格当结束符。</p>
+<p><strong>怎么起步：先保留全部字符，再加入规则。</strong></p>
+<ol>
+<li>用 <code>cin.get(ch)</code> 成功一次、输出一次，确认空格和换行都保留。</li>
+<li>添加 <code>@</code> 检查，必须在输出之前。否则终止标记也会出现在正文里。</li>
+<li>添加数字判断，遇到数字就跳过当前字符，继续读后面的字符。</li>
+<li>其余字符先判断大写或小写，再调用转换函数；其他字符原样输出。</li>
+<li>每次分类前将ch转为 <code>unsigned char</code>，转换函数的结果再转回char输出。</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>Ab1! @的逐字符处理结果：
+哪一个continue只跳过数字：
+为什么不能用cin&gt;&gt;ch保留空白：
+</code></pre></div>
+
 <h3 id="b-最多十笔数据-ex2cpp">B. 最多十笔数据 · <code>ex2.cpp</code></h3>
 <p>对应原书 6.11 第 2 题：用 <code>std::array&lt;double,10&gt;</code> 收集最多十个非负有限数，非数字或 EOF 结束收集；负数或非有限值拒绝。输出数量、平均值、严格高于平均值的数据个数。零笔数据不除以 0。</p>
 <p>测试：<code>10 20 30 x</code> → 数量 3、平均 20、高于平均 1；<code>5 5 5 x</code> → 高于平均 0；<code>x</code> → 无数据；十一个 1 → 只收前十个。参考实现用 <code>&lt;cmath&gt;</code> 的 <code>std::isfinite</code> 排除无穷与非数，只需理解检查的目的。</p>
+<p><strong>怎么起步：先只存三个数，再恢复容量十。</strong></p>
+<ol>
+<li>count从0开始，表示“已经存了几项”，也是下一次可以写入的位置。</li>
+<li>循环先检查还有容量，再尝试读取，成功后才存入数组并累计。</li>
+<li>平均值要等收集完成才能算。若count为0，直接说明没有数据，不能除以0。</li>
+<li>得到平均值后，再遍历已存的前count项，数严格大于平均值的那些项。</li>
+<li>遍历上界用count，不是数组容量；尚未收到的零初值不能当成实际数据。</li>
+<li>加入负数和非有限数检查。普通非数字是本题约定的停止信号，遇到后不要求恢复读取。</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>10、20、30依次读入后count与total：
+平均值为20时，等于20是否计入above：
+只有一笔5时的结果：
+零笔数据走哪条分支：
+</code></pre></div>
+
 <h3 id="c-字符菜单-ex3cpp">C. 字符菜单 · <code>ex3.cpp</code></h3>
 <p>对应原书 6.11 第 3 题并增加退出方式：提供 c（查看课程）、p（查看进度）、t（练习提示）、g（问候）、q（退出）；支持大写，未知命令提示后重新等待。必须使用 switch，退出须结束整个循环。</p>
 <p>测试：<code>x C p Q</code>；立即 EOF；立即 q。菜单按字符读取，输入单词会被拆成多个命令，不要求实现整行命令解析。</p>
+<p><strong>怎么起步：一个命令一个动作，先做c和q。</strong></p>
+<ol>
+<li>用bool变量running控制while，初值true。</li>
+<li>每轮读一个char；EOF时结束，不反复显示菜单。</li>
+<li>先处理大小写，可以给同一个动作写两个case，也可以先统一转小写。</li>
+<li>用switch分配动作；普通动作末尾break退出switch，继续等下一条命令。</li>
+<li>q动作将running改成false，再break。下次检查while条件时才退出外层循环。</li>
+<li>增加其他动作和default。输入未知命令应能继续，不能卡在失败状态。</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>x C p Q依次走过的分支：
+为什么只在q分支写break不够：
+输入course为什么会被看作多个命令：
+</code></pre></div>
+
 <h3 id="d-分段计算-ex4cpp">D. 分段计算 · <code>ex4.cpp</code></h3>
 <p>对应原书 6.11 第 5 题的<strong>虚构规则</strong>：前 5000 个点数不扣减；随后 10000 个按 10%；再随后 20000 个按 15%；超过 35000 的部分按 20%。反复读入点数，负数或非数字结束；非有限数报错。只按落入某档的那部分计算，不能把总数全乘最高比例。</p>
 <p>测试：0、5000 → 0；15000 → 1000；35000 → 4000；38000 → 4600。此题用于练分段逻辑，不是现实税务规则。</p>
+<p><strong>怎么起步：先算边界，再算跨档。</strong></p>
+<p>先在纸上画四段：0–5000、5000–15000、15000–35000、35000以上。</p>
+<ol>
+<li>5000的结果是0；15000的结果是10000×10%=1000。</li>
+<li>35000再加第二个收费段的20000×15%=3000，总计4000。</li>
+<li>38000只比35000多3000，这3000按20%，再加之前完整两档的4000。</li>
+<li>写else if时从小到大检查上界，每条分支计算“已完整经过的段 + 当前段的超出部分”。</li>
+<li>最后放进输入循环：负数或非数字结束，不要把它们继续代入计算。</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>我手算6000的结果：
+我手算16000的结果：
+38000为何不是38000×20%：
+每个边界前后各一个数的测试：
+</code></pre></div>
+
 <h3 id="e-按首字母分类单词-ex5cpp">E. 按首字母分类单词 · <code>ex5.cpp</code></h3>
 <p>对应原书 6.11 第 7 题：逐词读到恰好等于 <code>q</code> 的词；按首字节分为英文字母元音开头、其他英文字母开头、其他开头。大小写都识别，q 不统计；用 cctype 判断字母，元音为 a/e/i/o/u。</p>
 <p>测试：<code>Apple boat 42 !x egg q</code> → 2、1、2；<code>q</code> → 全为 0；EOF 也结束。<code>queen</code> 是普通词；本题约定单字节英文文本，不做中文分类。</p>
+<p><strong>怎么起步：先区分“词”和“词的第一个字符”。</strong></p>
+<ol>
+<li>用string逐词读取，成功后先检查整词是否恰好为q。</li>
+<li>对普通词取 <code>word[0]</code>。逐词提取成功时得到非空词，因此这时才可以访问首字符。</li>
+<li>将首字符转为unsigned char，再判断是否字母；非字母走“其他”。</li>
+<li>是字母才统一转小写，检查是否等于五个元音中的任意一个。</li>
+<li>三个计数器都从0开始，每个普通词只增加其中一个。</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>Apple、boat、42、!x、egg各属于哪类：
+queen为何不会退出：
+q为何不参与分类：
+三个计数之和应等于什么：
+</code></pre></div>
+
 <h3 id="f-文件字符计数-ex6cpp">F. 文件字符计数 · <code>ex6.cpp</code></h3>
 <p>对应原书 6.11 第 8 题，课程增加打开/读取失败检查：整行读入文件名，逐字符数到 EOF，包含空白；输出文本流读到的字符数。说明统计的是文本流字符，而非必然等于磁盘字节数。</p>
 <p>测试：空文件 → 0；内容恰好 <code>A b</code>（末尾无换行）→ 3；含空格的文件名可打开；不存在文件 → 报错。不得用 <code>!eof()</code> 作为读取前提。</p>
+<p><strong>怎么起步：复用逐字符读取，只换输入源。</strong></p>
+<ol>
+<li>用getline读文件名，不能用逐词提取，否则 <code>my data.txt</code> 会被截成my。</li>
+<li>创建ifstream并检查是否成功打开。打不开时立即报错，不把它当空文件。</li>
+<li>count从0开始； <code>in.get(ch)</code> 成功一次，count增加一次。</li>
+<li>循环后区分正常EOF和读取错误，最后输出计数。</li>
+<li>测试时写清换行是否存在。<code>A b</code>无换行是3个文本流字符，有一个换行则是4个。</li>
+</ol>
+<p>若上一条语句用过 <code>cin&gt;&gt;某个数</code>，再用getline读文件名前要处理剩余换行；本题程序直接从getline开始，不需要无缘无故丢弃第一行。</p>
+<div class="codehilite"><pre><span></span><code>我实际打开的完整路径：
+文件内容与末尾换行约定：
+预计计数、实际计数：
+空文件与不存在文件的区别：
+</code></pre></div>
+
 <h2 id="任务-5过关任务">任务 5：过关任务</h2>
 <p>不看示例写一个“读取文件中的整数，忽略负数，输出非负数个数和总和”的小工具：文件名允许空格；空文件不报数学错误；打开失败和非数字内容应报告。整数输入约定在 int 可表示的范围，累加用 long long。</p>
 <p>至少测试：空文件、<code>0 -2 7 3</code>、末尾无换行、<code>1 bad 2</code>、不存在文件。说清每一次 break / continue / 读取条件的作用。完成后对照答案的思路，无需追求与参考写法一样。</p>
+<h3 id="过关任务的自查表">过关任务的自查表</h3>
+<ul>
+<li>[ ] 文件名含空格时仍能完整读入。</li>
+<li>[ ] 不存在的文件报告“打开失败”，不是显示0条数据。</li>
+<li>[ ] 负数不计数也不累加，但后面的有效数仍会被处理。</li>
+<li>[ ] 空文件输出0和0，不使用未读取的value。</li>
+<li>[ ] 最后一个数后没有换行，也不会遗漏。</li>
+<li>[ ] <code>1 bad 2</code>报告输入内容不合约定，不假装已成功处理整个文件。</li>
+<li>[ ] 能指出continue只影响本轮，EOF使下一次读取失败并退出循环。</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>我独立写出的中文流程：
+0 -2 7 3逐轮的count和total：
+我还没想明白的一步：
+</code></pre></div>
+
 <h2 id="原书继续练选做">原书继续练（选做）</h2>
 <p><strong>6.10 在 PDF 216–217 页；6.11 在 217–219 页。</strong> 本课任务覆盖 6.11 的 1、2、3、5、7、8 的核心思路。其余可选第 4 题（结构与菜单）、第 6 题（动态结构数组与分组）、第 9 题（从文件读取结构记录）。最后两题把第 4 章和文件输入连接起来；姓名可能含空格，先在纸上写出文件行格式，再决定用 <code>&gt;&gt;</code> 还是 <code>getline</code>。</p>
 <div class="codehilite"><pre><span></span><code>我的测试输入与实际结果：
