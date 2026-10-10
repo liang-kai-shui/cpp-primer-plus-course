@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="凉开水">
+<title>复习题答案</title>
+<script>
+/* 在页面渲染前先定好主题，避免"白屏闪一下" */
+(function(){
+  try{
+    var t = localStorage.getItem('cppcourse-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<style>
+/* ============ 颜色变量：默认深色 ============ */
+:root, [data-theme="dark"]{
+  --bg:#14171a; --bg2:#1b1f24; --bg3:#232a31;
+  --fg:#dfe3e8; --fg2:#b6bec8; --muted:#8b95a1;
+  --line:#2b3138; --accent:#58a6ff;
+  --code-bg:#0f1216; --quote-bg:#1b2027;
+}
+[data-theme="light"]{
+  --bg:#fbfbfa; --bg2:#ffffff; --bg3:#f1f5f9;
+  --fg:#22272e; --fg2:#3b434d; --muted:#6b7280;
+  --line:#e5e7eb; --accent:#1f6feb;
+  --code-bg:#f3f4f6; --quote-bg:#f8fafc;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",Roboto,sans-serif;
+  font-size:16.5px; line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ============ 主题切换按钮 ============ */
+#themeBtn{
+  position:fixed; top:14px; right:18px; z-index:50;
+  width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--line); background:var(--bg2); color:var(--fg);
+  font-size:19px; line-height:1; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, background .15s ease;
+}
+#themeBtn:hover{transform:scale(1.08); background:var(--bg3);}
+
+.layout{display:flex; min-height:100vh;}
+
+/* ============ 侧边导航 ============ */
+nav{
+  width:288px; flex:0 0 288px; background:var(--bg2);
+  border-right:1px solid var(--line); padding:22px 0 80px;
+  overflow-y:auto; position:sticky; top:0; height:100vh;
+}
+nav .brand{
+  padding:0 20px 15px; font-weight:700; font-size:15px;
+  border-bottom:1px solid var(--line); margin-bottom:12px; color:var(--fg);
+}
+nav .group{
+  padding:16px 20px 6px; font-size:11.5px; color:var(--muted);
+  letter-spacing:.1em; font-weight:600;
+}
+nav a{display:block; padding:6px 20px; font-size:14px; color:var(--fg2);
+  border-left:3px solid transparent;}
+nav a:hover{background:var(--bg3); text-decoration:none; color:var(--fg);}
+nav a.active{color:var(--accent); font-weight:600;
+  border-left-color:var(--accent); background:var(--bg3);}
+
+main{flex:1; min-width:0; padding:46px 60px 120px; max-width:1120px;}
+article{
+  background:var(--bg2); border:1px solid var(--line);
+  border-radius:12px; padding:40px 48px;
+  box-shadow:0 1px 3px rgba(0,0,0,.10);
+}
+
+/* ============ 正文排版 ============ */
+h1,h2,h3,h4{line-height:1.4; margin:1.7em 0 .7em; font-weight:700; scroll-margin-top:20px;}
+h1{font-size:1.9em; margin-top:0; padding-bottom:.4em; border-bottom:2px solid var(--line);}
+h2{font-size:1.42em; padding-bottom:.28em; border-bottom:1px solid var(--line);}
+h3{font-size:1.16em;}
+h4{font-size:1.03em; color:var(--fg2);}
+p{margin:.8em 0;}
+ul,ol{padding-left:1.65em;}
+li{margin:.35em 0;}
+strong{font-weight:700;}
+hr{border:0; border-top:1px solid var(--line); margin:2.2em 0;}
+img{max-width:100%;}
+
+blockquote{
+  margin:1.1em 0; padding:.85em 1.15em; background:var(--quote-bg);
+  border-left:4px solid var(--accent); color:var(--fg2);
+  border-radius:0 8px 8px 0;
+}
+blockquote p{margin:.4em 0;}
+blockquote strong{color:var(--fg);}
+
+/* ============ 表格 ============ */
+table{
+  border-collapse:collapse; width:100%; margin:1.2em 0;
+  font-size:14.8px; display:block; overflow-x:auto;
+}
+th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top;}
+th{background:var(--bg3); font-weight:600; white-space:nowrap;}
+tbody tr:nth-child(even) td{background:rgba(127,127,127,.05);}
+
+/* ============ 代码 ============ */
+code{
+  font-family:"Cascadia Code",Consolas,"SF Mono",Monaco,"Courier New","Microsoft YaHei",monospace;
+  font-size:.885em; background:var(--code-bg); padding:.16em .42em;
+  border-radius:4px; border:1px solid var(--line);
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--line); border-radius:9px;
+  padding:15px 17px; overflow-x:auto; margin:1.1em 0; line-height:1.6;
+}
+pre code{background:none; padding:0; border:0; font-size:13.8px;}
+.codehilite{background:var(--code-bg); border:1px solid var(--line);
+  border-radius:9px; margin:1.1em 0;}
+.codehilite pre{border:0; margin:0; background:none;}
+
+/* ============ 本页目录 / 卡片 / 翻页 ============ */
+.toc-box{
+  background:var(--quote-bg); border:1px solid var(--line);
+  border-radius:9px; padding:13px 22px; margin:1.3em 0;
+}
+.toc-box strong{display:block; margin-bottom:5px; color:var(--muted);
+  font-size:13px; letter-spacing:.05em;}
+.toc-box ul{margin:.35em 0; padding-left:1.3em;}
+.toc-box a{color:var(--fg2);}
+.toc-box a:hover{color:var(--accent);}
+
+/* ============ 讲义页顶部的"卡住了去哪查"横幅 ============ */
+.hintbar{
+  background:var(--bg3); border:1px solid var(--line); border-radius:8px;
+  padding:9px 15px; margin:0 0 1.5em; font-size:13.5px; color:var(--muted);
+}
+.hintbar a{font-weight:600;}
+
+/* 超长的"本页目录"（比如术语表有 100+ 词条）折叠起来，别把正文挤下去 */
+details.toc-box summary{
+  cursor:pointer; color:var(--muted); font-size:13.5px;
+  font-weight:600; letter-spacing:.03em; user-select:none;
+}
+details.toc-box summary:hover{color:var(--accent);}
+details.toc-box[open] summary{margin-bottom:.5em;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px; margin:24px 0;}
+.card{background:var(--bg2); border:1px solid var(--line); border-radius:11px;
+  padding:19px 21px; transition:transform .15s ease, border-color .15s ease;}
+.card:hover{transform:translateY(-2px); border-color:var(--accent);}
+.card h3{margin:0 0 8px; font-size:1.06em;}
+.card p{margin:0; color:var(--muted); font-size:14px; line-height:1.65;}
+
+.pager{display:flex; justify-content:space-between; gap:14px; margin-top:34px;
+  padding-top:20px; border-top:1px solid var(--line);}
+.pager a{flex:1; padding:11px 16px; background:var(--bg3); border:1px solid var(--line);
+  border-radius:9px; font-size:14px; color:var(--fg2);}
+.pager a:hover{border-color:var(--accent); color:var(--accent); text-decoration:none;}
+.pager a.next{text-align:right;}
+.pager a.disabled{opacity:.35; pointer-events:none;}
+
+.author-line{color:var(--muted); font-size:14px;}
+.author-line a{font-weight:600;}
+.footer{display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 24px;
+  margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:13.5px;}
+
+/* ============ 移动端 ============ */
+@media (max-width:900px){
+  nav{display:none;}
+  main{padding:18px 12px 60px;}
+  article{padding:22px 17px; border-radius:8px;}
+  #themeBtn{top:10px; right:10px; width:38px; height:38px;}
+}
+
+/* ===== 代码高亮（按主题隔离） ===== */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="dark"] .codehilite .hll { background-color: #49483e }
+[data-theme="dark"] .codehilite { background: #272822; color: #F8F8F2 }
+[data-theme="dark"] .codehilite .c { color: #959077 } /* Comment */
+[data-theme="dark"] .codehilite .err { color: #ED007E; background-color: #1E0010 } /* Error */
+[data-theme="dark"] .codehilite .esc { color: #F8F8F2 } /* Escape */
+[data-theme="dark"] .codehilite .g { color: #F8F8F2 } /* Generic */
+[data-theme="dark"] .codehilite .k { color: #66D9EF } /* Keyword */
+[data-theme="dark"] .codehilite .l { color: #AE81FF } /* Literal */
+[data-theme="dark"] .codehilite .n { color: #F8F8F2 } /* Name */
+[data-theme="dark"] .codehilite .o { color: #FF4689 } /* Operator */
+[data-theme="dark"] .codehilite .x { color: #F8F8F2 } /* Other */
+[data-theme="dark"] .codehilite .p { color: #F8F8F2 } /* Punctuation */
+[data-theme="dark"] .codehilite .ch { color: #959077 } /* Comment.Hashbang */
+[data-theme="dark"] .codehilite .cm { color: #959077 } /* Comment.Multiline */
+[data-theme="dark"] .codehilite .cp { color: #959077 } /* Comment.Preproc */
+[data-theme="dark"] .codehilite .cpf { color: #959077 } /* Comment.PreprocFile */
+[data-theme="dark"] .codehilite .c1 { color: #959077 } /* Comment.Single */
+[data-theme="dark"] .codehilite .cs { color: #959077 } /* Comment.Special */
+[data-theme="dark"] .codehilite .gd { color: #FF4689 } /* Generic.Deleted */
+[data-theme="dark"] .codehilite .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+[data-theme="dark"] .codehilite .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="dark"] .codehilite .gr { color: #FF4689 } /* Generic.Error */
+[data-theme="dark"] .codehilite .gh { color: #F8F8F2 } /* Generic.Heading */
+[data-theme="dark"] .codehilite .gi { color: #A6E22E } /* Generic.Inserted */
+[data-theme="dark"] .codehilite .go { color: #66D9EF } /* Generic.Output */
+[data-theme="dark"] .codehilite .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+[data-theme="dark"] .codehilite .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+[data-theme="dark"] .codehilite .gu { color: #959077 } /* Generic.Subheading */
+[data-theme="dark"] .codehilite .gt { color: #66D9EF } /* Generic.Traceback */
+[data-theme="dark"] .codehilite .kc { color: #66D9EF } /* Keyword.Constant */
+[data-theme="dark"] .codehilite .kd { color: #66D9EF } /* Keyword.Declaration */
+[data-theme="dark"] .codehilite .kn { color: #FF4689 } /* Keyword.Namespace */
+[data-theme="dark"] .codehilite .kp { color: #66D9EF } /* Keyword.Pseudo */
+[data-theme="dark"] .codehilite .kr { color: #66D9EF } /* Keyword.Reserved */
+[data-theme="dark"] .codehilite .kt { color: #66D9EF } /* Keyword.Type */
+[data-theme="dark"] .codehilite .ld { color: #E6DB74 } /* Literal.Date */
+[data-theme="dark"] .codehilite .m { color: #AE81FF } /* Literal.Number */
+[data-theme="dark"] .codehilite .s { color: #E6DB74 } /* Literal.String */
+[data-theme="dark"] .codehilite .na { color: #A6E22E } /* Name.Attribute */
+[data-theme="dark"] .codehilite .nb { color: #A6E22E } /* Name.Builtin */
+[data-theme="dark"] .codehilite .nc { color: #A6E22E } /* Name.Class */
+[data-theme="dark"] .codehilite .no { color: #66D9EF } /* Name.Constant */
+[data-theme="dark"] .codehilite .nd { color: #A6E22E } /* Name.Decorator */
+[data-theme="dark"] .codehilite .ni { color: #F8F8F2 } /* Name.Entity */
+[data-theme="dark"] .codehilite .ne { color: #A6E22E } /* Name.Exception */
+[data-theme="dark"] .codehilite .nf { color: #A6E22E } /* Name.Function */
+[data-theme="dark"] .codehilite .nl { color: #F8F8F2 } /* Name.Label */
+[data-theme="dark"] .codehilite .nn { color: #F8F8F2 } /* Name.Namespace */
+[data-theme="dark"] .codehilite .nx { color: #A6E22E } /* Name.Other */
+[data-theme="dark"] .codehilite .py { color: #F8F8F2 } /* Name.Property */
+[data-theme="dark"] .codehilite .nt { color: #FF4689 } /* Name.Tag */
+[data-theme="dark"] .codehilite .nv { color: #F8F8F2 } /* Name.Variable */
+[data-theme="dark"] .codehilite .ow { color: #FF4689 } /* Operator.Word */
+[data-theme="dark"] .codehilite .pm { color: #F8F8F2 } /* Punctuation.Marker */
+[data-theme="dark"] .codehilite .w { color: #F8F8F2 } /* Text.Whitespace */
+[data-theme="dark"] .codehilite .mb { color: #AE81FF } /* Literal.Number.Bin */
+[data-theme="dark"] .codehilite .mf { color: #AE81FF } /* Literal.Number.Float */
+[data-theme="dark"] .codehilite .mh { color: #AE81FF } /* Literal.Number.Hex */
+[data-theme="dark"] .codehilite .mi { color: #AE81FF } /* Literal.Number.Integer */
+[data-theme="dark"] .codehilite .mo { color: #AE81FF } /* Literal.Number.Oct */
+[data-theme="dark"] .codehilite .sa { color: #E6DB74 } /* Literal.String.Affix */
+[data-theme="dark"] .codehilite .sb { color: #E6DB74 } /* Literal.String.Backtick */
+[data-theme="dark"] .codehilite .sc { color: #E6DB74 } /* Literal.String.Char */
+[data-theme="dark"] .codehilite .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+[data-theme="dark"] .codehilite .sd { color: #E6DB74 } /* Literal.String.Doc */
+[data-theme="dark"] .codehilite .s2 { color: #E6DB74 } /* Literal.String.Double */
+[data-theme="dark"] .codehilite .se { color: #AE81FF } /* Literal.String.Escape */
+[data-theme="dark"] .codehilite .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+[data-theme="dark"] .codehilite .si { color: #E6DB74 } /* Literal.String.Interpol */
+[data-theme="dark"] .codehilite .sx { color: #E6DB74 } /* Literal.String.Other */
+[data-theme="dark"] .codehilite .sr { color: #E6DB74 } /* Literal.String.Regex */
+[data-theme="dark"] .codehilite .s1 { color: #E6DB74 } /* Literal.String.Single */
+[data-theme="dark"] .codehilite .ss { color: #E6DB74 } /* Literal.String.Symbol */
+[data-theme="dark"] .codehilite .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+[data-theme="dark"] .codehilite .fm { color: #A6E22E } /* Name.Function.Magic */
+[data-theme="dark"] .codehilite .vc { color: #F8F8F2 } /* Name.Variable.Class */
+[data-theme="dark"] .codehilite .vg { color: #F8F8F2 } /* Name.Variable.Global */
+[data-theme="dark"] .codehilite .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+[data-theme="dark"] .codehilite .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+[data-theme="dark"] .codehilite .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="light"] .codehilite .hll { background-color: #ffffcc }
+[data-theme="light"] .codehilite { background: #f0f0f0; }
+[data-theme="light"] .codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+[data-theme="light"] .codehilite .err { border: 1px solid #F00 } /* Error */
+[data-theme="light"] .codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+[data-theme="light"] .codehilite .o { color: #666 } /* Operator */
+[data-theme="light"] .codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+[data-theme="light"] .codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+[data-theme="light"] .codehilite .cp { color: #007020 } /* Comment.Preproc */
+[data-theme="light"] .codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+[data-theme="light"] .codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+[data-theme="light"] .codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+[data-theme="light"] .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+[data-theme="light"] .codehilite .ge { font-style: italic } /* Generic.Emph */
+[data-theme="light"] .codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="light"] .codehilite .gr { color: #F00 } /* Generic.Error */
+[data-theme="light"] .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+[data-theme="light"] .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+[data-theme="light"] .codehilite .go { color: #888 } /* Generic.Output */
+[data-theme="light"] .codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+[data-theme="light"] .codehilite .gs { font-weight: bold } /* Generic.Strong */
+[data-theme="light"] .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+[data-theme="light"] .codehilite .gt { color: #04D } /* Generic.Traceback */
+[data-theme="light"] .codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+[data-theme="light"] .codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+[data-theme="light"] .codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+[data-theme="light"] .codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+[data-theme="light"] .codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+[data-theme="light"] .codehilite .kt { color: #902000 } /* Keyword.Type */
+[data-theme="light"] .codehilite .m { color: #40A070 } /* Literal.Number */
+[data-theme="light"] .codehilite .s { color: #4070A0 } /* Literal.String */
+[data-theme="light"] .codehilite .na { color: #4070A0 } /* Name.Attribute */
+[data-theme="light"] .codehilite .nb { color: #007020 } /* Name.Builtin */
+[data-theme="light"] .codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+[data-theme="light"] .codehilite .no { color: #60ADD5 } /* Name.Constant */
+[data-theme="light"] .codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+[data-theme="light"] .codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+[data-theme="light"] .codehilite .ne { color: #007020 } /* Name.Exception */
+[data-theme="light"] .codehilite .nf { color: #06287E } /* Name.Function */
+[data-theme="light"] .codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+[data-theme="light"] .codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+[data-theme="light"] .codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+[data-theme="light"] .codehilite .nv { color: #BB60D5 } /* Name.Variable */
+[data-theme="light"] .codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+[data-theme="light"] .codehilite .w { color: #BBB } /* Text.Whitespace */
+[data-theme="light"] .codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+[data-theme="light"] .codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+[data-theme="light"] .codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+[data-theme="light"] .codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+[data-theme="light"] .codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+[data-theme="light"] .codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+[data-theme="light"] .codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+[data-theme="light"] .codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+[data-theme="light"] .codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+[data-theme="light"] .codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+[data-theme="light"] .codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+[data-theme="light"] .codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+[data-theme="light"] .codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+[data-theme="light"] .codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+[data-theme="light"] .codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+[data-theme="light"] .codehilite .sr { color: #235388 } /* Literal.String.Regex */
+[data-theme="light"] .codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+[data-theme="light"] .codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+[data-theme="light"] .codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+[data-theme="light"] .codehilite .fm { color: #06287E } /* Name.Function.Magic */
+[data-theme="light"] .codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+[data-theme="light"] .codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+[data-theme="light"] .codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+[data-theme="light"] .codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+[data-theme="light"] .codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+[data-theme="dark"] .codehilite, [data-theme="dark"] .codehilite pre{background:transparent;}
+</style>
+</head>
+<body>
+<button id="themeBtn" title="切换深色 / 浅色">🌙</button>
+<div class="layout">
+<nav><div class="brand">C++ 入门课程</div>
+<a href="../../README.html">课程说明</a>
+<div class="group">附录</div>
+<a href="../../附录/术语表.html">术语表</a>
+<a href="../../附录/零基础起飞.html">零基础起飞</a>
+<div class="group">讲义</div>
+<a href="../../讲义/第01章-预备知识.html">第01章-预备知识</a>
+<a href="../../讲义/第02章-开始学习C++.html">第02章-开始学习C++</a>
+<a href="../../讲义/第03章-处理数据.html">第03章-处理数据</a>
+<a href="../../讲义/第04章A-数组与字符串.html">第04章A-数组与字符串</a>
+<a href="../../讲义/第04章B-结构共用体枚举.html">第04章B-结构共用体枚举</a>
+<a href="../../讲义/第04章C-指针与自由存储空间.html">第04章C-指针与自由存储空间</a>
+<a href="../../讲义/第04章D-指针算术与数组替代品.html">第04章D-指针算术与数组替代品</a>
+<a href="../../讲义/第05章-循环和关系表达式.html">第05章-循环和关系表达式</a>
+<a href="../../讲义/第06章-分支语句和逻辑运算符.html">第06章-分支语句和逻辑运算符</a>
+<a href="../../讲义/第07章A-函数基础与数组参数.html">第07章A-函数基础与数组参数</a>
+<a href="../../讲义/第07章B-结构字符串递归与函数指针.html">第07章B-结构字符串递归与函数指针</a>
+<div class="group">练习</div>
+<a href="../../练习/第01章-练习.html">第01章-练习</a>
+<a href="../../练习/第02章-练习.html">第02章-练习</a>
+<a href="../../练习/第03章-练习.html">第03章-练习</a>
+<a href="../../练习/第04章A-练习.html">第04章A-练习</a>
+<a href="../../练习/第04章B-练习.html">第04章B-练习</a>
+<a href="../../练习/第04章C-练习.html">第04章C-练习</a>
+<a href="../../练习/第04章D-练习.html">第04章D-练习</a>
+<a href="../../练习/第05章-练习.html">第05章-练习</a>
+<a href="../../练习/第06章-练习.html">第06章-练习</a>
+<a href="../../练习/第07章A-练习.html">第07章A-练习</a>
+<a href="../../练习/第07章B-练习.html">第07章B-练习</a>
+<div class="group">参考答案</div>
+<a href="../../参考答案/第01章/复习题答案.html">第01章 · 复习题答案</a>
+<a href="../../参考答案/第01章/错误分类实验-答案.html">第01章 · 错误分类实验-答案</a>
+<a href="../../参考答案/第01章/摸底测试/说明.html">第01章/摸底测试 · 说明</a>
+<a href="../../参考答案/第02章/复习题答案.html">第02章 · 复习题答案</a>
+<a href="../../参考答案/第03章/复习题答案.html">第03章 · 复习题答案</a>
+<a href="../../参考答案/第04章A/复习题答案.html">第04章A · 复习题答案</a>
+<a href="../../参考答案/第04章B/复习题答案.html">第04章B · 复习题答案</a>
+<a href="../../参考答案/第04章C/复习题答案.html">第04章C · 复习题答案</a>
+<a href="../../参考答案/第04章D/复习题答案.html">第04章D · 复习题答案</a>
+<a href="../../参考答案/第05章/复习题答案.html">第05章 · 复习题答案</a>
+<a href="../../参考答案/第06章/复习题答案.html">第06章 · 复习题答案</a>
+<a href="../../参考答案/第07章A/复习题答案.html" class="active">第07章A · 复习题答案</a>
+<a href="../../参考答案/第07章B/复习题答案.html">第07章B · 复习题答案</a>
+</nav>
+<main><article>
+<details class="toc-box"><summary>本页目录（33 项，点击展开）</summary><div class="toc">
+<ul>
+<li><a href="#1-口头题">1. 口头题</a><ul>
+<li><a href="#q1-原型调用定义">Q1 原型、调用、定义</a></li>
+<li><a href="#q2-返回值与写回是两种操作">Q2 返回值与写回是两种操作</a></li>
+<li><a href="#q3-地址值复制目标对象可以相同">Q3 地址值复制，目标对象可以相同</a></li>
+<li><a href="#q4-count-才是已输入项数">Q4 count 才是已输入项数</a></li>
+<li><a href="#q5-范围与字符串">Q5 范围与字符串</a></li>
+</ul>
+</li>
+<li><a href="#2-手走题与找错">2. 手走题与找错</a><ul>
+<li><a href="#t1-参数按位置对应">T1 参数按位置对应</a></li>
+<li><a href="#t2-整数运算已先发生">T2 整数运算已先发生</a></li>
+<li><a href="#t3-第三次访问已经越界">T3 第三次访问已经越界</a></li>
+<li><a href="#t4-局部数组不会因返回地址而延寿">T4 局部数组不会因返回地址而延寿</a></li>
+</ul>
+</li>
+<li><a href="#3-a调和平均数">3. A：调和平均数</a><ul>
+<li><a href="#计算为什么单独做">计算为什么单独做？</a></li>
+<li><a href="#一轮执行过程">一轮执行过程</a></li>
+</ul>
+</li>
+<li><a href="#4-b成绩数组">4. B：成绩数组</a><ul>
+<li><a href="#fill-为什么返回-count">fill 为什么返回 count？</a></li>
+<li><a href="#空输入怎么处理">空输入怎么处理？</a></li>
+<li><a href="#错误与正常停止">错误与正常停止</a></li>
+</ul>
+</li>
+<li><a href="#5-c两次反转">5. C：两次反转</a><ul>
+<li><a href="#一次反转只交换一半的位置">一次反转只交换一半的位置</a></li>
+<li><a href="#中间部分仍然用同一个函数">中间部分仍然用同一个函数</a></li>
+<li><a href="#边界">边界</a></li>
+</ul>
+</li>
+<li><a href="#6-d指针区间">6. D：指针区间</a><ul>
+<li><a href="#返回-current-的含义">返回 current 的含义</a></li>
+<li><a href="#空范围与错误不同">空范围与错误不同</a></li>
+</ul>
+</li>
+<li><a href="#7-e二维数组">7. E：二维数组</a><ul>
+<li><a href="#列数决定如何找下一行">列数决定如何找下一行</a></li>
+<li><a href="#const-可以使用">const 可以使用</a></li>
+</ul>
+</li>
+<li><a href="#8-f字符串替换">8. F：字符串替换</a><ul>
+<li><a href="#先找到有效字符的结束位置">先找到有效字符的结束位置</a></li>
+<li><a href="#为什么-a-换成-a-仍计-3">为什么 a 换成 a 仍计 3？</a></li>
+<li><a href="#输入容量">输入容量</a></li>
+</ul>
+</li>
+<li><a href="#9-如何判断自己的程序完成了">9. 如何判断自己的程序完成了？</a></li>
+</ul>
+</div>
+</details><h1 id="第-7-章-a-参考答案函数基础与数组参数">第 7 章 A 参考答案：函数基础与数组参数</h1>
+<blockquote>
+<p>配合 <a href="../../练习/第07章A-练习.html">练习</a> 使用。这里解释本课整理的问题，不替代自备教材中的完整复习题与编程题。
+先做自己的版本，再比较“接口、处理顺序、边界”，不要求变量名和参考程序相同。</p>
+</blockquote>
+<h2 id="1-口头题">1. 口头题</h2>
+<h3 id="q1-原型调用定义">Q1 原型、调用、定义</h3>
+<p>第一行是原型，告诉编译器函数名字、返回类型与参数类型；第二行含调用，传入 3.5，将返回值保存到 result；第三行是定义，提供函数体。</p>
+<p>原型是一条声明，用分号结束；普通函数定义由函数体结束，不需要在结束花括号后添加这个声明分号。
+调用之前若已有完整定义，该定义也完成了声明作用，不必重复写独立原型。</p>
+<p>本课统一使用“文件前部原型、main、后部定义”，是为了容易读，不是说原型只能写在那里。块内函数声明可以合法，普通函数定义则不能嵌套在 main 内。</p>
+<h3 id="q2-返回值与写回是两种操作">Q2 返回值与写回是两种操作</h3>
+<p>输出仍是 8。next 得到 number 的值，在自己的 value 上计算 9，再把 9 交回；调用者没有使用结果。</p>
+<div class="codehilite"><pre><span></span><code><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next</span><span class="p">(</span><span class="n">number</span><span class="p">);</span>
+</code></pre></div>
+
+<p>这次是 main 的赋值把返回结果写进 number。不能只靠“函数运行过了”判断调用者变量是否改变。</p>
+<h3 id="q3-地址值复制目标对象可以相同">Q3 地址值复制，目标对象可以相同</h3>
+<p><code>++data</code> 改的是形参指针自己的地址值，不改变调用者保存起点的指针变量。
+<code>data[0]=99</code> 沿形参指针找到元素并写入；地址有效、目标可写时，会改到原数组。</p>
+<p>所以“形参按值传递”并不等于“函数无法改变任何外部数据”。看它是否沿地址写目标。</p>
+<h3 id="q4-count-才是已输入项数">Q4 count 才是已输入项数</h3>
+<p>show、mean 使用 3。容量 10 表示最多可写多少，不表示已经有多少有效成绩。
+零初始化是让剩余位置有确定的初值；它没有制造七份用户输入。</p>
+<p>数组形参的 <code>[10]</code> 不保证容量，形参仍调整为指针。调用者和被调用函数必须遵守长度约定。</p>
+<h3 id="q5-范围与字符串">Q5 范围与字符串</h3>
+<ul>
+<li><code>[values,values+4)</code> 有 4 项，end 是末尾后一个位置，不允许读取 <code>*end</code>。</li>
+<li>起点等于终点是空范围，循环零次。</li>
+<li><code>const int*</code> 不允许通过 p 写元素，可以改变 p 指向的位置，例如 ++p。</li>
+<li>空字符串是有效的字符序列，第一个字符就为零；nullptr 没有指向可读取的字符序列。</li>
+<li>n 个可见字符加一个终止零字符，需要 n+1 项。若约定函数返回由 new[] 创建的字符数组，调用者使用结束后 delete[]。</li>
+</ul>
+<p>返回借用的原数组地址则不能因此 delete[]，必须区分来源与约定。</p>
+<hr />
+<h2 id="2-手走题与找错">2. 手走题与找错</h2>
+<h3 id="t1-参数按位置对应">T1 参数按位置对应</h3>
+<p>subtract(9,2) 是 7；subtract(2,9) 是 -7。
+第一个实参给 first，第二个给 second。参数名只在函数内部起作用，不会自动在 main 中搜索同名变量。</p>
+<h3 id="t2-整数运算已先发生">T2 整数运算已先发生</h3>
+<p>(3+4)/2 使用整数操作数，先得到整数 3，再转换为 double 的 3.0。
+可写 <code>(first+second)/2.0</code>，这个小例子得到 3.5。关键是让除法发生时已有浮点操作数，不是只改返回类型。</p>
+<h3 id="t3-第三次访问已经越界">T3 第三次访问已经越界</h3>
+<p>起点是 values+2，访问的原数组下标依次是 2、3、4。数组有效下标只有 0–3，下标 4 越界。
+合法调用是起点 values+2、长度 2。不要把原数组总容量 4 当作任何子范围都能使用的长度。</p>
+<h3 id="t4-局部数组不会因返回地址而延寿">T4 局部数组不会因返回地址而延寿</h3>
+<p>text 在函数结束后不再存活，返回它的地址是悬空地址。
+本章方案之一是 new char[...] 创建结果并补零，返回后由调用者 delete[]；另一种在 第 7 章 B 学到的方案是返回 string 值，由对象管理字符存储。</p>
+<p>不能以“这次恰好显示 hello”证明错误版本安全。</p>
+<hr />
+<h2 id="3-a调和平均数">3. A：调和平均数</h2>
+<p>完整程序：<a href="代码/ex1.cpp">代码/ex1.cpp</a>。</p>
+<h3 id="计算为什么单独做">计算为什么单独做？</h3>
+<p>harmonic_mean 只负责公式：</p>
+<div class="codehilite"><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">second</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">second</span><span class="p">);</span>
+</code></pre></div>
+
+<p>main 负责接题、结束、报错和显示。以后换成文件输入时，公式函数不需要跟着改。</p>
+<h3 id="一轮执行过程">一轮执行过程</h3>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>输入 2、6 时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>读 first</td>
+<td>2，成功</td>
+</tr>
+<tr>
+<td>读 second</td>
+<td>6，成功</td>
+</tr>
+<tr>
+<td>检查结束</td>
+<td>两者都不是 0</td>
+</tr>
+<tr>
+<td>检查范围</td>
+<td>正数、有限、不超上限</td>
+</tr>
+<tr>
+<td>调函数</td>
+<td>24/8=3</td>
+</tr>
+<tr>
+<td>输出</td>
+<td>mean=3</td>
+</tr>
+</tbody>
+</table>
+<p>这一轮结束后，程序回到下一次读取。首项非数字是结束协议；第二项缺失是半对输入，程序明确报错。</p>
+<p>范围限制使演示公式不必处理任意巨大值。零标记在有效范围检查前处理，所以 <code>0 8</code> 结束，不误报“正数范围错误”。</p>
+<p>常见错误：写整数参数导致精度损失；不检查 second 是否读成功；调用后没使用返回值；在退出条件前先除法。</p>
+<hr />
+<h2 id="4-b成绩数组">4. B：成绩数组</h2>
+<p>完整程序：<a href="代码/ex2.cpp">代码/ex2.cpp</a>。</p>
+<h3 id="fill-为什么返回-count">fill 为什么返回 count？</h3>
+<p>main 只知道数组容量 10，不知道输入成功多少项。fill 在每次合法存入后增加 count，再把 count 返回。
+main 保存这个结果，后面两个函数才能只处理有效数据。</p>
+<div class="codehilite"><pre><span></span><code>容量10，输入10 20 30 x
+写入下标0、1、2
+遇到x停止 → 返回3
+show处理3项 → mean累加60，除以3 → 20
+</code></pre></div>
+
+<p>数组以地址交给 fill，因此写入可以留在 main 的数组中。count 自身是局部整数，需要返回交给调用者，不能假设 main 自动得到它。</p>
+<h3 id="空输入怎么处理">空输入怎么处理？</h3>
+<p>count=0 时仍可调用 show，它的循环不进入。但 mean 要求 count&gt;0。
+main 在调用 mean 前检查，输出 No scores，避免 0 作除数。
+输入一个 0 时 count=1，平均值为 0，是一份有效成绩。</p>
+<h3 id="错误与正常停止">错误与正常停止</h3>
+<p>非数字或 EOF 是正常停止，返回当前 count；读到数字却超范围，返回 -1。
+main 必须在把 count 传给成功流程之前识别 -1，不应对失败输入输出平均值。</p>
+<p>常见错误：遍历 capacity 导致初始零参加平均；mean 用 int 累加小数；把 0 当成结束标记；写完第 11 项才检查容量。</p>
+<hr />
+<h2 id="5-c两次反转">5. C：两次反转</h2>
+<p>完整程序：<a href="代码/ex3.cpp">代码/ex3.cpp</a>。</p>
+<h3 id="一次反转只交换一半的位置">一次反转只交换一半的位置</h3>
+<p>left 从 0 到 count/2 之前，right=count-1-left。
+count=5 时交换 (0,4)、(1,3)，下标 2 不变。</p>
+<p>temporary 保存左边旧值，否则先把右值写到左边后，就会丢掉需要放到右边的旧左值。</p>
+<h3 id="中间部分仍然用同一个函数">中间部分仍然用同一个函数</h3>
+<p>第一次是 reverse_values(values,count)。
+第二次在 count&gt;2 时调用 reverse_values(values+1,count-2)。</p>
+<div class="codehilite"><pre><span></span><code>1 2 3 4 5
+5 4 3 2 1       全部反转
+5 2 3 4 1       只反转中间三项
+</code></pre></div>
+
+<p>第二次传入的起点不同，所以函数内下标 0 对应原数组下标 1。
+无需另写“反转中间”函数，接口的起点与长度已经描述了需要处理的子范围。</p>
+<h3 id="边界">边界</h3>
+<p>count 为 0、1 时没有交换；为 2 时只反转全部，随后中间操作跳过。
+先判断 count&gt;2 再构造中间调用，避免为不存在的中间范围计算负长度。</p>
+<p>常见错误：遍历所有 left，结果又反回来；right 写成 count-left；中间长度误用 count-1；尝试返回整个原生数组。</p>
+<hr />
+<h2 id="6-d指针区间">6. D：指针区间</h2>
+<p>完整程序：<a href="代码/ex4.cpp">代码/ex4.cpp</a>。</p>
+<h3 id="返回-current-的含义">返回 current 的含义</h3>
+<p>每次写完 <code>*current</code> 就 ++current，所以三项存完时 current 指向下标 3。
+这个位置是下一次可填的位置，也是已填半开范围的终点。</p>
+<div class="codehilite"><pre><span></span><code>[begin,current) = 三项
+current-begin = 3
+最后一个已填元素 = current-1（仅在非空时才讨论）
+</code></pre></div>
+
+<p>返回 current-1 会让后面按半开范围遍历时遗漏最后一项，空输入时还会构造错误位置。</p>
+<h3 id="空范围与错误不同">空范围与错误不同</h3>
+<p>没有数据时 current==begin，这是一个有效空范围；sum 初始为 0，循环零次，返回 0。
+范围错误返回 nullptr。main 先判 nullptr，因此不对错误返回做指针减法或遍历。</p>
+<p>指针差只适用于这里同一数组内的有效位置。这个函数也不分配空间，不需要 delete 返回值。</p>
+<p>常见错误：show 使用 &lt;=end，读到终点；把空范围当作失败；在检查 nullptr 前输出 used_end-begin；把返回指针理解成新的独立数组。</p>
+<hr />
+<h2 id="7-e二维数组">7. E：二维数组</h2>
+<p>完整程序：<a href="代码/ex5.cpp">代码/ex5.cpp</a>。</p>
+<h3 id="列数决定如何找下一行">列数决定如何找下一行</h3>
+<p><code>const int values[][3]</code> 调整为指向三项 int 数组的指针。
+values[row][column] 先定位整行，再定位该行的一项。原生二维数组不是 <code>int**</code>。</p>
+<p>sum_matrix 的两个循环覆盖每行每列；sum_column 只改变 row，column 固定。</p>
+<div class="codehilite"><pre><span></span><code>1 2 3
+4 5 6
+总和：(1+2+3)+(4+5+6)=21
+各列：5、7、9
+</code></pre></div>
+
+<p>输出使用 long long 累加。每项范围与固定六项也足以约束本题结果，不宣称支持无限大小矩阵。</p>
+<h3 id="const-可以使用">const 可以使用</h3>
+<p>课程使用 C++17，const int[][3] 的只读接口经过编译验证。
+教材相关说明沿用了“指针的指针”解释，容易使人误以为这里不能加 const；实际类型是指向固定宽度行数组的指针。</p>
+<p>常见错误：省略需要的第二维；行列循环写反；列循环从 1 开始遗漏第 0 列；少读一项仍开始统计。</p>
+<hr />
+<h2 id="8-f字符串替换">8. F：字符串替换</h2>
+<p>完整程序：<a href="代码/ex6.cpp">代码/ex6.cpp</a>。</p>
+<h3 id="先找到有效字符的结束位置">先找到有效字符的结束位置</h3>
+<p>循环条件是 text[i]!='\0'。遇到结尾零字符就停止，不改它、不计数。
+banana 的下标 1、3、5 都是 a，所以替换后为 bonono，返回 3。</p>
+<p>调用者已握有 text 数组，函数沿地址写入即可；返回值用于提供额外的匹配数量。</p>
+<h3 id="为什么-a-换成-a-仍计-3">为什么 a 换成 a 仍计 3？</h3>
+<p>题目约定统计匹配位置，不是统计最终发生变化的字节数量。每个匹配位置都执行指定替换，aaa 中有三个匹配。
+只要约定一致，这种情况不会让函数的计数含义含糊。</p>
+<h3 id="输入容量">输入容量</h3>
+<p>char[201] 可存最多 200 个文本字节以及结尾零字符。
+cin.getline 的状态检查识别超长或读取失败；后面两个字符也必须读成功。
+空行是成功读入的空字符串，与 EOF 前完全没有输入一行不同。</p>
+<p>常见错误：用字符串字面量作为可写数组；用 capacity 遍历到尾部未使用位置；把终止零字符覆盖；忘记 count 返回值；把字节上限说成汉字数上限。</p>
+<hr />
+<h2 id="9-如何判断自己的程序完成了">9. 如何判断自己的程序完成了？</h2>
+<p>不要求输出排版逐字一致，但结果、接口意图和停止策略要与练习约定相符。</p>
+<p>检查正常值、空输入、容量上限、范围错误。特别确认：没有有效数据时不除以零；子数组调用没有把总容量当成剩余长度；返回地址的对象仍存活。</p>
+<p>参考代码中的数值输入用格式化提取，不是严格的逐字校验器。按练习约定输入正常数字，学习重点是函数的数据流。</p>
+<p>编译运行示例：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">-Wall</span> <span class="n">-Wextra</span> <span class="n">-pedantic</span> <span class="n">参考答案</span><span class="p">/</span><span class="n">第07章A</span><span class="p">/</span><span class="n">代码</span><span class="p">/</span><span class="n">ex3</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">ex3</span><span class="p">.</span><span class="n">exe</span>
+<span class="p">.\</span><span class="n">ex3</span><span class="p">.</span><span class="n">exe</span>
+</code></pre></div>
+<div class="pager"><a class="prev" href="../../参考答案/第06章/复习题答案.html">← 上一页：复习题答案</a><a class="next" href="../../参考答案/第07章B/复习题答案.html">下一页：复习题答案 →</a></div>
+<footer class="footer">
+<span><a href="../../index.html">← 返回总目录</a></span>
+<span>课程作者：<a href="https://lksme.dpdns.org/" rel="author">凉开水</a></span>
+</footer>
+</article></main>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('themeBtn');
+  function sync(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    btn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    btn.title = (t === 'dark') ? '切换到浅色' : '切换到深色';
+  }
+  btn.addEventListener('click', function(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    t = (t === 'dark') ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    try{ localStorage.setItem('cppcourse-theme', t); }catch(e){}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>

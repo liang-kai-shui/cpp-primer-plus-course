@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="凉开水">
+<title>第07章A-函数基础与数组参数</title>
+<script>
+/* 在页面渲染前先定好主题，避免"白屏闪一下" */
+(function(){
+  try{
+    var t = localStorage.getItem('cppcourse-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<style>
+/* ============ 颜色变量：默认深色 ============ */
+:root, [data-theme="dark"]{
+  --bg:#14171a; --bg2:#1b1f24; --bg3:#232a31;
+  --fg:#dfe3e8; --fg2:#b6bec8; --muted:#8b95a1;
+  --line:#2b3138; --accent:#58a6ff;
+  --code-bg:#0f1216; --quote-bg:#1b2027;
+}
+[data-theme="light"]{
+  --bg:#fbfbfa; --bg2:#ffffff; --bg3:#f1f5f9;
+  --fg:#22272e; --fg2:#3b434d; --muted:#6b7280;
+  --line:#e5e7eb; --accent:#1f6feb;
+  --code-bg:#f3f4f6; --quote-bg:#f8fafc;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",Roboto,sans-serif;
+  font-size:16.5px; line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ============ 主题切换按钮 ============ */
+#themeBtn{
+  position:fixed; top:14px; right:18px; z-index:50;
+  width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--line); background:var(--bg2); color:var(--fg);
+  font-size:19px; line-height:1; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, background .15s ease;
+}
+#themeBtn:hover{transform:scale(1.08); background:var(--bg3);}
+
+.layout{display:flex; min-height:100vh;}
+
+/* ============ 侧边导航 ============ */
+nav{
+  width:288px; flex:0 0 288px; background:var(--bg2);
+  border-right:1px solid var(--line); padding:22px 0 80px;
+  overflow-y:auto; position:sticky; top:0; height:100vh;
+}
+nav .brand{
+  padding:0 20px 15px; font-weight:700; font-size:15px;
+  border-bottom:1px solid var(--line); margin-bottom:12px; color:var(--fg);
+}
+nav .group{
+  padding:16px 20px 6px; font-size:11.5px; color:var(--muted);
+  letter-spacing:.1em; font-weight:600;
+}
+nav a{display:block; padding:6px 20px; font-size:14px; color:var(--fg2);
+  border-left:3px solid transparent;}
+nav a:hover{background:var(--bg3); text-decoration:none; color:var(--fg);}
+nav a.active{color:var(--accent); font-weight:600;
+  border-left-color:var(--accent); background:var(--bg3);}
+
+main{flex:1; min-width:0; padding:46px 60px 120px; max-width:1120px;}
+article{
+  background:var(--bg2); border:1px solid var(--line);
+  border-radius:12px; padding:40px 48px;
+  box-shadow:0 1px 3px rgba(0,0,0,.10);
+}
+
+/* ============ 正文排版 ============ */
+h1,h2,h3,h4{line-height:1.4; margin:1.7em 0 .7em; font-weight:700; scroll-margin-top:20px;}
+h1{font-size:1.9em; margin-top:0; padding-bottom:.4em; border-bottom:2px solid var(--line);}
+h2{font-size:1.42em; padding-bottom:.28em; border-bottom:1px solid var(--line);}
+h3{font-size:1.16em;}
+h4{font-size:1.03em; color:var(--fg2);}
+p{margin:.8em 0;}
+ul,ol{padding-left:1.65em;}
+li{margin:.35em 0;}
+strong{font-weight:700;}
+hr{border:0; border-top:1px solid var(--line); margin:2.2em 0;}
+img{max-width:100%;}
+
+blockquote{
+  margin:1.1em 0; padding:.85em 1.15em; background:var(--quote-bg);
+  border-left:4px solid var(--accent); color:var(--fg2);
+  border-radius:0 8px 8px 0;
+}
+blockquote p{margin:.4em 0;}
+blockquote strong{color:var(--fg);}
+
+/* ============ 表格 ============ */
+table{
+  border-collapse:collapse; width:100%; margin:1.2em 0;
+  font-size:14.8px; display:block; overflow-x:auto;
+}
+th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top;}
+th{background:var(--bg3); font-weight:600; white-space:nowrap;}
+tbody tr:nth-child(even) td{background:rgba(127,127,127,.05);}
+
+/* ============ 代码 ============ */
+code{
+  font-family:"Cascadia Code",Consolas,"SF Mono",Monaco,"Courier New","Microsoft YaHei",monospace;
+  font-size:.885em; background:var(--code-bg); padding:.16em .42em;
+  border-radius:4px; border:1px solid var(--line);
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--line); border-radius:9px;
+  padding:15px 17px; overflow-x:auto; margin:1.1em 0; line-height:1.6;
+}
+pre code{background:none; padding:0; border:0; font-size:13.8px;}
+.codehilite{background:var(--code-bg); border:1px solid var(--line);
+  border-radius:9px; margin:1.1em 0;}
+.codehilite pre{border:0; margin:0; background:none;}
+
+/* ============ 本页目录 / 卡片 / 翻页 ============ */
+.toc-box{
+  background:var(--quote-bg); border:1px solid var(--line);
+  border-radius:9px; padding:13px 22px; margin:1.3em 0;
+}
+.toc-box strong{display:block; margin-bottom:5px; color:var(--muted);
+  font-size:13px; letter-spacing:.05em;}
+.toc-box ul{margin:.35em 0; padding-left:1.3em;}
+.toc-box a{color:var(--fg2);}
+.toc-box a:hover{color:var(--accent);}
+
+/* ============ 讲义页顶部的"卡住了去哪查"横幅 ============ */
+.hintbar{
+  background:var(--bg3); border:1px solid var(--line); border-radius:8px;
+  padding:9px 15px; margin:0 0 1.5em; font-size:13.5px; color:var(--muted);
+}
+.hintbar a{font-weight:600;}
+
+/* 超长的"本页目录"（比如术语表有 100+ 词条）折叠起来，别把正文挤下去 */
+details.toc-box summary{
+  cursor:pointer; color:var(--muted); font-size:13.5px;
+  font-weight:600; letter-spacing:.03em; user-select:none;
+}
+details.toc-box summary:hover{color:var(--accent);}
+details.toc-box[open] summary{margin-bottom:.5em;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px; margin:24px 0;}
+.card{background:var(--bg2); border:1px solid var(--line); border-radius:11px;
+  padding:19px 21px; transition:transform .15s ease, border-color .15s ease;}
+.card:hover{transform:translateY(-2px); border-color:var(--accent);}
+.card h3{margin:0 0 8px; font-size:1.06em;}
+.card p{margin:0; color:var(--muted); font-size:14px; line-height:1.65;}
+
+.pager{display:flex; justify-content:space-between; gap:14px; margin-top:34px;
+  padding-top:20px; border-top:1px solid var(--line);}
+.pager a{flex:1; padding:11px 16px; background:var(--bg3); border:1px solid var(--line);
+  border-radius:9px; font-size:14px; color:var(--fg2);}
+.pager a:hover{border-color:var(--accent); color:var(--accent); text-decoration:none;}
+.pager a.next{text-align:right;}
+.pager a.disabled{opacity:.35; pointer-events:none;}
+
+.author-line{color:var(--muted); font-size:14px;}
+.author-line a{font-weight:600;}
+.footer{display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 24px;
+  margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:13.5px;}
+
+/* ============ 移动端 ============ */
+@media (max-width:900px){
+  nav{display:none;}
+  main{padding:18px 12px 60px;}
+  article{padding:22px 17px; border-radius:8px;}
+  #themeBtn{top:10px; right:10px; width:38px; height:38px;}
+}
+
+/* ===== 代码高亮（按主题隔离） ===== */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="dark"] .codehilite .hll { background-color: #49483e }
+[data-theme="dark"] .codehilite { background: #272822; color: #F8F8F2 }
+[data-theme="dark"] .codehilite .c { color: #959077 } /* Comment */
+[data-theme="dark"] .codehilite .err { color: #ED007E; background-color: #1E0010 } /* Error */
+[data-theme="dark"] .codehilite .esc { color: #F8F8F2 } /* Escape */
+[data-theme="dark"] .codehilite .g { color: #F8F8F2 } /* Generic */
+[data-theme="dark"] .codehilite .k { color: #66D9EF } /* Keyword */
+[data-theme="dark"] .codehilite .l { color: #AE81FF } /* Literal */
+[data-theme="dark"] .codehilite .n { color: #F8F8F2 } /* Name */
+[data-theme="dark"] .codehilite .o { color: #FF4689 } /* Operator */
+[data-theme="dark"] .codehilite .x { color: #F8F8F2 } /* Other */
+[data-theme="dark"] .codehilite .p { color: #F8F8F2 } /* Punctuation */
+[data-theme="dark"] .codehilite .ch { color: #959077 } /* Comment.Hashbang */
+[data-theme="dark"] .codehilite .cm { color: #959077 } /* Comment.Multiline */
+[data-theme="dark"] .codehilite .cp { color: #959077 } /* Comment.Preproc */
+[data-theme="dark"] .codehilite .cpf { color: #959077 } /* Comment.PreprocFile */
+[data-theme="dark"] .codehilite .c1 { color: #959077 } /* Comment.Single */
+[data-theme="dark"] .codehilite .cs { color: #959077 } /* Comment.Special */
+[data-theme="dark"] .codehilite .gd { color: #FF4689 } /* Generic.Deleted */
+[data-theme="dark"] .codehilite .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+[data-theme="dark"] .codehilite .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="dark"] .codehilite .gr { color: #FF4689 } /* Generic.Error */
+[data-theme="dark"] .codehilite .gh { color: #F8F8F2 } /* Generic.Heading */
+[data-theme="dark"] .codehilite .gi { color: #A6E22E } /* Generic.Inserted */
+[data-theme="dark"] .codehilite .go { color: #66D9EF } /* Generic.Output */
+[data-theme="dark"] .codehilite .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+[data-theme="dark"] .codehilite .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+[data-theme="dark"] .codehilite .gu { color: #959077 } /* Generic.Subheading */
+[data-theme="dark"] .codehilite .gt { color: #66D9EF } /* Generic.Traceback */
+[data-theme="dark"] .codehilite .kc { color: #66D9EF } /* Keyword.Constant */
+[data-theme="dark"] .codehilite .kd { color: #66D9EF } /* Keyword.Declaration */
+[data-theme="dark"] .codehilite .kn { color: #FF4689 } /* Keyword.Namespace */
+[data-theme="dark"] .codehilite .kp { color: #66D9EF } /* Keyword.Pseudo */
+[data-theme="dark"] .codehilite .kr { color: #66D9EF } /* Keyword.Reserved */
+[data-theme="dark"] .codehilite .kt { color: #66D9EF } /* Keyword.Type */
+[data-theme="dark"] .codehilite .ld { color: #E6DB74 } /* Literal.Date */
+[data-theme="dark"] .codehilite .m { color: #AE81FF } /* Literal.Number */
+[data-theme="dark"] .codehilite .s { color: #E6DB74 } /* Literal.String */
+[data-theme="dark"] .codehilite .na { color: #A6E22E } /* Name.Attribute */
+[data-theme="dark"] .codehilite .nb { color: #A6E22E } /* Name.Builtin */
+[data-theme="dark"] .codehilite .nc { color: #A6E22E } /* Name.Class */
+[data-theme="dark"] .codehilite .no { color: #66D9EF } /* Name.Constant */
+[data-theme="dark"] .codehilite .nd { color: #A6E22E } /* Name.Decorator */
+[data-theme="dark"] .codehilite .ni { color: #F8F8F2 } /* Name.Entity */
+[data-theme="dark"] .codehilite .ne { color: #A6E22E } /* Name.Exception */
+[data-theme="dark"] .codehilite .nf { color: #A6E22E } /* Name.Function */
+[data-theme="dark"] .codehilite .nl { color: #F8F8F2 } /* Name.Label */
+[data-theme="dark"] .codehilite .nn { color: #F8F8F2 } /* Name.Namespace */
+[data-theme="dark"] .codehilite .nx { color: #A6E22E } /* Name.Other */
+[data-theme="dark"] .codehilite .py { color: #F8F8F2 } /* Name.Property */
+[data-theme="dark"] .codehilite .nt { color: #FF4689 } /* Name.Tag */
+[data-theme="dark"] .codehilite .nv { color: #F8F8F2 } /* Name.Variable */
+[data-theme="dark"] .codehilite .ow { color: #FF4689 } /* Operator.Word */
+[data-theme="dark"] .codehilite .pm { color: #F8F8F2 } /* Punctuation.Marker */
+[data-theme="dark"] .codehilite .w { color: #F8F8F2 } /* Text.Whitespace */
+[data-theme="dark"] .codehilite .mb { color: #AE81FF } /* Literal.Number.Bin */
+[data-theme="dark"] .codehilite .mf { color: #AE81FF } /* Literal.Number.Float */
+[data-theme="dark"] .codehilite .mh { color: #AE81FF } /* Literal.Number.Hex */
+[data-theme="dark"] .codehilite .mi { color: #AE81FF } /* Literal.Number.Integer */
+[data-theme="dark"] .codehilite .mo { color: #AE81FF } /* Literal.Number.Oct */
+[data-theme="dark"] .codehilite .sa { color: #E6DB74 } /* Literal.String.Affix */
+[data-theme="dark"] .codehilite .sb { color: #E6DB74 } /* Literal.String.Backtick */
+[data-theme="dark"] .codehilite .sc { color: #E6DB74 } /* Literal.String.Char */
+[data-theme="dark"] .codehilite .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+[data-theme="dark"] .codehilite .sd { color: #E6DB74 } /* Literal.String.Doc */
+[data-theme="dark"] .codehilite .s2 { color: #E6DB74 } /* Literal.String.Double */
+[data-theme="dark"] .codehilite .se { color: #AE81FF } /* Literal.String.Escape */
+[data-theme="dark"] .codehilite .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+[data-theme="dark"] .codehilite .si { color: #E6DB74 } /* Literal.String.Interpol */
+[data-theme="dark"] .codehilite .sx { color: #E6DB74 } /* Literal.String.Other */
+[data-theme="dark"] .codehilite .sr { color: #E6DB74 } /* Literal.String.Regex */
+[data-theme="dark"] .codehilite .s1 { color: #E6DB74 } /* Literal.String.Single */
+[data-theme="dark"] .codehilite .ss { color: #E6DB74 } /* Literal.String.Symbol */
+[data-theme="dark"] .codehilite .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+[data-theme="dark"] .codehilite .fm { color: #A6E22E } /* Name.Function.Magic */
+[data-theme="dark"] .codehilite .vc { color: #F8F8F2 } /* Name.Variable.Class */
+[data-theme="dark"] .codehilite .vg { color: #F8F8F2 } /* Name.Variable.Global */
+[data-theme="dark"] .codehilite .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+[data-theme="dark"] .codehilite .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+[data-theme="dark"] .codehilite .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+[data-theme="light"] .codehilite .hll { background-color: #ffffcc }
+[data-theme="light"] .codehilite { background: #f0f0f0; }
+[data-theme="light"] .codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+[data-theme="light"] .codehilite .err { border: 1px solid #F00 } /* Error */
+[data-theme="light"] .codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+[data-theme="light"] .codehilite .o { color: #666 } /* Operator */
+[data-theme="light"] .codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+[data-theme="light"] .codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+[data-theme="light"] .codehilite .cp { color: #007020 } /* Comment.Preproc */
+[data-theme="light"] .codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+[data-theme="light"] .codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+[data-theme="light"] .codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+[data-theme="light"] .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+[data-theme="light"] .codehilite .ge { font-style: italic } /* Generic.Emph */
+[data-theme="light"] .codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+[data-theme="light"] .codehilite .gr { color: #F00 } /* Generic.Error */
+[data-theme="light"] .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+[data-theme="light"] .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+[data-theme="light"] .codehilite .go { color: #888 } /* Generic.Output */
+[data-theme="light"] .codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+[data-theme="light"] .codehilite .gs { font-weight: bold } /* Generic.Strong */
+[data-theme="light"] .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+[data-theme="light"] .codehilite .gt { color: #04D } /* Generic.Traceback */
+[data-theme="light"] .codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+[data-theme="light"] .codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+[data-theme="light"] .codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+[data-theme="light"] .codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+[data-theme="light"] .codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+[data-theme="light"] .codehilite .kt { color: #902000 } /* Keyword.Type */
+[data-theme="light"] .codehilite .m { color: #40A070 } /* Literal.Number */
+[data-theme="light"] .codehilite .s { color: #4070A0 } /* Literal.String */
+[data-theme="light"] .codehilite .na { color: #4070A0 } /* Name.Attribute */
+[data-theme="light"] .codehilite .nb { color: #007020 } /* Name.Builtin */
+[data-theme="light"] .codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+[data-theme="light"] .codehilite .no { color: #60ADD5 } /* Name.Constant */
+[data-theme="light"] .codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+[data-theme="light"] .codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+[data-theme="light"] .codehilite .ne { color: #007020 } /* Name.Exception */
+[data-theme="light"] .codehilite .nf { color: #06287E } /* Name.Function */
+[data-theme="light"] .codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+[data-theme="light"] .codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+[data-theme="light"] .codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+[data-theme="light"] .codehilite .nv { color: #BB60D5 } /* Name.Variable */
+[data-theme="light"] .codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+[data-theme="light"] .codehilite .w { color: #BBB } /* Text.Whitespace */
+[data-theme="light"] .codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+[data-theme="light"] .codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+[data-theme="light"] .codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+[data-theme="light"] .codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+[data-theme="light"] .codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+[data-theme="light"] .codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+[data-theme="light"] .codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+[data-theme="light"] .codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+[data-theme="light"] .codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+[data-theme="light"] .codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+[data-theme="light"] .codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+[data-theme="light"] .codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+[data-theme="light"] .codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+[data-theme="light"] .codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+[data-theme="light"] .codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+[data-theme="light"] .codehilite .sr { color: #235388 } /* Literal.String.Regex */
+[data-theme="light"] .codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+[data-theme="light"] .codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+[data-theme="light"] .codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+[data-theme="light"] .codehilite .fm { color: #06287E } /* Name.Function.Magic */
+[data-theme="light"] .codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+[data-theme="light"] .codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+[data-theme="light"] .codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+[data-theme="light"] .codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+[data-theme="light"] .codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+[data-theme="dark"] .codehilite, [data-theme="dark"] .codehilite pre{background:transparent;}
+</style>
+</head>
+<body>
+<button id="themeBtn" title="切换深色 / 浅色">🌙</button>
+<div class="layout">
+<nav><div class="brand">C++ 入门课程</div>
+<a href="../README.html">课程说明</a>
+<div class="group">附录</div>
+<a href="../附录/术语表.html">术语表</a>
+<a href="../附录/零基础起飞.html">零基础起飞</a>
+<div class="group">讲义</div>
+<a href="../讲义/第01章-预备知识.html">第01章-预备知识</a>
+<a href="../讲义/第02章-开始学习C++.html">第02章-开始学习C++</a>
+<a href="../讲义/第03章-处理数据.html">第03章-处理数据</a>
+<a href="../讲义/第04章A-数组与字符串.html">第04章A-数组与字符串</a>
+<a href="../讲义/第04章B-结构共用体枚举.html">第04章B-结构共用体枚举</a>
+<a href="../讲义/第04章C-指针与自由存储空间.html">第04章C-指针与自由存储空间</a>
+<a href="../讲义/第04章D-指针算术与数组替代品.html">第04章D-指针算术与数组替代品</a>
+<a href="../讲义/第05章-循环和关系表达式.html">第05章-循环和关系表达式</a>
+<a href="../讲义/第06章-分支语句和逻辑运算符.html">第06章-分支语句和逻辑运算符</a>
+<a href="../讲义/第07章A-函数基础与数组参数.html" class="active">第07章A-函数基础与数组参数</a>
+<a href="../讲义/第07章B-结构字符串递归与函数指针.html">第07章B-结构字符串递归与函数指针</a>
+<div class="group">练习</div>
+<a href="../练习/第01章-练习.html">第01章-练习</a>
+<a href="../练习/第02章-练习.html">第02章-练习</a>
+<a href="../练习/第03章-练习.html">第03章-练习</a>
+<a href="../练习/第04章A-练习.html">第04章A-练习</a>
+<a href="../练习/第04章B-练习.html">第04章B-练习</a>
+<a href="../练习/第04章C-练习.html">第04章C-练习</a>
+<a href="../练习/第04章D-练习.html">第04章D-练习</a>
+<a href="../练习/第05章-练习.html">第05章-练习</a>
+<a href="../练习/第06章-练习.html">第06章-练习</a>
+<a href="../练习/第07章A-练习.html">第07章A-练习</a>
+<a href="../练习/第07章B-练习.html">第07章B-练习</a>
+<div class="group">参考答案</div>
+<a href="../参考答案/第01章/复习题答案.html">第01章 · 复习题答案</a>
+<a href="../参考答案/第01章/错误分类实验-答案.html">第01章 · 错误分类实验-答案</a>
+<a href="../参考答案/第01章/摸底测试/说明.html">第01章/摸底测试 · 说明</a>
+<a href="../参考答案/第02章/复习题答案.html">第02章 · 复习题答案</a>
+<a href="../参考答案/第03章/复习题答案.html">第03章 · 复习题答案</a>
+<a href="../参考答案/第04章A/复习题答案.html">第04章A · 复习题答案</a>
+<a href="../参考答案/第04章B/复习题答案.html">第04章B · 复习题答案</a>
+<a href="../参考答案/第04章C/复习题答案.html">第04章C · 复习题答案</a>
+<a href="../参考答案/第04章D/复习题答案.html">第04章D · 复习题答案</a>
+<a href="../参考答案/第05章/复习题答案.html">第05章 · 复习题答案</a>
+<a href="../参考答案/第06章/复习题答案.html">第06章 · 复习题答案</a>
+<a href="../参考答案/第07章A/复习题答案.html">第07章A · 复习题答案</a>
+<a href="../参考答案/第07章B/复习题答案.html">第07章B · 复习题答案</a>
+</nav>
+<main><article>
+<details class="toc-box"><summary>本页目录（78 项，点击展开）</summary><div class="toc">
+<ul>
+<li><a href="#0-本课怎么学">0. 本课怎么学</a><ul>
+<li><a href="#01-从把代码写出来走到把事情分清楚">0.1 从“把代码写出来”走到“把事情分清楚”</a></li>
+<li><a href="#02-名词先用一句话解释">0.2 名词先用一句话解释</a></li>
+<li><a href="#03-建议分三次学">0.3 建议分三次学</a></li>
+<li><a href="#04-编译与实验方法">0.4 编译与实验方法</a></li>
+</ul>
+</li>
+<li><a href="#1-原型调用定义三个地方各做一件事">1. 原型、调用、定义：三个地方，各做一件事</a><ul>
+<li><a href="#11-先看一个完整程序">1.1 先看一个完整程序</a></li>
+<li><a href="#12-把一行原型拆开">1.2 把一行原型拆开</a></li>
+<li><a href="#13-定义多了什么">1.3 定义多了什么</a></li>
+<li><a href="#14-调用时不再写参数类型">1.4 调用时不再写参数类型</a></li>
+<li><a href="#15-为什么先让编译器看见声明">1.5 为什么先让编译器看见声明</a></li>
+</ul>
+</li>
+<li><a href="#2-一次调用怎样进去又怎样回来">2. 一次调用怎样进去，又怎样回来</a><ul>
+<li><a href="#21-暂停的是调用方的当前位置">2.1 暂停的是调用方的当前位置</a></li>
+<li><a href="#22-不是从函数后面重新开始main">2.2 不是从函数后面重新开始main</a></li>
+<li><a href="#23-返回值要被使用才完成你的目的">2.3 返回值要被使用才完成你的目的</a></li>
+</ul>
+</li>
+<li><a href="#3-return和void交回结果还是只做动作">3. return和void：交回结果，还是只做动作</a><ul>
+<li><a href="#31-return结束哪一段">3.1 return结束哪一段</a></li>
+<li><a href="#32-普通有返回值函数不能遗漏正常路径">3.2 普通有返回值函数不能遗漏正常路径</a></li>
+<li><a href="#33-void不是返回一个空数字">3.3 void不是返回一个“空数字”</a></li>
+<li><a href="#34-返回类型与返回的值">3.4 返回类型与返回的值</a></li>
+</ul>
+</li>
+<li><a href="#4-按值传递把值交过去不把变量搬过去">4. 按值传递：把值交过去，不把变量搬过去</a><ul>
+<li><a href="#41-实参与形参不是同一个变量">4.1 实参与形参不是同一个变量</a></li>
+<li><a href="#42-用返回值更新原变量">4.2 用返回值更新原变量</a></li>
+<li><a href="#43-每次调用有自己的局部变量">4.3 每次调用有自己的局部变量</a></li>
+<li><a href="#44-本课采用的函数摆放方式">4.4 本课采用的函数摆放方式</a></li>
+</ul>
+</li>
+<li><a href="#5-多个参数逐个交代每个都有类型">5. 多个参数：逐个交代，每个都有类型</a><ul>
+<li><a href="#51-顺序决定谁接收哪个值">5.1 顺序决定谁接收哪个值</a></li>
+<li><a href="#52-即使类型相同也逐个写类型">5.2 即使类型相同，也逐个写类型</a></li>
+<li><a href="#53-转换不替你检查业务规则">5.3 转换不替你检查业务规则</a></li>
+<li><a href="#54-两参数计算组合数的小模型">5.4 两参数计算：组合数的小模型</a></li>
+</ul>
+</li>
+<li><a href="#6-数组参数复制的是地址元素仍在原处">6. 数组参数：复制的是地址，元素仍在原处</a><ul>
+<li><a href="#61-先写一项常见工作求和">6.1 先写一项常见工作：求和</a></li>
+<li><a href="#62-参数里的有一条特殊规则">6.2 参数里的[]有一条特殊规则</a></li>
+<li><a href="#63-看一张地址图">6.3 看一张地址图</a></li>
+<li><a href="#64-长度必须另给而且要给对">6.4 长度必须另给，而且要给对</a></li>
+<li><a href="#65-sizeof不会帮函数恢复丢失的长度">6.5 sizeof不会帮函数恢复丢失的长度</a></li>
+<li><a href="#66-起点不一定是第一项">6.6 起点不一定是第一项</a></li>
+</ul>
+</li>
+<li><a href="#7-把一个数组任务拆成三个函数">7. 把一个数组任务拆成三个函数</a><ul>
+<li><a href="#71-谁输入谁显示谁修改">7.1 谁输入、谁显示、谁修改</a></li>
+<li><a href="#72-main只负责安排顺序">7.2 main只负责安排顺序</a></li>
+<li><a href="#73-只收两项时怎样走">7.3 只收两项时怎样走</a></li>
+<li><a href="#74-返回数量也是函数结果">7.4 返回数量也是函数结果</a></li>
+<li><a href="#75-输入结束协议要先写清">7.5 输入结束协议要先写清</a></li>
+</ul>
+</li>
+<li><a href="#8-两个指针表示区间包含开头不包含结尾">8. 两个指针表示区间：包含开头，不包含结尾</a><ul>
+<li><a href="#81-为什么还有第二种接口">8.1 为什么还有第二种接口</a></li>
+<li><a href="#82-超尾位置不是一个可读取的元素">8.2 超尾位置不是一个可读取的元素</a></li>
+<li><a href="#83-一轮一轮走">8.3 一轮一轮走</a></li>
+<li><a href="#84-指针必须属于有效的同一个范围">8.4 指针必须属于有效的同一个范围</a></li>
+<li><a href="#85-填充函数返回的结束是哪一格">8.5 填充函数返回的“结束”是哪一格</a></li>
+</ul>
+</li>
+<li><a href="#9-const限制从这条路能做什么">9. const：限制从这条路能做什么</a><ul>
+<li><a href="#91-显示函数为什么写const">9.1 显示函数为什么写const</a></li>
+<li><a href="#92-指向只读数据与指针本身固定">9.2 指向只读数据，与指针本身固定</a></li>
+<li><a href="#93-参数中的const不是自动复制整个数组">9.3 参数中的const不是自动复制整个数组</a></li>
+<li><a href="#94-可写数据能交给只读函数">9.4 可写数据能交给只读函数</a></li>
+</ul>
+</li>
+<li><a href="#10-二维数组参数列数藏在行的类型里">10. 二维数组参数：列数藏在行的类型里</a><ul>
+<li><a href="#101-先把一行当成一个元素">10.1 先把一行当成一个元素</a></li>
+<li><a href="#102-先使用好读的写法">10.2 先使用好读的写法</a></li>
+<li><a href="#103-为什么不是int">10.3 为什么不是int**</a></li>
+<li><a href="#104-两个循环仍与上课一样">10.4 两个循环仍与上课一样</a></li>
+<li><a href="#105-与原书一个说明的区别">10.5 与原书一个说明的区别</a></li>
+</ul>
+</li>
+<li><a href="#11-c风格字符串参数用结尾字符确定何时停">11. C风格字符串参数：用结尾字符确定何时停</a><ul>
+<li><a href="#111-字符数组什么时候才是字符串">11.1 字符数组什么时候才是字符串</a></li>
+<li><a href="#112-读字符直到零">11.2 读字符直到零</a></li>
+<li><a href="#113-用banana追踪指针">11.3 用banana追踪指针</a></li>
+<li><a href="#114-三种输入来源与只读类型">11.4 三种输入来源，与只读类型</a></li>
+<li><a href="#115-空字符串不是空指针">11.5 空字符串不是空指针</a></li>
+</ul>
+</li>
+<li><a href="#12-返回字符串地址结果在哪里谁负责释放">12. 返回字符串地址：结果在哪里，谁负责释放</a><ul>
+<li><a href="#121-返回一个值与返回它的地址">12.1 返回一个值，与返回它的地址</a></li>
+<li><a href="#122-按原书思路用new建立结果">12.2 按原书思路，用new[]建立结果</a></li>
+<li><a href="#123-多出来的一格干什么">12.3 多出来的一格干什么</a></li>
+<li><a href="#124-指针变量结束动态数组还存在">12.4 指针变量结束，动态数组还存在</a></li>
+<li><a href="#125-判断返回指针的三个问题">12.5 判断返回指针的三个问题</a></li>
+<li><a href="#126-下一课的string会更好管理文字结果">12.6 下一课的string会更好管理文字结果</a></li>
+</ul>
+</li>
+<li><a href="#13-过关能设计而不是只会抄函数头">13. 过关：能设计，而不是只会抄函数头</a><ul>
+<li><a href="#131-先在纸上写接口">13.1 先在纸上写接口</a></li>
+<li><a href="#132-看见症状定位是哪一环">13.2 看见症状，定位是哪一环</a></li>
+<li><a href="#133-不看讲义完成四件事">13.3 不看讲义完成四件事</a></li>
+</ul>
+</li>
+<li><a href="#补充核对标准时用到的资料">补充：核对标准时用到的资料</a></li>
+</ul>
+</div>
+</details><div class="hintbar">遇到看不懂的专有名词？→ <a href="../附录/术语表.html">术语表</a>&nbsp;&nbsp;·&nbsp;&nbsp;电脑基础操作不熟（比如任务管理器、命令行）？→ <a href="../附录/零基础起飞.html">零基础起飞</a></div><h1 id="第-7-章-a-讲义函数基础与数组参数零基础详细版">第 7 章 A 讲义：函数基础与数组参数（零基础详细版）</h1>
+<blockquote>
+<p><strong>教材</strong>：《C++ Primer Plus（第 6 版）》7.1–7.5，PDF <strong>220–246 页</strong>，书页 202–228。246 页上半结束字符串返回值，后半开始 第 7 章 B 的结构参数；两课在同一页交接。</p>
+<p><strong>先修</strong>：变量、数组、指针、字符串，以及 第 5 章–第 6 章 的循环、分支和输入成功判断。</p>
+<p><strong>目标</strong>：自己设计函数的输入与输出，区分原型、调用、定义，解释按值传递，安全处理数组和 C 风格字符串。</p>
+<p><strong>材料说明</strong>：按原书小节顺序讲解；示例、实验和答案独立编写，使用 C++17。原书程序清单 7.1–7.10 可用于对照。</p>
+</blockquote>
+<h2 id="0-本课怎么学">0. 本课怎么学</h2>
+<h3 id="01-从把代码写出来走到把事情分清楚">0.1 从“把代码写出来”走到“把事情分清楚”</h3>
+<p>前两课已经能读一组数、用循环处理、根据条件输出结果。程序变长以后，你可能把输入、求和、平均、打印都放在 main 中。</p>
+<p>它能运行，但修改一处规则时，必须在很多行里找对应的代码。相同的计算再做一遍，又要复制一套循环。</p>
+<p><strong>函数就是一段有名字、能被调用来完成某项工作的代码。</strong> 像厨房里的几个工作站：收材料、烹饪、装盘各有职责，负责人按顺序安排它们。</p>
+<p>函数不只用来减少复制。它也让你能分别回答：</p>
+<ol>
+<li>这一步要接收什么？</li>
+<li>这一步负责做什么？</li>
+<li>它把什么结果交回来？</li>
+<li>它是否允许修改传入的数据？</li>
+</ol>
+<p>本课先从一个数的计算开始，再把前几课的数组统计拆成函数。</p>
+<h3 id="02-名词先用一句话解释">0.2 名词先用一句话解释</h3>
+<table>
+<thead>
+<tr>
+<th>名词</th>
+<th>人话</th>
+<th>你会在哪里看到</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>函数原型</td>
+<td>提前说明函数怎样使用</td>
+<td><code>double cube(double value);</code></td>
+</tr>
+<tr>
+<td>函数定义</td>
+<td>这项工作具体怎样做</td>
+<td>有函数体的那一整段</td>
+</tr>
+<tr>
+<td>函数调用</td>
+<td>现在请它做一次工作</td>
+<td><code>cube(3.0)</code></td>
+</tr>
+<tr>
+<td>实参</td>
+<td>调用时真正交过去的值</td>
+<td>上面的3.0</td>
+</tr>
+<tr>
+<td>形参</td>
+<td>函数里接收输入的变量</td>
+<td>上面的value</td>
+</tr>
+<tr>
+<td>返回值</td>
+<td>函数交给调用方的结果</td>
+<td>立方得到27</td>
+</tr>
+<tr>
+<td>局部变量</td>
+<td>只在某个局部范围使用的变量</td>
+<td>函数中的total</td>
+</tr>
+<tr>
+<td>接口</td>
+<td>输入、输出及使用约定</td>
+<td>类型、数量、有效范围</td>
+</tr>
+<tr>
+<td>副作用</td>
+<td>除返回结果以外还改变了什么</td>
+<td>输出文字、修改原数组</td>
+</tr>
+</tbody>
+</table>
+<p>不用一下背完。下面每个词都与具体的代码一起出现。</p>
+<h3 id="03-建议分三次学">0.3 建议分三次学</h3>
+<table>
+<thead>
+<tr>
+<th>学习段</th>
+<th>讲义范围</th>
+<th>先做到什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一次</td>
+<td>第1–5节</td>
+<td>写出自己的有返回值函数，能画出调用过程</td>
+</tr>
+<tr>
+<td>第二次</td>
+<td>第6–9节</td>
+<td>分清数组地址、有效数量、只读与修改</td>
+</tr>
+<tr>
+<td>第三次</td>
+<td>第10–12节</td>
+<td>处理二维数组、字符结尾和返回地址的寿命</td>
+</tr>
+</tbody>
+</table>
+<p>遇到函数指针先不用担心，那是 第 7 章 B 的内容；本课把最普通的函数用熟。</p>
+<table>
+<thead>
+<tr>
+<th>原书范围</th>
+<th>PDF页</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7.1 定义、原型、调用</td>
+<td>220–225</td>
+<td><a href="../示例代码/07A_函数基础与数组参数/01_three_forms.cpp">01 三种写法</a></td>
+</tr>
+<tr>
+<td>7.2 按值传递与多个参数</td>
+<td>225–230</td>
+<td><a href="../示例代码/07A_函数基础与数组参数/02_value_parameters.cpp">02 传入副本</a>、<a href="../示例代码/07A_函数基础与数组参数/03_multiple_parameters.cpp">03 多个参数</a>、<a href="../示例代码/07A_函数基础与数组参数/05_combinations.cpp">05 组合数</a></td>
+</tr>
+<tr>
+<td>7.3 数组、区间、const</td>
+<td>230–242</td>
+<td><a href="../示例代码/07A_函数基础与数组参数/04_array_sum.cpp">04 数组求和</a>、<a href="../示例代码/07A_函数基础与数组参数/06_array_workflow.cpp">06 数组处理流程</a>、<a href="../示例代码/07A_函数基础与数组参数/07_pointer_ranges.cpp">07 指针区间</a>、<a href="../示例代码/07A_函数基础与数组参数/08_const_pointers.cpp">08 const 指针</a></td>
+</tr>
+<tr>
+<td>7.4 二维数组</td>
+<td>242–243</td>
+<td><a href="../示例代码/07A_函数基础与数组参数/09_matrix_parameter.cpp">09 二维数组参数</a></td>
+</tr>
+<tr>
+<td>7.5 C风格字符串</td>
+<td>243–246</td>
+<td><a href="../示例代码/07A_函数基础与数组参数/10_cstring_parameter.cpp">10 字符统计</a>、<a href="../示例代码/07A_函数基础与数组参数/11_return_cstring.cpp">11 返回新字符串</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="04-编译与实验方法">0.4 编译与实验方法</h3>
+<p>在课程根目录，一次编译一个完整示例：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="p">++</span> <span class="n">-std</span><span class="p">=</span><span class="n">c</span><span class="p">++</span><span class="n">17</span> <span class="n">-Wall</span> <span class="n">-Wextra</span> <span class="n">-pedantic</span> <span class="n">示例代码</span><span class="p">/</span><span class="n">07A_函数基础与数组参数</span><span class="p">/</span><span class="n">01_three_forms</span><span class="p">.</span><span class="nb">cpp </span><span class="n">-o</span> <span class="n">example</span><span class="p">.</span><span class="n">exe</span>
+<span class="p">./</span><span class="n">example</span><span class="p">.</span><span class="n">exe</span>
+</code></pre></div>
+
+<p><code>示例代码/07A_函数基础与数组参数/</code> 每个文件都有 main，不能把十一份一起链接。自己的副本放 <code>my_code/</code>，示例原件保留用于对照。</p>
+<p>本讲义的短代码框常是片段；没有头文件、main或变量声明时，要放进完整程序里再试。</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="c1">// 函数原型放这里。</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// 调用函数，接住结果。</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 函数定义放这里，与main并列。</span>
+</code></pre></div>
+
+<p>先读<a href="../练习/第07章A-练习.html">练习</a>里的预测题，再运行；完成后看<a href="../参考答案/第07章A/复习题答案.html">参考答案</a>。</p>
+<h2 id="1-原型调用定义三个地方各做一件事">1. 原型、调用、定义：三个地方，各做一件事</h2>
+<h3 id="11-先看一个完整程序">1.1 先看一个完整程序</h3>
+<p>下面没有交互输入，3.0直接写在代码里，先把注意力放在执行顺序。</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="kt">double</span><span class="w"> </span><span class="nf">cube</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">value</span><span class="p">);</span><span class="w"> </span><span class="c1">// 原型</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">answer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cube</span><span class="p">(</span><span class="mf">3.0</span><span class="p">);</span><span class="w"> </span><span class="c1">// 调用</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">answer</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">double</span><span class="w"> </span><span class="nf">cube</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="c1">// 定义</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>输出27。函数的定义写在 main 后面，不代表它会在 main 结束后自动执行。<strong>只有执行到调用，程序才进入这个函数。</strong></p>
+<h3 id="12-把一行原型拆开">1.2 把一行原型拆开</h3>
+<div class="codehilite"><pre><span></span><code>double   cube   (double value)   ;
+  |        |          |         |
+返回类型  名字     输入参数    声明结束
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>告诉调用方什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一个double</td>
+<td>会交回来一个double结果</td>
+</tr>
+<tr>
+<td>cube</td>
+<td>用这个名字调用它</td>
+</tr>
+<tr>
+<td>圆括号里的double</td>
+<td>要接收一个double输入</td>
+</tr>
+<tr>
+<td>value</td>
+<td>输入的说明性名字，可在原型中省略</td>
+</tr>
+<tr>
+<td>最后分号</td>
+<td>到这里是一条声明，没有函数体</td>
+</tr>
+</tbody>
+</table>
+<p><code>double cube(double);</code>也是同一个原型。为了方便读，我们尽量在原型里保留有意义的参数名。</p>
+<h3 id="13-定义多了什么">1.3 定义多了什么</h3>
+<p>定义有花括号里的实现：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">double</span><span class="w"> </span><span class="nf">cube</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">value</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>value在函数中是一个变量。return先算出乘积，再把结果交回去，并结束这一次调用。</p>
+<p>原型的分号不能原样留在定义的函数头后面：</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 错误片段：这里已经用分号结束声明，后面的块不是函数体。</span>
+<span class="kt">double</span><span class="w"> </span><span class="nf">cube</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">value</span><span class="p">);</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>把错误片段当作“原型后接一段全局裸代码”理解，就知道编译器为什么不接受。</p>
+<h3 id="14-调用时不再写参数类型">1.4 调用时不再写参数类型</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">double</span><span class="w"> </span><span class="n">answer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cube</span><span class="p">(</span><span class="mf">3.0</span><span class="p">);</span>
+</code></pre></div>
+
+<p>这里把3.0作为输入，拿到返回值后初始化answer。调用写值或表达式，定义/原型才写参数类型。</p>
+<p><code>cube(double 3.0)</code>不是正确调用。也不要把调用写成 <code>double cube(double value);</code>，后者只是在声明函数。</p>
+<table>
+<thead>
+<tr>
+<th>想做的事</th>
+<th>应写的形式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>提前说明函数存在</td>
+<td><code>double cube(double value);</code></td>
+</tr>
+<tr>
+<td>给出实现</td>
+<td>函数头后接 <code>{ ... }</code></td>
+</tr>
+<tr>
+<td>用变量side调用</td>
+<td><code>cube(side)</code></td>
+</tr>
+<tr>
+<td>接住计算结果</td>
+<td><code>double volume = cube(side);</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="15-为什么先让编译器看见声明">1.5 为什么先让编译器看见声明</h3>
+<p>编译到调用的位置时，编译器需要知道函数的输入数量、类型和返回类型。它也可能在编译当前文件时根本看不到另一个文件里的实现。</p>
+<p>因此先写原型，再调用，再在后面定义，是本课程统一采用的布局。</p>
+<p>另一种合法布局是先给出完整定义，再写main；定义本身也提供声明。<strong>不是每个函数都必须另外抄一条原型</strong>，要求是在使用之前有合适的声明可见。</p>
+<blockquote>
+<p><strong>动手实验</strong>：在副本中删除cube的原型，定义仍留在main后。观察“未声明”之类的编译错误。再把完整定义移到main之前，确认这时无需单独原型也能编译。</p>
+</blockquote>
+<h2 id="2-一次调用怎样进去又怎样回来">2. 一次调用怎样进去，又怎样回来</h2>
+<h3 id="21-暂停的是调用方的当前位置">2.1 暂停的是调用方的当前位置</h3>
+<p>以 <code>double answer=cube(3.0);</code> 为例：</p>
+<div class="codehilite"><pre><span></span><code>main走到cube(3.0)
+     |
+     +-- 创建本次调用的value，初值3.0
+              |
+              +-- 计算3.0×3.0×3.0
+              |
+              +-- return交回27.0
+     |
+     +-- answer获得27.0
+     |
+     +-- 执行下一条输出
+</code></pre></div>
+
+<p>可以把它想成读文章时看脚注：记住刚才的位置，读完脚注后回来继续。</p>
+<h3 id="22-不是从函数后面重新开始main">2.2 不是从函数后面重新开始main</h3>
+<p>示例01专门加入了三条输出。顺序是：</p>
+<div class="codehilite"><pre><span></span><code>Before call
+Inside cube
+answer=27
+</code></pre></div>
+
+<p>Inside cube属于被调用函数，但出现在main的两条输出之间。这说明控制流程确实从调用位置进去，再回到该位置后面。</p>
+<p>若main调用cube两次，每次都会完成一次独立调用；不会“记住上次局部变量的值继续算”，除非函数另外使用了有持续状态的数据，本课不这样设计。</p>
+<h3 id="23-返回值要被使用才完成你的目的">2.3 返回值要被使用才完成你的目的</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">cube</span><span class="p">(</span><span class="mf">3.0</span><span class="p">);</span><span class="w">                    </span><span class="c1">// 调用，但没有使用返回的27</span>
+<span class="kt">double</span><span class="w"> </span><span class="n">answer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cube</span><span class="p">(</span><span class="mf">3.0</span><span class="p">);</span><span class="w">     </span><span class="c1">// 调用，把27保存起来</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">cube</span><span class="p">(</span><span class="mf">3.0</span><span class="p">);</span><span class="w">       </span><span class="c1">// 调用，把27交给输出</span>
+</code></pre></div>
+
+<p>第一行也会执行函数。若函数只有计算，它的结果在这条语句后就被丢弃。若函数里面还输出文字，那些输出仍会发生；丢弃返回值不会撤销已发生的动作。</p>
+<p><strong>计算结果不会自动改成某个外部变量的值。</strong> 这是本课要反复练的地方。</p>
+<blockquote>
+<p><strong>动手实验</strong>：把示例01里接结果的赋值改成单独的 <code>cube(3.0);</code>。不要继续输出不存在的answer。观察函数里面的文字仍会打印，但结果没有被你保存。</p>
+</blockquote>
+<h2 id="3-return和void交回结果还是只做动作">3. return和void：交回结果，还是只做动作</h2>
+<h3 id="31-return结束哪一段">3.1 return结束哪一段</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">larger</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">second</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">second</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">first</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">second</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>第一次return只结束larger本次调用，不结束整个程序；main还会继续。main中的return才结束main，并把退出状态交给运行环境。</p>
+<p>larger里如果first&gt;second，执行第一条return后就不会继续执行第二条。</p>
+<h3 id="32-普通有返回值函数不能遗漏正常路径">3.2 普通有返回值函数不能遗漏正常路径</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 不完整：first&lt;=second时走到末尾，却没有提供结果。</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">larger</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">second</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">second</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">first</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>编译器可能先警告“并非所有路径都有返回值”。不要忽略警告再猜一个输出，这条正常返回路径是不正确的。</p>
+<p>本课所有有返回值函数都让正常路径明确return。main是一个特殊情况：走到末尾相当于return 0，不能拿它推导出普通int函数也能省略。</p>
+<h3 id="33-void不是返回一个空数字">3.3 void不是返回一个“空数字”</h3>
+<p>打印一排字符的任务，可以只做动作，不返回数据：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">print_chars</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">symbol</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">symbol</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>void的意思是没有返回值。因此这样调用：</p>
+<div class="codehilite"><pre><span></span><code><span class="n">print_chars</span><span class="p">(</span><span class="sc">'*'</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+</code></pre></div>
+
+<p>不能写 <code>int result=print_chars('*',3);</code>，因为没有一个int结果可接。</p>
+<p>void函数可以写不带值的 <code>return;</code> 提前结束，也可以正常走到函数体末尾。</p>
+<h3 id="34-返回类型与返回的值">3.4 返回类型与返回的值</h3>
+<p>函数声明返回double，就应该提供符合意思的double结果。可转换的类型有时会被自动转换，但“能转换”不表示不会丢失信息。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">wrong_average</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">second</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">second</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>用3和4调用得到3，因为整数除法先丢掉小数。仅把返回类型改成double仍得到3.0。要使计算本身采用浮点除法，例如 <code>/2.0</code>，并选double返回类型。</p>
+<blockquote>
+<p><strong>动手实验</strong>：用3和4比较“只改返回类型”和“同时改除数为2.0”。先预测3、3.0、3.5分别来自哪一步。</p>
+</blockquote>
+<h2 id="4-按值传递把值交过去不把变量搬过去">4. 按值传递：把值交过去，不把变量搬过去</h2>
+<h3 id="41-实参与形参不是同一个变量">4.1 实参与形参不是同一个变量</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">change_copy</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">number</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">99</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>如果main中有 <code>int original=8;</code>，调用 <code>change_copy(original);</code>，情况是：</p>
+<div class="codehilite"><pre><span></span><code>main里的original [8]
+          |
+          +-- 取出值8，初始化形参
+                         |
+change_copy里的number [8] → 改为[99]
+
+main里的original仍为[8]
+</code></pre></div>
+
+<p>两处变量可以名字不同，也可以都叫number。名字相同不会把它们变成同一块数据。</p>
+<h3 id="42-用返回值更新原变量">4.2 用返回值更新原变量</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">next_value</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">number</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>下面三步的区别很大：</p>
+<table>
+<thead>
+<tr>
+<th>语句</th>
+<th>main中的number，起初8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>change_copy(number);</code></td>
+<td>仍为8，函数改的是形参</td>
+</tr>
+<tr>
+<td><code>next_value(number);</code></td>
+<td>仍为8，9被交回但丢弃</td>
+</tr>
+<tr>
+<td><code>number=next_value(number);</code></td>
+<td>变为9，调用方显式赋值</td>
+</tr>
+</tbody>
+</table>
+<p>示例02把它们放在一起验证。注意“函数计算出了9”和“main保存了9”是两件事。</p>
+<h3 id="43-每次调用有自己的局部变量">4.3 每次调用有自己的局部变量</h3>
+<p>函数中的形参、普通局部变量通常在这次调用中存在。调用结束后，不能在main里直接使用函数的局部变量名。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">double</span><span class="w"> </span><span class="nf">square</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">value</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>main拿到的是返回结果，不是直接获得了名为result的局部变量。下次再调用square，会有新一次的value和result。</p>
+<p>这里只描述普通局部变量；static、全局状态在后续课程讲。实际编译器可能优化掉某些存储，但不会因此让按值参数随意修改调用方变量。</p>
+<h3 id="44-本课采用的函数摆放方式">4.4 本课采用的函数摆放方式</h3>
+<p>原型和定义都放在文件作用域，与main并列。不要把另一个函数的<strong>定义</strong>塞进main的花括号里，C++不允许普通函数定义这样嵌套。</p>
+<p>原型可以在块内声明，但为了让后续函数也看到统一的声明，本课程不采用那种布局。不要把“课程建议放外面”误写成“块内声明一定违法”。</p>
+<p>同样，main里的 <code>using namespace std;</code> 只覆盖它所在的范围，不会让另一个函数里的cout自动可见。示例统一写std::，减少这个混淆。</p>
+<h2 id="5-多个参数逐个交代每个都有类型">5. 多个参数：逐个交代，每个都有类型</h2>
+<h3 id="51-顺序决定谁接收哪个值">5.1 顺序决定谁接收哪个值</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">print_chars</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">symbol</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">);</span>
+</code></pre></div>
+
+<p><code>print_chars('*',3)</code>把字符*交给symbol，把整数3交给count。参数名不会替你按名字配对，配对由位置决定。</p>
+<div class="codehilite"><pre><span></span><code>调用：print_chars('*', 3)
+                  |    |
+形参：         symbol count
+</code></pre></div>
+
+<p>示例03的times是3；函数内部循环使用count完成打印，返回后times仍为3。</p>
+<h3 id="52-即使类型相同也逐个写类型">5.2 即使类型相同，也逐个写类型</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">double</span><span class="w"> </span><span class="nf">area</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">height</span><span class="p">);</span><span class="w"> </span><span class="c1">// 正确</span>
+<span class="c1">// double area(double width, height);     // 错误</span>
+</code></pre></div>
+
+<p>参数列表不是普通变量声明 <code>double width,height;</code> 的写法。</p>
+<p>两个参数类型相同尤其要起好名字。例如width和height、begin和end、capacity和count，名字能帮助人检查意思；编译器通常无法知道你把两个同类型实参交换了。</p>
+<h3 id="53-转换不替你检查业务规则">5.3 转换不替你检查业务规则</h3>
+<p>若参数要求int，把3.7传进去可能转换成3；若要求double，整数3可转成3.0。原型会做类型检查，但不会知道“人数不能为负”“数组长度不能超过容量”。</p>
+<p>不要依赖转换把任意大浮点数塞进整数。先明确输入类型与可接受范围，再调用函数。</p>
+<h3 id="54-两参数计算组合数的小模型">5.4 两参数计算：组合数的小模型</h3>
+<p>原书7.2.2用概率计算展示多个参数和局部累乘。本课示例05换成“从n个同学中选k个人，不区分选出的顺序”，只练组合数。</p>
+<p>从5人选2人，共10种组合。逐轮乘除为：</p>
+<table>
+<thead>
+<tr>
+<th>轮次i</th>
+<th>当前操作</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>起点</td>
+<td>还没乘任何因子</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>乘5，再除1</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2</td>
+<td>乘4，再除2</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<p>示例把“检查0≤k≤n≤100”留给main，把计算留给函数。内部用long double，避免5/2这种整数除法破坏中间结果。</p>
+<p>它用于理解参数与局部变量，不要求先精通概率论。k=0时循环零次，result=1，表示一种“什么也不选”的方案。</p>
+<p>结果很大时浮点数未必保留每一个整数位；输出是数值近似，不能宣称这是无限精度的组合数工具。</p>
+<blockquote>
+<p><strong>动手实验</strong>：输入5 2、5 0、5 5。再输入2 5，确认main在调用计算前拒绝。写出哪些是类型检查，哪些是范围检查。</p>
+</blockquote>
+<h2 id="6-数组参数复制的是地址元素仍在原处">6. 数组参数：复制的是地址，元素仍在原处</h2>
+<h3 id="61-先写一项常见工作求和">6.1 先写一项常见工作：求和</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">sum_values</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">data</span><span class="p">[],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">total</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>调用 <code>sum_values(values,4)</code>：告诉函数从哪组数据开始，以及读几项。count没有自动与数组绑定，它只是一个由调用方提供的整数。</p>
+<h3 id="62-参数里的有一条特殊规则">6.2 参数里的[]有一条特殊规则</h3>
+<p>在<strong>函数参数声明</strong>这个位置，<code>const int data[]</code>被调整为 <code>const int* data</code>。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">sum_values</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">data</span><span class="p">[],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">);</span>
+<span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">sum_values</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">);</span>
+</code></pre></div>
+
+<p>两行声明的是同一种函数参数类型。不是两个重载，也不是把整个数组复制了一遍。</p>
+<p>而在main中 <code>int values[4]</code>仍是数组，<code>int* pointer</code>仍是指针，不能把“参数处调整”扩大成“任何位置数组和指针都是一样的”。</p>
+<h3 id="63-看一张地址图">6.3 看一张地址图</h3>
+<div class="codehilite"><pre><span></span><code>main的values： [2] [4] [6] [8]
+                ^
+                |
+函数里的data：保存同一个起始地址的副本
+函数里的count：保存整数4的副本
+</code></pre></div>
+
+<p>从技术上说，指针参数仍按值传递：复制一个地址值。之所以可以接触原数组，是因为复制后的地址仍指向原来那组元素。</p>
+<p>因此有两种不同的修改：</p>
+<table>
+<thead>
+<tr>
+<th>函数内动作</th>
+<th>影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>++data</code></td>
+<td>移动形参指针，不移动调用方的指针变量</td>
+</tr>
+<tr>
+<td>对可写参数执行 <code>data[0]=99</code></td>
+<td>修改该地址上的原元素</td>
+</tr>
+</tbody>
+</table>
+<p>const参数不允许第二种写入；第9节再把const拆开讲。</p>
+<h3 id="64-长度必须另给而且要给对">6.4 长度必须另给，而且要给对</h3>
+<p>长度4的数组，传count=2可以让函数只处理前两项；传count=5不是“多算一次”，而是要求读不存在的元素，越界。</p>
+<p><code>int data[100]</code>写在函数参数里，也不会自动要求调用方一定给100项，更不会把100当作可以查询的运行时长度。</p>
+<p>这里的接口约定是：count非负，起点后至少有count个有效int元素。函数只拿到指针和count，通常无法自行验证原数组到底有多大。</p>
+<blockquote>
+<p><strong>纸上找错</strong>：values有4项，分析 <code>sum_values(values+2,3)</code> 为什么越界。不要实际运行越界来“看看会打印什么”。</p>
+</blockquote>
+<h3 id="65-sizeof不会帮函数恢复丢失的长度">6.5 sizeof不会帮函数恢复丢失的长度</h3>
+<p>在main里，<code>sizeof values</code>得到整个数组的字节数；在函数里，data已经是指针，<code>sizeof data</code>得到指针本身的字节数。</p>
+<p>具体字节数取决于实现，常见环境中int为4字节、指针为8字节；不要把这两个数写成C++永远保证的事实。</p>
+<p>示例04先打印整个数组的字节数，接着在四次调用中分别打印指针字节数，最后统一打印四个求和结果。先计算、再输出标签，让诊断信息和结果容易区分。</p>
+<p>正确求有效项数量的方法是调用方保存并传入count。到了第 7 章 B，std::array会把固定长度作为对象类型的一部分携带过来。</p>
+<h3 id="66-起点不一定是第一项">6.6 起点不一定是第一项</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">sum_values</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span><span class="w">     </span><span class="c1">// 四项全算</span>
+<span class="n">sum_values</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">     </span><span class="c1">// 前两项</span>
+<span class="n">sum_values</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w"> </span><span class="c1">// 后两项</span>
+</code></pre></div>
+
+<p>函数里面的data[0]表示“本次传进来起点上的第一项”，第三次调用时就是main的values[2]。</p>
+<p>本地编号重新从0开始，但数据没有复制或搬家。</p>
+<table>
+<thead>
+<tr>
+<th>调用</th>
+<th>函数看到的两项</th>
+<th>总和</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>前两项</td>
+<td>2、4</td>
+<td>6</td>
+</tr>
+<tr>
+<td>后两项</td>
+<td>6、8</td>
+<td>14</td>
+</tr>
+<tr>
+<td>空段，count=0</td>
+<td>不访问任何项</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>动手实验</strong>：只改示例04里其中一次调用的起点和数量，取中间两项。先手算4+6，再运行。数量不能超过起点后剩下的项数。</p>
+</blockquote>
+<h2 id="7-把一个数组任务拆成三个函数">7. 把一个数组任务拆成三个函数</h2>
+<h3 id="71-谁输入谁显示谁修改">7.1 谁输入、谁显示、谁修改</h3>
+<p>示例06将事情分成：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">fill_values</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">data</span><span class="p">[],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">capacity</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">show_values</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">data</span><span class="p">[],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">scale_values</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">data</span><span class="p">[],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">factor</span><span class="p">);</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>是否改原数组</th>
+<th>返回什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fill_values</td>
+<td>是，写入输入值</td>
+<td>实际收到的数量</td>
+</tr>
+<tr>
+<td>show_values</td>
+<td>否，只有输出动作</td>
+<td>无返回值</td>
+</tr>
+<tr>
+<td>scale_values</td>
+<td>是，每项乘系数</td>
+<td>无返回值</td>
+</tr>
+</tbody>
+</table>
+<p>fill的容量是“最多可装几项”；返回的count是“实际装了几项”。两者必须分清。</p>
+<h3 id="72-main只负责安排顺序">7.2 main只负责安排顺序</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">double</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="mi">5</span><span class="p">]{};</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fill_values</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
+<span class="n">show_values</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">);</span>
+<span class="n">scale_values</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="mf">1.1</span><span class="p">);</span>
+<span class="n">show_values</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">);</span>
+</code></pre></div>
+
+<p>读这五行就能知道整个流程。具体的读取、显示、修改循环各在自己的函数里。</p>
+<p>main仍要保存数组，因为它是整次流程的数据。不能把数组放在fill的局部作用域里，再假装后续函数还能拿那个局部数组使用。</p>
+<h3 id="73-只收两项时怎样走">7.3 只收两项时怎样走</h3>
+<p>示例约定负数、非数字、EOF结束；有限数超过1000000也停止收集，不存入数组。缩小数值范围用于保证演示中的乘法有明确范围。</p>
+<p>输入 <code>10 20 -1</code>：</p>
+<table>
+<thead>
+<tr>
+<th>输入</th>
+<th>动作</th>
+<th>count</th>
+<th>已有效的区间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td>存data[0]</td>
+<td>1</td>
+<td>前1项</td>
+</tr>
+<tr>
+<td>20</td>
+<td>存data[1]</td>
+<td>2</td>
+<td>前2项</td>
+</tr>
+<tr>
+<td>-1</td>
+<td>约定的结束标记，不存</td>
+<td>2</td>
+<td>仍是前2项</td>
+</tr>
+</tbody>
+</table>
+<p>之后显示10、20，修改成11、22，再显示。后面的三个零初值不算用户数据。</p>
+<h3 id="74-返回数量也是函数结果">7.4 返回数量也是函数结果</h3>
+<p>返回值不必是平均数这样的计算结果，也可以是“成功做了多少”“是否成功”的信息。</p>
+<p>若忽略fill的返回数量，直接对容量5项求平均，就把未使用的格子混进了数据。程序可能没有编译错误，结果却不符合题目。</p>
+<h3 id="75-输入结束协议要先写清">7.5 输入结束协议要先写清</h3>
+<p>本示例收集结束后不再询问其他数字，因此非数字留下失败状态也不会造成后续重读问题。若收集之后还要输入系数，就要按第 6 章处理失败状态和残留文字，并在EOF时结束。</p>
+<p>不要照抄原书里“清除后一直读到换行”的循环而遗漏EOF：没有换行且输入已结束时，错误的恢复循环可能永远停不下来。</p>
+<blockquote>
+<p><strong>动手实验</strong>：测试立即-1、立即EOF、两项后非数字、五项全部填满。记录fill返回多少，show遍历多少，哪些格子被scale修改。</p>
+</blockquote>
+<h2 id="8-两个指针表示区间包含开头不包含结尾">8. 两个指针表示区间：包含开头，不包含结尾</h2>
+<h3 id="81-为什么还有第二种接口">8.1 为什么还有第二种接口</h3>
+<p>“起点+数量”告诉函数处理哪段；“起点+结束位置”也能表达同一件事。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">sum_range</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">begin</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">end</span><span class="p">);</span>
+</code></pre></div>
+
+<p>本课约定区间是 <strong>[begin,end)</strong>：包括begin指向的元素，不包括end指向的位置。</p>
+<h3 id="82-超尾位置不是一个可读取的元素">8.2 超尾位置不是一个可读取的元素</h3>
+<div class="codehilite"><pre><span></span><code>values： [1] [2] [3] [4] [5]   超尾
+           ^                   ^
+         begin              values+5
+
+最后元素是values[4]，结束位置是values+5。
+</code></pre></div>
+
+<p>可以构造同一数组的超尾指针，用于比较和表示结尾；不能对它解引用读取，也不能继续移动到更远的位置。</p>
+<h3 id="83-一轮一轮走">8.3 一轮一轮走</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">sum_range</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">begin</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">end</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">begin</span><span class="p">;</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">end</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">current</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="o">*</span><span class="n">current</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">total</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>sum_range(values,values+3)的过程：</p>
+<table>
+<thead>
+<tr>
+<th>current位置</th>
+<th>是否等于end</th>
+<th>读取</th>
+<th>total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>values+0</td>
+<td>否</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>values+1</td>
+<td>否</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>values+2</td>
+<td>否</td>
+<td>3</td>
+<td>6</td>
+</tr>
+<tr>
+<td>values+3</td>
+<td>是</td>
+<td>不读取</td>
+<td>保持6</td>
+</tr>
+</tbody>
+</table>
+<p>若begin==end，就是空区间：一项也不访问，总和0。</p>
+<h3 id="84-指针必须属于有效的同一个范围">8.4 指针必须属于有效的同一个范围</h3>
+<p>调用方要保证两个位置在同一个数组范围内（允许超尾），begin不在end后面。</p>
+<p>把两个不同数组的指针凑成区间，或者把begin、end传反，不属于这个函数的合法输入。它不会自动发现错误并把数组重排。</p>
+<p><code>end-begin</code>计算同一数组内相隔的元素数，不是相隔字节数。只在这个前提满足时使用。</p>
+<h3 id="85-填充函数返回的结束是哪一格">8.5 填充函数返回的“结束”是哪一格</h3>
+<p>若只填了两项，返回 <code>data+2</code>，表示有效区间 <code>[data,data+2)</code>。它是下一格的地址，不是最后成功填入的data[1]的地址。</p>
+<p>原书7.13第7题的中文“最后被填充的位置”容易让人误解；与后续作为区间终点的用途连起来，应按<strong>最后成功项的后一格</strong>实现。</p>
+<blockquote>
+<p><strong>动手实验</strong>：示例07取 <code>[values+1,values+4)</code>，手算2+3+4=9。然后把两个终点设成同一个位置，确认空段结果为0。</p>
+</blockquote>
+<h2 id="9-const限制从这条路能做什么">9. const：限制从这条路能做什么</h2>
+<h3 id="91-显示函数为什么写const">9.1 显示函数为什么写const</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">show_values</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">data</span><span class="p">[],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">);</span>
+</code></pre></div>
+
+<p>它承诺不通过data修改元素。如果误写 <code>data[0]=0;</code>，编译器会拒绝，让显示函数不小心清空数据的错误提早暴露。</p>
+<p>原数组不一定真的是const。调用方仍可以通过其他可写路径改变自己的数组；const限制的是这个参数提供的访问方式。</p>
+<h3 id="92-指向只读数据与指针本身固定">9.2 指向只读数据，与指针本身固定</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">reader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">first</span><span class="p">;</span>
+<span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">first</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">fixed_reader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">first</span><span class="p">;</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>声明</th>
+<th>能把指针指向别处吗</th>
+<th>能经它改元素吗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>const int*</code></td>
+<td>能</td>
+<td>不能</td>
+</tr>
+<tr>
+<td><code>int* const</code></td>
+<td>不能</td>
+<td>能</td>
+</tr>
+<tr>
+<td><code>const int* const</code></td>
+<td>不能</td>
+<td>不能</td>
+</tr>
+</tbody>
+</table>
+<p>第一种把“读到的int”视为只读；第二种把“保存的地址”固定。先记具体动作，再记英文名称。</p>
+<h3 id="93-参数中的const不是自动复制整个数组">9.3 参数中的const不是自动复制整个数组</h3>
+<p>无论可写的double*还是只读的const <code>double*</code>，传的都还是地址。增加const不是为了避免数组副本，而是为了限制写入并清楚表达意图。</p>
+<p>需要修改原数组的fill或scale，不应把参数声明为const再强行去掉const。直接把接口设计成可写参数。</p>
+<h3 id="94-可写数据能交给只读函数">9.4 可写数据能交给只读函数</h3>
+<p>普通int数组与const int数组，都能交给接受const <code>int*</code>的只读函数；真正的const int数组不能交给要求int*的可写函数。</p>
+<p>这是“能读的范围更宽”与“写入权限受限”两个方面。</p>
+<p>不要把一级指针的规则直接照搬到int**与const <code>int**</code>。原书在这一节演示为什么简单加const会不安全；第一遍理解“多一级需要重新看类型”即可，不必实际运行违规修改。</p>
+<blockquote>
+<p><strong>动手实验</strong>：跑示例08，观察reader换了位置仍只能读、writer没换位置却能改值。在副本中分别尝试违反两种限制，只看编译错误，改回正确版本。</p>
+</blockquote>
+<h2 id="10-二维数组参数列数藏在行的类型里">10. 二维数组参数：列数藏在行的类型里</h2>
+<h3 id="101-先把一行当成一个元素">10.1 先把一行当成一个元素</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">]{{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">}};</span>
+</code></pre></div>
+
+<p>matrix是有两项的外层数组，每一项又是含3个int的行数组。</p>
+<div class="codehilite"><pre><span></span><code>外层第0项： [1] [2] [3]
+外层第1项： [4] [5] [6]
+</code></pre></div>
+
+<p>把matrix作为参数时，得到的是指向第一行的指针。每次前进一行，要跳过3个int，不能仅凭int*猜步长。</p>
+<h3 id="102-先使用好读的写法">10.2 先使用好读的写法</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">sum_matrix</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">matrix</span><span class="p">[][</span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">rows</span><span class="p">);</span>
+</code></pre></div>
+
+<p>第一个[]的长度没有写，用rows告诉函数有几行；第二个[3]写明每一行有3项。</p>
+<p>在参数处，等价的指针写法是：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">sum_matrix</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">matrix</span><span class="p">)[</span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">rows</span><span class="p">);</span>
+</code></pre></div>
+
+<p>先读成“matrix指向一行，每行是3个只读int”。不用第一遍就熟背括号拼法。</p>
+<h3 id="103-为什么不是int">10.3 为什么不是int**</h3>
+<p><code>int**</code>是指向int指针的指针，通常需要实际存放指针的结构；这里原始二维数组连续存的是int，并没有存放一张“各行指针表”。</p>
+<p>两种类型不能靠强制转换假装一样。参数类型不同，访问下一行所需的动作也不同。</p>
+<h3 id="104-两个循环仍与上课一样">10.4 两个循环仍与上课一样</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">sum_matrix</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">matrix</span><span class="p">[][</span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">rows</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">rows</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">row</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">column</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">total</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">matrix</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">column</span><span class="p">];</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">total</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>示例09得到总和21、第一行6、零行0。列数固定为3，不代表行数也固定为2；函数能处理其他合法行数的三列数组。</p>
+<h3 id="105-与原书一个说明的区别">10.5 与原书一个说明的区别</h3>
+<p>原书7.4末尾把二维数组参数说成“指向指针的指针”，并据此说不能加const。对于这里的原始二维数组，这个说法不准确。</p>
+<p>本课程C++17环境可以使用 <code>const int matrix[][3]</code>，通过它只读元素。示例09已采用这种写法；把它误记成int**会影响后面的函数设计。</p>
+<blockquote>
+<p><strong>动手实验</strong>：把输入数组改为三行三列，并只把rows实参改成3；修改函数里的循环不需要增加“第三行专用语句”。再尝试给它四列数组，观察类型不匹配，别强制转换。</p>
+</blockquote>
+<h2 id="11-c风格字符串参数用结尾字符确定何时停">11. C风格字符串参数：用结尾字符确定何时停</h2>
+<h3 id="111-字符数组什么时候才是字符串">11.1 字符数组什么时候才是字符串</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">text</span><span class="p">[]{</span><span class="sc">'h'</span><span class="p">,</span><span class="w"> </span><span class="sc">'i'</span><span class="p">,</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">};</span>
+</code></pre></div>
+
+<p>最后的零字符表示文字结束。没有可访问的 <code>\0</code> 的普通字符数组，不能交给要求C字符串的函数任意往后读。</p>
+<p>本课count_char的接口前提是：text非空指针，指向一个有效的、以零字符结束的字符串。</p>
+<h3 id="112-读字符直到零">11.2 读字符直到零</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="nf">count_char</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">wanted</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">text</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">text</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">wanted</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">count</span><span class="p">;</span>
+<span class="w">        </span><span class="o">++</span><span class="n">text</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>需要 <code>&lt;cstddef&gt;</code> 声明std::size_t。它是标准库用于长度和数量的无符号整数类型，不需要先知道它具体占几字节。</p>
+<h3 id="113-用banana追踪指针">11.3 用banana追踪指针</h3>
+<table>
+<thead>
+<tr>
+<th>指向字符</th>
+<th>是否为零字符</th>
+<th>是否等于a</th>
+<th>count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>b</td>
+<td>否</td>
+<td>否</td>
+<td>0</td>
+</tr>
+<tr>
+<td>a</td>
+<td>否</td>
+<td>是</td>
+<td>1</td>
+</tr>
+<tr>
+<td>n</td>
+<td>否</td>
+<td>否</td>
+<td>1</td>
+</tr>
+<tr>
+<td>a</td>
+<td>否</td>
+<td>是</td>
+<td>2</td>
+</tr>
+<tr>
+<td>n</td>
+<td>否</td>
+<td>否</td>
+<td>2</td>
+</tr>
+<tr>
+<td>a</td>
+<td>否</td>
+<td>是</td>
+<td>3</td>
+</tr>
+<tr>
+<td><code>\0</code></td>
+<td>是</td>
+<td>不进入体内</td>
+<td>保持3</td>
+</tr>
+</tbody>
+</table>
+<p>每轮移动的是形参指针text。main保存的字符串起始指针仍指向b，文字内容也没有改变；示例10输出original=banana验证。</p>
+<h3 id="114-三种输入来源与只读类型">11.4 三种输入来源，与只读类型</h3>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">array</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hello"</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">pointer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hello"</span><span class="p">;</span>
+<span class="n">count_char</span><span class="p">(</span><span class="n">array</span><span class="p">,</span><span class="w"> </span><span class="sc">'l'</span><span class="p">);</span>
+<span class="n">count_char</span><span class="p">(</span><span class="n">pointer</span><span class="p">,</span><span class="w"> </span><span class="sc">'l'</span><span class="p">);</span>
+<span class="n">count_char</span><span class="p">(</span><span class="s">"hello"</span><span class="p">,</span><span class="w"> </span><span class="sc">'l'</span><span class="p">);</span>
+</code></pre></div>
+
+<p>字符数组、指向字符串的指针、字符串字面值都能用于只读接口。字符串字面值在C++中是const字符数组；不能用 <code>char* p="hello";</code> 获得合法的可写文字。</p>
+<p>不要沿用旧式示例中把字面值给char*的写法。需要修改文字时，先创建自己的可写char数组。</p>
+<h3 id="115-空字符串不是空指针">11.5 空字符串不是空指针</h3>
+<p><code>""</code>仍有一个可读的零字符，循环零次；nullptr没有可解引用的字符，不能先读 <code>*text</code>。</p>
+<p>我们的count_char没有把nullptr设计成空字符串。调用时应遵守有效C字符串前提，或者另设计空指针分支，两种接口不能混着猜。</p>
+<blockquote>
+<p><strong>动手实验</strong>：用banana分别数a、n、x，再用空字符串。不要把无结尾字符的数组或nullptr拿来运行这个函数。</p>
+</blockquote>
+<h2 id="12-返回字符串地址结果在哪里谁负责释放">12. 返回字符串地址：结果在哪里，谁负责释放</h2>
+<h3 id="121-返回一个值与返回它的地址">12.1 返回一个值，与返回它的地址</h3>
+<p>函数能返回int、double等值，也能返回指针；但返回地址以后，那个地址上的数据必须仍有效。</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 危险写法，仅分析，不能拿来使用。</span>
+<span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="nf">wrong_text</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">text</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hi"</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">text</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>局部数组在函数结束后不再存活；返回它的地址不会把它搬到main，后续访问不正确。不能用“刚才还能打印”来证明数据寿命足够。</p>
+<h3 id="122-按原书思路用new建立结果">12.2 按原书思路，用new[]建立结果</h3>
+<p>示例11的核心：</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="nf">build_text</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">symbol</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">char</span><span class="p">[</span><span class="n">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">symbol</span><span class="p">;</span>
+<span class="w">    </span><span class="n">text</span><span class="p">[</span><span class="n">count</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">text</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>调用前main已经检查0≤count≤80。这里为了展示与原书一致的机制使用new[]，小范围不代表内存分配永远不可能失败；普通new分配失败会抛出异常，异常处理在后续章节学习。</p>
+<h3 id="123-多出来的一格干什么">12.3 多出来的一格干什么</h3>
+<p>count=3、symbol=*时：</p>
+<div class="codehilite"><pre><span></span><code>下标：       0    1    2      3
+内容：      '*'  '*'  '*'   '\0'
+文字字符数：3
+分配格数：  4
+</code></pre></div>
+
+<p>count=0也要分配一格，写入零字符，得到有效空字符串。不能分配count格再把终止字符写到text[count]，那会越界。</p>
+<h3 id="124-指针变量结束动态数组还存在">12.4 指针变量结束，动态数组还存在</h3>
+<p>函数的局部指针text结束时不再作为局部变量存在；new[]得到的字符数组不会自动随它消失。函数把地址值交给调用方，让调用方仍能找到数组。</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">build_text</span><span class="p">(</span><span class="sc">'*'</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">'\n'</span><span class="p">;</span>
+<span class="k">delete</span><span class="p">[]</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+</code></pre></div>
+
+<p>在这个接口中，build_text创建，main用完后delete[]。不要在返回前释放，也不要忘记释放，更不要再次释放同一块。</p>
+<h3 id="125-判断返回指针的三个问题">12.5 判断返回指针的三个问题</h3>
+<ol>
+<li>它指向局部数据、动态分配数据，还是调用方本来拥有的数据？</li>
+<li>使用期间数据是否仍存活？</li>
+<li>如果需要释放，由谁、在什么时候释放？</li>
+</ol>
+<p>返回指针不总表示“调用方必须delete”。例如返回调用方数组里某一项的地址，就不能擅自delete它。第 7 章 B会再用这样的例子区分。</p>
+<h3 id="126-下一课的string会更好管理文字结果">12.6 下一课的string会更好管理文字结果</h3>
+<p>std::string可以按值返回，调用方不需要为了这段普通文字手动new/delete。本节学习原书的C字符串机制，是为了理解地址和寿命；日常文字处理可优先用string。</p>
+<blockquote>
+<p><strong>动手实验</strong>：示例11输入 <code>* 0</code>、<code>* 3</code>、<code>x 80</code>；检查方括号里有几个字符。输入−1或81应在分配前被拒绝。</p>
+</blockquote>
+<h2 id="13-过关能设计而不是只会抄函数头">13. 过关：能设计，而不是只会抄函数头</h2>
+<h3 id="131-先在纸上写接口">13.1 先在纸上写接口</h3>
+<p>要写平均值函数，先回答：</p>
+<div class="codehilite"><pre><span></span><code>输入：哪组成绩？实际有几项？
+输出：一个double平均值
+是否修改原成绩：不修改，所以参数只读
+空数据：由main先判断，不调用除法
+</code></pre></div>
+
+<p>再写原型、main的调用、函数定义。按这个顺序，不会先写几十行才发现返回类型根本不合任务。</p>
+<h3 id="132-看见症状定位是哪一环">13.2 看见症状，定位是哪一环</h3>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>先检查</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>调用处说函数未声明</td>
+<td>原型是否可见，名字是否拼对</td>
+</tr>
+<tr>
+<td>找不到函数的实现</td>
+<td>定义是否存在，参数类型是否与声明对应</td>
+</tr>
+<tr>
+<td>函数里改了数，main没变</td>
+<td>改的是按值形参，还是显式接了返回值</td>
+</tr>
+<tr>
+<td>平均值不对</td>
+<td>是否用了实际count，是否在整数除法后才转double</td>
+</tr>
+<tr>
+<td>显示函数把数组改了</td>
+<td>只读接口是否加const，修改是否放错职责</td>
+</tr>
+<tr>
+<td>字符串打印乱码或多出字符</td>
+<td>有无有效零字符，地址上的数据是否仍存活</td>
+</tr>
+<tr>
+<td>二维参数类型不匹配</td>
+<td>列数是否相同，有无误写成int**</td>
+</tr>
+</tbody>
+</table>
+<h3 id="133-不看讲义完成四件事">13.3 不看讲义完成四件事</h3>
+<ol>
+<li>写一个两参数函数，把计算结果接回main。</li>
+<li>用图解释“地址副本”和“原数组元素”。</li>
+<li>写出一个只读数组函数与一个修改数组函数，并说明数量约定。</li>
+<li>解释返回局部数组地址为什么不行，new[]版本又由谁释放。</li>
+</ol>
+<p>做完本课<a href="../练习/第07章A-练习.html">分步练习</a>，再进入 第 7 章 B。</p>
+<h2 id="补充核对标准时用到的资料">补充：核对标准时用到的资料</h2>
+<p>这一栏用于纠正容易被简化的细节，第一遍学习不必逐条读标准条文。</p>
+<ul>
+<li><a href="https://eel.is/c++draft/dcl.fct">C++工作草案：函数参数的数组类型调整</a>：参数位置的数组声明与普通数组对象要区分。</li>
+<li><a href="https://eel.is/c++draft/conv.qual">C++工作草案：const限定转换</a>：指向数组的指针不等于指向指针的指针。</li>
+<li><a href="https://learn.microsoft.com/en-us/cpp/cpp/object-lifetime-and-resource-management-modern-cpp?view=msvc-170">Microsoft：对象寿命与资源管理</a>：地址能使用多久取决于它指向的对象寿命。</li>
+</ul>
+<div class="pager"><a class="prev" href="../讲义/第06章-分支语句和逻辑运算符.html">← 上一页：第06章-分支语句和逻辑运算符</a><a class="next" href="../讲义/第07章B-结构字符串递归与函数指针.html">下一页：第07章B-结构字符串递归与函数指针 →</a></div>
+<footer class="footer">
+<span><a href="../index.html">← 返回总目录</a></span>
+<span>课程作者：<a href="https://lksme.dpdns.org/" rel="author">凉开水</a></span>
+</footer>
+</article></main>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('themeBtn');
+  function sync(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    btn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    btn.title = (t === 'dark') ? '切换到浅色' : '切换到深色';
+  }
+  btn.addEventListener('click', function(){
+    var t = document.documentElement.getAttribute('data-theme') || 'dark';
+    t = (t === 'dark') ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    try{ localStorage.setItem('cppcourse-theme', t); }catch(e){}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>
